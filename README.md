@@ -8,8 +8,9 @@ This is the official code of team Spikes#2212 for the 2020 FRC season.
 
 #### General 
 
-1. This project is developed according to the standard java code style convention, described [here ](https://google.github.io/styleguide/javaguide.html)
+1. This project is developed according to the standard java code style convention, described [here](https://google.github.io/styleguide/javaguide.html).
 2. Each branch is named in `lower-case`. 
+3. Commit messages are written in `lower case`.
 
 
 #### Development
