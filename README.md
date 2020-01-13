@@ -18,7 +18,7 @@ This is the official code of team Spikes#2212 for the 2020 FRC season.
 ##### Feature Branches
 This code is developed using the feature branches workflow. 
 
-Each feature is developed inside it's own branch, which is merged into dev after CR and testing. <br> 
+Each feature is developed inside its own branch, which is merged into dev after CR and testing. <br> 
 
 ##### Testing 
 
