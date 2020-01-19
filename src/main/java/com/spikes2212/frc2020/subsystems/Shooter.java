@@ -16,9 +16,13 @@ public class Shooter extends GenericSubsystem {
     }
 
     public static Shooter getInstance() {
-        if(instance == null)
-            instance = new Shooter(new WPI_TalonSRX(RobotMap.CAN.SHOOTER_MASTER),
-                    new WPI_TalonSRX(RobotMap.CAN.SHOOTER_SLAVE));
+        if(instance == null) {
+            WPI_TalonSRX master = new WPI_TalonSRX(RobotMap.CAN.SHOOTER_MASTER);
+            WPI_TalonSRX slave = new WPI_TalonSRX(RobotMap.CAN.SHOOTER_SLAVE);
+            slave.follow(master);
+
+            instance = new Shooter(master, slave);
+        }
 
         return instance;
     }
