@@ -9,4 +9,8 @@ public class RobotMap {
         int FEEDER_FORWARD = 0;
         int FEEDER_BACKWARD = 1;
     }
+
+    public interface CAN {
+        int PCM = 0;
+    }
 }
