@@ -25,7 +25,7 @@ public class Shooter extends GenericSubsystem {
 
     private static Shooter instance;
 
-    private PIDLoop accelerate;
+    private PIDLoop pidForSpeed;
 
     private PIDSettings pidSettings = new PIDSettings(K_P, K_I, K_D, TOLERANCE, WAIT_TIME);
 
@@ -37,7 +37,7 @@ public class Shooter extends GenericSubsystem {
         this.master = master;
         this.slave = slave;
 
-        this.accelerate = new TalonPIDLoop(master, pidSettings, this::canMove, MAX_SPEED, ControlMode.Velocity);
+        this.pidForSpeed = new TalonPIDLoop(master, pidSettings, this::canMove, MAX_SPEED, ControlMode.Velocity);
     }
 
     public static Shooter getInstance() {
@@ -67,7 +67,7 @@ public class Shooter extends GenericSubsystem {
         master.stopMotor();
     }
 
-    public PIDLoop getAccelerate() {
-        return accelerate;
+    public PIDLoop getPIDForSpeed() {
+        return pidForSpeed;
     }
 }
