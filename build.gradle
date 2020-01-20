@@ -1,6 +1,8 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2020.2.2"
+    id "idea"
+    id "eclipse"
+    id "edu.wpi.first.GradleRIO" version "2020.1.2"
 }
 
 def ROBOT_MAIN_CLASS = "com.spikes2212.frc2020.Main"
