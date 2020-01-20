@@ -1,18 +1,21 @@
 package com.spikes2212.frc2020.subsystems;
 
 import com.spikes2212.command.genericsubsystem.GenericSubsystem;
+import com.spikes2212.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.dashboard.Namespace;
 import com.spikes2212.dashboard.RootNamespace;
 import com.spikes2212.frc2020.RobotMap;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.VictorSP;
 
+import java.util.function.Supplier;
+
 public class Feeder extends GenericSubsystem  {
 
     public static final Namespace FEEDER = new RootNamespace("feeder");
 
-    public static final double MIN_SPEED = -1;
-    public static final double MAX_SPEED = 1;
+    private static final double MIN_SPEED = -1;
+    private static final double MAX_SPEED = 1;
 
     private static Feeder ourInstance;
 
@@ -47,6 +50,11 @@ public class Feeder extends GenericSubsystem  {
 
     @Override
     public void stop() {
+        motor.stopMotor();
+    }
 
+    public void initTestingDashboard() {
+        Supplier<Double> speed = FEEDER.addConstantDouble("speed", 0.5);
+        FEEDER.putData("", new MoveGenericSubsystem(this, speed));
     }
 }
