@@ -59,7 +59,7 @@ public class Shooter extends GenericSubsystem {
 
     @Override
     public boolean canMove(double speed) {
-        return true;
+        return speed >= 0;
     }
 
     @Override
