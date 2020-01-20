@@ -66,4 +66,8 @@ public class Shooter extends GenericSubsystem {
     public void stop() {
         master.stopMotor();
     }
+
+    public PIDLoop getAccelerate() {
+        return accelerate;
+    }
 }
