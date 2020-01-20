@@ -25,9 +25,9 @@ public class Shooter extends GenericSubsystem {
 
     private static Shooter instance;
 
-    public PIDLoop accelerate;
+    private PIDLoop accelerate;
 
-    PIDSettings pidSettings = new PIDSettings(K_P, K_I, K_D, TOLERANCE, WAIT_TIME);
+    private PIDSettings pidSettings = new PIDSettings(K_P, K_I, K_D, TOLERANCE, WAIT_TIME);
 
     private WPI_TalonSRX master;
     private WPI_TalonSRX slave;
