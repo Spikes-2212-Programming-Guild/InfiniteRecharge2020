@@ -13,10 +13,10 @@ import java.util.function.Supplier;
 
 public class Feeder extends GenericSubsystem {
 
-    public static final Namespace FEEDER = new RootNamespace("feeder");
+    public static final Namespace feederNamespace = new RootNamespace("feederNamespace");
 
-    private static final double MIN_SPEED = -1;
-    private static final double MAX_SPEED = 1;
+    private static Supplier<Double> MIN_SPEED;
+    private static Supplier<Double> MAX_SPEED;
 
     private static Feeder instance;
 
@@ -25,6 +25,8 @@ public class Feeder extends GenericSubsystem {
 
     public static Feeder getInstance() {
         if(instance == null) {
+            MIN_SPEED = feederNamespace.addConstantDouble("min speed", -1);
+            MAX_SPEED = feederNamespace.addConstantDouble("max speed", 1);
             VictorSP motor = new VictorSP(RobotMap.PWM.FEEDER_MOTOR);
             DoubleSolenoid solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.FEEDER_FORWARD,
                     RobotMap.PCM.FEEDER_BACKWARD);
@@ -33,7 +35,7 @@ public class Feeder extends GenericSubsystem {
         return instance;
     }
 
-    public Feeder(double minSpeed, double maxSpeed, VictorSP motor, DoubleSolenoid solenoid) {
+    public Feeder(Supplier<Double> minSpeed, Supplier<Double> maxSpeed, VictorSP motor, DoubleSolenoid solenoid) {
         super(minSpeed, maxSpeed);
         this.motor = motor;
         this.solenoid = solenoid;
@@ -59,9 +61,9 @@ public class Feeder extends GenericSubsystem {
     public void close() {solenoid.set(DoubleSolenoid.Value.kReverse);}
 
     public void initTestingDashboard() {
-        Supplier<Double> speed = FEEDER.addConstantDouble("speed", 0.5);
-        FEEDER.putData("feed", new MoveGenericSubsystem(this, speed));
-        FEEDER.putData("open level 1", new InstantCommand(this::open, this));
-        FEEDER.putData("close level 1", new InstantCommand(this::close, this));
+        Supplier<Double> speed = feederNamespace.addConstantDouble("speed", 0.5);
+        feederNamespace.putData("feed", new MoveGenericSubsystem(this, speed));
+        feederNamespace.putData("open level 1", new InstantCommand(this::open, this));
+        feederNamespace.putData("close level 1", new InstantCommand(this::close, this));
     }
 }
