@@ -23,7 +23,7 @@ public class Drivetrain extends OdometryDrivetrain {
     public static Namespace drivetrainNamespace = new RootNamespace("drivetrain");
     public static Supplier<Double> width = drivetrainNamespace.addConstantDouble("width", 0.7);
     public static Supplier<Double> wheelDiameter = drivetrainNamespace.
-            addConstantDouble("whhel diameter (inches)", 6);
+            addConstantDouble("wheel diameter (inches)", 6);
 
     private static Drivetrain instance;
 
