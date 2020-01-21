@@ -2,10 +2,10 @@ package com.spikes2212.frc2020.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.spikes2212.command.genericsubsystem.GenericSubsystem;
-import com.spikes2212.control.*;
-import com.spikes2212.dashboard.Namespace;
-import com.spikes2212.dashboard.RootNamespace;
+import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
+import com.spikes2212.lib.control.*;
+import com.spikes2212.lib.dashboard.Namespace;
+import com.spikes2212.lib.dashboard.RootNamespace;
 import com.spikes2212.frc2020.RobotMap;
 
 import java.util.function.Supplier;
@@ -37,7 +37,7 @@ public class Shooter extends GenericSubsystem {
         this.master = master;
         this.slave = slave;
 
-        this.pidForSpeed = new TalonPIDLoop(master, pidSettings, this::canMove, MAX_SPEED, ControlMode.Velocity);
+        this.pidForSpeed = new TalonPIDLoop(master, pidSettings, MAX_SPEED, ControlMode.Velocity);
     }
 
     public static Shooter getInstance() {
