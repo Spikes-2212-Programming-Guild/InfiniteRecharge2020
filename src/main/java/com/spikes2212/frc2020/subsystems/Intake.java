@@ -43,9 +43,7 @@ public class Intake extends GenericSubsystem {
 
     @Override
     public boolean canMove(double speed) {
-        if(state == IntakeState.UP)
-            return false;
-        return true;
+        return speed >= 0 && state == IntakeState.DOWN;
     }
 
     @Override
