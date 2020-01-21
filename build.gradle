@@ -58,8 +58,6 @@ dependencies {
 
     nativeDesktopZip wpi.deps.wpilibJni(wpi.platforms.desktop)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
-
-    implementation "com.github.Spikes-2212-Programming-Guild:SpikesLib2:master-SNAPSHOT"
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
