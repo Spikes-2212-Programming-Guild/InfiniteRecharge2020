@@ -1,7 +1,5 @@
-package com.spikes2212.lib.lib.control;
+package com.spikes2212.lib.control;
 
-import com.spikes2212.lib.control.PIDLoop;
-import com.spikes2212.lib.control.PIDSettings;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
