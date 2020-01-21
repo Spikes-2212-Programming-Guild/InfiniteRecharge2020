@@ -1,11 +1,11 @@
 package com.spikes2212.frc2020.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.spikes2212.command.genericsubsystem.GenericSubsystem;
-import com.spikes2212.control.PIDLoop;
-import com.spikes2212.control.PIDSettings;
-import com.spikes2212.dashboard.Namespace;
-import com.spikes2212.dashboard.RootNamespace;
+import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
+import com.spikes2212.lib.control.PIDLoop;
+import com.spikes2212.lib.control.PIDSettings;
+import com.spikes2212.lib.dashboard.Namespace;
+import com.spikes2212.lib.dashboard.RootNamespace;
 import com.spikes2212.frc2020.RobotMap;
 import edu.wpi.first.wpilibj.DigitalInput;
 
