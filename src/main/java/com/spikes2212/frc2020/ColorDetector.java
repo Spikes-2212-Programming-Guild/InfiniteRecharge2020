@@ -12,7 +12,6 @@ import java.util.function.Supplier;
 
 public class ColorDetector extends ColorSensorV3 {
 
-
     private static Namespace colors = new RootNamespace("colors");
 
     public enum WheelColor {
