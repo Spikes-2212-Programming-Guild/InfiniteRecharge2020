@@ -76,6 +76,14 @@ public class Turret extends GenericSubsystem {
         motor.stopMotor();
     }
 
+    public boolean isLeft(){
+        return secondLimit.get();
+    }
+
+    public boolean isRight(){
+        return firstLimit.get();
+    }
+
     public void setDistancePerPulse(double distancePerPulse) {
         encoder.setDistancePerPulse(distancePerPulse);
     }
