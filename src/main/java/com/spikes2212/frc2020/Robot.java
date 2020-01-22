@@ -5,8 +5,6 @@ import edu.wpi.first.wpilibj.IterativeRobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
 
 public class Robot extends TimedRobot {
-
-
     @Override
     public void robotInit() {
         Turret.getInstance().initDashboardTesting();
