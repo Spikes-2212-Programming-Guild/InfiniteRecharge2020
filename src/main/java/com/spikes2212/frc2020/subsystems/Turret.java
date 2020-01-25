@@ -17,7 +17,6 @@ import edu.wpi.first.wpiutil.math.MathUtil;
 import java.util.function.Supplier;
 
 public class Turret extends GenericSubsystem implements TalonSubsystem {
-
     private static final double DEGREES_TO_PULSES = 4096*Math.PI/180 * 11/9;
 
     public static final Namespace turretNamespace = new RootNamespace("Turret");
@@ -25,32 +24,19 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     public static final Namespace PID = turretNamespace.addChild("PID");
 
     public static final Supplier<Double> MAX_SPEED = turretNamespace.addConstantDouble("Max Speed", 0.6);
+
     public static final Supplier<Double> MIN_SPEED = turretNamespace.addConstantDouble("Min Speed", -0.6);
     public static final Supplier<Double> MIN_ANGLE = turretNamespace.addConstantDouble("Min Angle", 30);
     public static final Supplier<Double> MAX_ANGLE = turretNamespace.addConstantDouble("Max Angle", 330);
-
     public static final Supplier<Double> kP = PID.addConstantDouble("kP", 0);
     public static final Supplier<Double> kI = PID.addConstantDouble("kI", 0);
+
     public static final Supplier<Double> kD = PID.addConstantDouble("kD", 0);
     public static final Supplier<Double> TOLERANCE = PID.addConstantDouble("Tolerance", 0);
     public static final Supplier<Double> WAIT_TIME = PID.addConstantDouble("Wait Time", 0);
     public static final Supplier<Double> SETPOINT = PID.addConstantDouble("setpoint", 90);
     public static final Supplier<Integer> TIMEOUT = PID.addConstantInt("timeout", 30);
-
-    PIDSettings pidSettings = new PIDSettings(kP, kI, kD, TOLERANCE, WAIT_TIME);
-
-    private WPI_TalonSRX motor;
-    private TalonEncoder encoder;
-    private DigitalInput endLimit;
-    private DigitalInput startLimit;
-
-    private Turret(WPI_TalonSRX motor, DigitalInput endLimit, DigitalInput startLimit) {
-        super(MIN_SPEED, MAX_SPEED);
-        this.motor = motor;
-        this.endLimit = endLimit;
-        this.startLimit = startLimit;
-        encoder = new TalonEncoder(this.motor);
-    }
+    public static final PIDSettings pidSettings = new PIDSettings(kP, kI, kD, TOLERANCE, WAIT_TIME);
 
     private static Turret instance;
 
@@ -61,8 +47,23 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
             DigitalInput startLimit = new DigitalInput(RobotMap.DIO.START_LIMIT);
             instance = new Turret(motor, endLimit, startLimit);
         }
-
         return instance;
+    }
+
+    private WPI_TalonSRX motor;
+    private TalonEncoder encoder;
+
+    private DigitalInput endLimit;
+
+    private DigitalInput startLimit;
+
+
+    private Turret(WPI_TalonSRX motor, DigitalInput endLimit, DigitalInput startLimit) {
+        super(MIN_SPEED, MAX_SPEED);
+        this.motor = motor;
+        this.endLimit = endLimit;
+        this.startLimit = startLimit;
+        encoder = new TalonEncoder(this.motor);
     }
 
     @Override
@@ -147,6 +148,6 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         double tolerance = TOLERANCE.get() * DEGREES_TO_PULSES;
         int position = motor.getSelectedSensorPosition();
 
-        return !canMove(motor.get()) || Math.abs(setpoint - position) < tolerance;
+        return !canMove(motor.getMotorOutputPercent()) || Math.abs(setpoint - position) < tolerance;
     }
 }
