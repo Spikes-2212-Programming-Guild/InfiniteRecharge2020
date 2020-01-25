@@ -48,7 +48,7 @@ public class Feeder extends GenericSubsystem {
 
     @Override
     public boolean canMove(double speed) { //TODO implement
-        return false;
+        return true;
     }
 
     @Override
