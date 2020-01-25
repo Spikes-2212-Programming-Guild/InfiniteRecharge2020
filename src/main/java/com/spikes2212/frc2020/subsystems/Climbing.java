@@ -10,14 +10,13 @@ import edu.wpi.first.wpilibj.Encoder;
 import java.util.function.Supplier;
 
 public class Climbing {
-    private static Climbing instance;
-    private static final Namespace climbingNamespace=new RootNamespace("Climbing");
-    private static final Namespace pidNamespace=climbingNamespace.addChild("PID");
+    private static final Namespace climbingNamespace = new RootNamespace("Climbing");
+    private static final Namespace pidNamespace = climbingNamespace.addChild("PID");
     private static final Supplier<Double> kP = pidNamespace.addConstantDouble("kP", 0);
     private static final Supplier<Double> kI = pidNamespace.addConstantDouble("kI", 0);
     private static final Supplier<Double> kD = pidNamespace.addConstantDouble("kD", 0);
     public static final PIDSettings PID_SETTINGS = new PIDSettings(kP, kI, kD);
-
+    private static Climbing instance;
     private WPI_TalonSRX leftMotor;
     private WPI_TalonSRX rightMotor;
     private Encoder leftEncoder;
@@ -48,8 +47,9 @@ public class Climbing {
     public double getRightDistance() {
         return rightEncoder.getDistance();
     }
-    public void configureDashboard(){
-        climbingNamespace.putNumber("left encoder",leftEncoder::get);
-        climbingNamespace.putNumber("right encoder",rightEncoder::get);
+
+    public void configureDashboard() {
+        climbingNamespace.putNumber("left encoder", leftEncoder::get);
+        climbingNamespace.putNumber("right encoder", rightEncoder::get);
     }
 }
