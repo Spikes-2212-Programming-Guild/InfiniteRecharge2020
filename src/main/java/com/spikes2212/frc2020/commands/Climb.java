@@ -31,7 +31,7 @@ public class Climb extends CommandBase {
         leftController.setSetpoint(currentSetpoint);
         rightController.setSetpoint(currentSetpoint);
         climber.setLeftMotor(leftController.calculate(climber.getLeftDistance()));
-        climber.setRightMotor(rightController.calculate(climber.getLeftDistance()));
+        climber.setRightMotor(rightController.calculate(climber.getRightDistance()));
     }
 
     @Override

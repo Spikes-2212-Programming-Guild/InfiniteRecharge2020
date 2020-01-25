@@ -31,11 +31,8 @@ public class Climber extends SubsystemBase {
         return instance;
     }
 
-    public double getLeftDistance() {
-        return leftEncoder.getDistance();
-    }
-
     private WPI_TalonSRX leftMotor;
+
     private WPI_TalonSRX rightMotor;
     private Encoder leftEncoder;
     private Encoder rightEncoder;
@@ -47,6 +44,9 @@ public class Climber extends SubsystemBase {
         this.rightEncoder = rightEncoder;
     }
 
+    public double getLeftDistance() {
+        return leftEncoder.getDistance();
+    }
 
     public double getRightDistance() {
         return rightEncoder.getDistance();
