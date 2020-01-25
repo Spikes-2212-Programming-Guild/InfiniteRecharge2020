@@ -1,12 +1,12 @@
 package com.spikes2212.frc2020.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
-import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystemWithPID;
-import com.spikes2212.lib.control.PIDLoop;
+import com.spikes2212.lib.command.genericsubsystem.TalonSubsystem;
 import com.spikes2212.lib.control.PIDSettings;
-import com.spikes2212.lib.control.TalonPIDLoop;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import com.spikes2212.lib.util.TalonEncoder;
@@ -14,10 +14,11 @@ import edu.wpi.first.wpilibj.DigitalInput;
 
 import java.util.function.Supplier;
 
-public class Turret extends GenericSubsystem {
+public class Turret extends GenericSubsystem implements TalonSubsystem {
+
+    private static final double DEGREES_TO_PULSES = 11*4096*Math.PI/9/180;
 
     public static final Namespace turretNamespace = new RootNamespace("Turret");
-
 
     public static final Namespace PID = turretNamespace.addChild("PID");
 
@@ -29,10 +30,8 @@ public class Turret extends GenericSubsystem {
     public static final Supplier<Double> K_D = PID.addConstantDouble("kD", 0);
     public static final Supplier<Double> TOLERANCE = PID.addConstantDouble("Tolerance", 0);
     public static final Supplier<Double> WAIT_TIME = PID.addConstantDouble("Wait Time", 0);
-    public static final Supplier<Double> SETPOINT = PID.addConstantDouble("setpoint", 0);
-    private static Turret instance;
-
-    public PIDLoop pidLoop;
+    public static final Supplier<Double> SETPOINT = PID.addConstantDouble("setpoint", 90);
+    public static final Supplier<Integer> TIMEOUT = PID.addConstantInt("timeout", 30);
 
     PIDSettings pidSettings = new PIDSettings(K_P, K_I, K_D, TOLERANCE, WAIT_TIME);
 
@@ -47,8 +46,9 @@ public class Turret extends GenericSubsystem {
         this.firstLimit = firstLimit;
         this.secondLimit = secondLimit;
         encoder = new TalonEncoder(this.motor);
-        pidLoop = new TalonPIDLoop(motor, pidSettings, MAX_SPEED);
     }
+
+    private static Turret instance;
 
     public static Turret getInstance() {
         if (instance == null) {
@@ -93,7 +93,56 @@ public class Turret extends GenericSubsystem {
     }
 
     public void initDashboardTesting(){
-        turretNamespace.putData("move turret to setpoint", new MoveGenericSubsystemWithPID(this, pidLoop, SETPOINT));
     }
 
+    @Override
+    public void configureLoop() {
+        motor.configFactoryDefault();
+        motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, TIMEOUT.get());
+
+        motor.configNominalOutputForward(0, TIMEOUT.get());
+        motor.configNominalOutputReverse(0, TIMEOUT.get());
+        motor.configPeakOutputForward(MAX_SPEED.get(), TIMEOUT.get());
+        motor.configPeakOutputReverse(MIN_SPEED.get(), TIMEOUT.get());
+
+        motor.configAllowableClosedloopError(0,0,TIMEOUT.get());
+        motor.config_kP(0, K_P.get(), TIMEOUT.get());
+        motor.config_kI(0, K_I.get(), TIMEOUT.get());
+        motor.config_kD(0, K_D.get(), TIMEOUT.get());
+    }
+
+    @Override
+    public void pidSet(double setpoint) {
+        if(setpoint < 30) setpoint = 30;
+        if(setpoint > 330) setpoint = 330;
+
+        setpoint *= DEGREES_TO_PULSES;
+
+        motor.configPeakOutputForward(MAX_SPEED.get(), TIMEOUT.get());
+        motor.configPeakOutputReverse(MIN_SPEED.get(), TIMEOUT.get());
+
+        motor.config_kP(0, K_P.get(), TIMEOUT.get());
+        motor.config_kI(0, K_I.get(), TIMEOUT.get());
+        motor.config_kD(0, K_D.get(), TIMEOUT.get());
+
+        motor.set(ControlMode.Current, setpoint);
+    }
+
+    @Override
+    public void finish() {
+        stop();
+    }
+
+    @Override
+    public boolean onTarget(double setpoint) {
+        if(setpoint < 30) setpoint = 30;
+        if(setpoint > 330) setpoint = 330;
+
+        setpoint *= DEGREES_TO_PULSES;
+
+        double tolerance = TOLERANCE.get() * DEGREES_TO_PULSES;
+        int position = motor.getSelectedSensorPosition();
+
+        return !canMove(motor.get()) || Math.abs(setpoint - position) < tolerance;
+    }
 }
