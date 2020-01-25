@@ -30,18 +30,11 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
     public static final Supplier<Integer> loop = PID.addConstantInt("Loop", 0);
     public static final Supplier<Integer> timeout = PID.addConstantInt("Timeout", 30);
 
-    private static Shooter instance;
-
     private PIDSettings pidSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
 
     private WPI_TalonSRX master;
 
-    private double lastTimeNotOnTarget;
-
-    private Shooter(WPI_TalonSRX master) {
-        super(minSpeed, maxSpeed);
-        this.master = master;
-    }
+    private static Shooter instance;
 
     public static Shooter getInstance() {
         if(instance == null) {
@@ -50,6 +43,11 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
         }
 
         return instance;
+    }
+
+    private Shooter(WPI_TalonSRX master) {
+        super(minSpeed, maxSpeed);
+        this.master = master;
     }
 
     @Override
