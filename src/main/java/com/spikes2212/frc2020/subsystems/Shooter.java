@@ -14,12 +14,14 @@ import com.spikes2212.lib.dashboard.RootNamespace;
 import java.util.function.Supplier;
 
 public class Shooter extends GenericSubsystem implements TalonSubsystem {
-    public static final Namespace shooterNamesoace = new RootNamespace("Shooter");
-    public static final Namespace PID = shooterNamesoace.addChild("PID");
+    public static final Namespace shooterNamespace = new RootNamespace("Shooter");
+    public static final Namespace PID = shooterNamespace.addChild("PID");
 
-    public static final Supplier<Double> maxSpeed = shooterNamesoace.addConstantDouble("Max Speed", 0.6);
-    public static final Supplier<Double> minSpeed = shooterNamesoace.addConstantDouble("Min Speed", 0);
-    public static final Supplier<Double> shootSpeed = shooterNamesoace.addConstantDouble("Shooting Speed", 0.6);
+    public static final Supplier<Double> DISTANCE_PER_PULSE = shooterNamespace.addConstantDouble("Distance per Pulse", 0);
+
+    public static final Supplier<Double> maxSpeed = shooterNamespace.addConstantDouble("Max Speed", 0.6);
+    public static final Supplier<Double> minSpeed = shooterNamespace.addConstantDouble("Min Speed", 0);
+    public static final Supplier<Double> shootSpeed = shooterNamespace.addConstantDouble("Shooting Speed", 0.6);
 
     public static final Supplier<Double> kP = PID.addConstantDouble("kP", 0);
     public static final Supplier<Double> kI = PID.addConstantDouble("kI", 0);
@@ -108,6 +110,6 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public void configureDashboard() {
-        shooterNamesoace.putData("shoot", new MoveTalonSubsystem(this, shootSpeed, pidSettings::getWaitTime));
+        shooterNamespace.putData("shoot", new MoveTalonSubsystem(this, shootSpeed, pidSettings::getWaitTime));
     }
 }
