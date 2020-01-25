@@ -13,14 +13,14 @@ import edu.wpi.first.wpilibj.Encoder;
 import java.util.function.Supplier;
 
 public class Lift extends GenericSubsystem {
-    private static final Namespace namespace = new RootNamespace("Lift");
-    public static final Supplier<Double> distancePerPulse = namespace.addConstantDouble("Distance Per Pulse", 0);
-    private static final Namespace pidNamespace = namespace.addChild("PID");
+    private static final Namespace liftNamespace = new RootNamespace("Lift");
+    public static final Supplier<Double> distancePerPulse = liftNamespace.addConstantDouble("Distance Per Pulse", 0);
+    private static final Namespace pidNamespace = liftNamespace.addChild("PID");
     private static final Supplier<Double> kP = pidNamespace.addConstantDouble("kP", 0);
     private static final Supplier<Double> kI = pidNamespace.addConstantDouble("kI", 0);
     private static final Supplier<Double> kD = pidNamespace.addConstantDouble("kD", 0);
     public static final PIDSettings PID_SETTINGS = new PIDSettings(kP, kI, kD);
-    private static final Namespace feedForwardNamespace = namespace.addChild("Feed Forward");
+    private static final Namespace feedForwardNamespace = liftNamespace.addChild("Feed Forward");
     private static final Supplier<Double> kS = feedForwardNamespace.addConstantDouble("kS", 0);
     private static final Supplier<Double> kG = feedForwardNamespace.addConstantDouble("kG", 0);
     public static final FeedForwardSettings FEED_FORWARD_SETTINGS = new FeedForwardSettings(kS, () -> 0.0, () -> 0.0, kG);
@@ -28,19 +28,23 @@ public class Lift extends GenericSubsystem {
     private static Lift instance;
     private WPI_TalonSRX motor;
     private Encoder encoder;
-    private DigitalInput bottomLimitSwitch = new DigitalInput(RobotMap.DIO.ELEVATOR_BOTTOM_SWITCH);
-    private DigitalInput topLimitSwitch = new DigitalInput(RobotMap.DIO.ELEVATOR_TOP_SWITCH);
+    private DigitalInput bottomLimitSwitch;
+    private DigitalInput topLimitSwitch;
 
-    private Lift(WPI_TalonSRX motor, Encoder encoder) {
+    private Lift(WPI_TalonSRX motor, Encoder encoder, DigitalInput bottomLimitSwitch, DigitalInput topLimitSwitch) {
         this.motor = motor;
         this.encoder = encoder;
+        this.bottomLimitSwitch = bottomLimitSwitch;
+        this.topLimitSwitch = topLimitSwitch;
     }
 
     public static Lift getInstance() {
         if (instance == null) {
             WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.ELEVATOR_TALON);
             Encoder encoder = new Encoder(RobotMap.DIO.ELEVATOR_ENCODER_A, RobotMap.DIO.ELEVATOR_ENCODER_B);
-            instance = new Lift(motor, encoder);
+            DigitalInput bottomLimitSwitch = new DigitalInput(RobotMap.DIO.ELEVATOR_BOTTOM_SWITCH);
+            DigitalInput topLimitSwitch = new DigitalInput(RobotMap.DIO.ELEVATOR_TOP_SWITCH);
+            instance = new Lift(motor, encoder, bottomLimitSwitch, topLimitSwitch);
         }
         return instance;
     }
@@ -56,7 +60,7 @@ public class Lift extends GenericSubsystem {
 
     @Override
     public boolean canMove(double speed) {
-        return (!bottomLimitSwitch.get() || !(speed < 0)) && (!topLimitSwitch.get() || !(speed > 0));
+        return !(bottomLimitSwitch.get() && speed < 0) && !(topLimitSwitch.get() && speed > 0);
     }
 
     @Override
@@ -65,8 +69,8 @@ public class Lift extends GenericSubsystem {
     }
 
     public void initDashboard() {
-        namespace.putNumber("encoder", encoder::get);
-        namespace.putBoolean("bottom limit switch", bottomLimitSwitch::get);
-
+        liftNamespace.putNumber("encoder", encoder::get);
+        liftNamespace.putBoolean("bottom limit switch", bottomLimitSwitch::get);
+        liftNamespace.putBoolean("top limit switch", topLimitSwitch::get);
     }
 }
