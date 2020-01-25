@@ -32,8 +32,6 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
     public static final Supplier<Integer> loop = PID.addConstantInt("Loop", 0);
     public static final Supplier<Integer> timeout = PID.addConstantInt("Timeout", 30);
 
-    public static final double shootSpeed = 0.6;
-
     private PIDSettings pidSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
 
     private WPI_TalonSRX master;
