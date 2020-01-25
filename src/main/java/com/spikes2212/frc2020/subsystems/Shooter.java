@@ -97,6 +97,7 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
         master.config_kI(loop.get(), pidSettings.getkI(), timeout.get());
         master.config_kP(loop.get(), pidSettings.getkP(), timeout.get());
         master.config_kD(loop.get(), pidSettings.getkD(), timeout.get());
+        master.config_kF(loop.get(), kF.get(), timeout.get());
 
         master.set(ControlMode.Velocity, setpoint);
     }
