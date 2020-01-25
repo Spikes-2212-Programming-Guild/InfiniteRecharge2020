@@ -17,11 +17,13 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
     public static final Namespace shooterNamespace = new RootNamespace("Shooter");
     public static final Namespace PID = shooterNamespace.addChild("PID");
 
-    public static final Supplier<Double> DISTANCE_PER_PULSE = shooterNamespace.addConstantDouble("Distance per Pulse", 0);
+    public static final Supplier<Double> distancePerPulse =
+            shooterNamespace.addConstantDouble("Distance per Pulse", 2 * 0.0254 * Math.PI / 2048);
 
     public static final Supplier<Double> maxSpeed = shooterNamespace.addConstantDouble("Max Speed", 0.6);
     public static final Supplier<Double> minSpeed = shooterNamespace.addConstantDouble("Min Speed", 0);
-    public static final Supplier<Double> shootSpeed = shooterNamespace.addConstantDouble("Shooting Speed", 0.6);
+    public static final Supplier<Double> shootSpeed =
+            shooterNamespace.addConstantDouble("Shooting Speed", 0.6);
 
     public static final Supplier<Double> kP = PID.addConstantDouble("kP", 0);
     public static final Supplier<Double> kI = PID.addConstantDouble("kI", 0);
@@ -94,7 +96,7 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
         master.config_kD(loop.get(), pidSettings.getkD(), timeout.get());
         master.config_kF(loop.get(), kF.get(), timeout.get());
 
-        master.set(ControlMode.Velocity, setpoint);
+        master.set(ControlMode.Velocity, setpoint / distancePerPulse.get());
     }
 
     @Override
