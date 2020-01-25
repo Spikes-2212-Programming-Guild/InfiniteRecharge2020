@@ -49,6 +49,14 @@ public class Intake extends GenericSubsystem {
         this.state = IntakeState.UP;
     }
 
+    public IntakeState getState() {
+        return state;
+    }
+
+    public void setState(IntakeState state) {
+        this.state = state;
+    }
+
     @Override
     public void apply(double speed) {
         motor.set(speed);
