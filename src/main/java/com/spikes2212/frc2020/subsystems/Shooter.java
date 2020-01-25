@@ -22,8 +22,6 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
 
     public static final Supplier<Double> maxSpeed = shooterNamespace.addConstantDouble("Max Speed", 0.6);
     public static final Supplier<Double> minSpeed = shooterNamespace.addConstantDouble("Min Speed", 0);
-    public static final Supplier<Double> shootSpeed =
-            shooterNamespace.addConstantDouble("Shooting Speed", 0.6);
 
     public static final Supplier<Double> kP = PID.addConstantDouble("kP", 0);
     public static final Supplier<Double> kI = PID.addConstantDouble("kI", 0);
@@ -33,6 +31,8 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
     public static final Supplier<Double> waitTime = PID.addConstantDouble("Wait Time", 0);
     public static final Supplier<Integer> loop = PID.addConstantInt("Loop", 0);
     public static final Supplier<Integer> timeout = PID.addConstantInt("Timeout", 30);
+
+    public static final double shootSpeed = 0.6;
 
     private PIDSettings pidSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
 
