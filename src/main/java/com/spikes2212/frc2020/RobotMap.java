@@ -7,9 +7,9 @@ public class RobotMap {
     }
 
     public interface DIO {
-        int CLIMBING_ENCODER_LEFT_A = 2;
-        int CLIMBING_ENCODER_LEFT_B = 3;
-        int CLIMBING_ENCODER_RIGHT_A = 4;
-        int CLIMBING_ENCODER_RIGHT_B = 5;
+        int CLIMBING_ENCODER_LEFT_POS = 2;
+        int CLIMBING_ENCODER_LEFT_NEG = 3;
+        int CLIMBING_ENCODER_RIGHT_POS = 4;
+        int CLIMBING_ENCODER_RIGHT_NEG = 5;
     }
 }

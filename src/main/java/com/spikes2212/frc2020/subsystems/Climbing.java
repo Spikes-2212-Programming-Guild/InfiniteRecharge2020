@@ -33,8 +33,8 @@ public class Climbing {
         if (instance == null) {
             WPI_TalonSRX leftMotor = new WPI_TalonSRX(RobotMap.CAN.CLIMBING_TALON_LEFT);
             WPI_TalonSRX rightMotor = new WPI_TalonSRX(RobotMap.CAN.CLIMBING_TALON_RIGHT);
-            Encoder leftEncoder = new Encoder(RobotMap.DIO.CLIMBING_ENCODER_LEFT_A, RobotMap.DIO.CLIMBING_ENCODER_LEFT_B);
-            Encoder rightEncoder = new Encoder(RobotMap.DIO.CLIMBING_ENCODER_RIGHT_A, RobotMap.DIO.CLIMBING_ENCODER_RIGHT_B);
+            Encoder leftEncoder = new Encoder(RobotMap.DIO.CLIMBING_ENCODER_LEFT_POS, RobotMap.DIO.CLIMBING_ENCODER_LEFT_NEG);
+            Encoder rightEncoder = new Encoder(RobotMap.DIO.CLIMBING_ENCODER_RIGHT_POS, RobotMap.DIO.CLIMBING_ENCODER_RIGHT_NEG);
             instance = new Climbing(leftMotor, rightMotor, leftEncoder, rightEncoder);
         }
         return instance;
@@ -46,6 +46,22 @@ public class Climbing {
 
     public double getRightDistance() {
         return rightEncoder.getDistance();
+    }
+
+    public void setLeftMotor(double speed) {
+        leftMotor.set(speed);
+    }
+
+    public void stopLeftMotor() {
+        leftMotor.stopMotor();
+    }
+
+    public void setRightMotor(double speed) {
+        rightMotor.set(speed);
+    }
+
+    public void stopRightMotor() {
+        rightMotor.stopMotor();
     }
 
     public void configureDashboard() {
