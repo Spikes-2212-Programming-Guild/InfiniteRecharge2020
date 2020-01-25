@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.TalonSubsystem;
+import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
 import com.spikes2212.lib.control.PIDSettings;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
@@ -93,6 +94,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     }
 
     public void initDashboardTesting(){
+        turretNamespace.putData("rotate", new MoveTalonSubsystem(this, SETPOINT));
     }
 
     @Override
