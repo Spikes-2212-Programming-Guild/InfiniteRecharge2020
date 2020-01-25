@@ -40,7 +40,6 @@ public class ColorDetector extends ColorSensorV3 {
 
     public ColorDetector(I2C.Port port) {
         super(port);
-        matcher = new ColorMatch();
         calibrateColors();
     }
 
@@ -54,6 +53,7 @@ public class ColorDetector extends ColorSensorV3 {
     }
 
     public void calibrateColors() {
+        matcher = new ColorMatch();
         redTarget = ColorMatch.makeColor(redRValue.get(), redGValue.get(), redBValue.get());
         blueTarget = ColorMatch.makeColor(blueRValue.get(), blueGValue.get(), blueBValue.get());
         greenTarget = ColorMatch.makeColor(greenRValue.get(), greenGValue.get(), greenBValue.get());
