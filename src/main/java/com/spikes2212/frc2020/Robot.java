@@ -9,6 +9,6 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         Shooter.getInstance().configureDashboard();
-        Turret.getInstance().initDashboardTesting();
+        Turret.getInstance().configureDashboard();
     }
 }

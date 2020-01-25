@@ -54,8 +54,8 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     public static Turret getInstance() {
         if (instance == null) {
             WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.TURRET_TALON);
-            DigitalInput firstLimit = new DigitalInput(RobotMap.DIO.TURRET_FIRST_LIMIT);
-            DigitalInput secondLimit = new DigitalInput(RobotMap.DIO.TURRET_SECOND_LIMIT);
+            DigitalInput firstLimit = new DigitalInput(RobotMap.DIO.START_LIMIT);
+            DigitalInput secondLimit = new DigitalInput(RobotMap.DIO.END_LIMIT);
             instance = new Turret(motor, firstLimit, secondLimit);
         }
 
@@ -93,8 +93,9 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         return encoder.getDistancePerPulse();
     }
 
-    public void initDashboardTesting(){
-        turretNamespace.putData("rotate", new MoveTalonSubsystem(this, SETPOINT));
+    @Override
+    public void configureDashboard(){
+        turretNamespace.putData("rotate", new MoveTalonSubsystem(this, SETPOINT, WAIT_TIME));
     }
 
     @Override
