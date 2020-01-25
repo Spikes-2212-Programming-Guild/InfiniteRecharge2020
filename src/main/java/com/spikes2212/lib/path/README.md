@@ -4,4 +4,4 @@ This code is our implementation of an Adaptive Pure Pursuit Controller according
 
 Currently, we currently support only Tank drivetrains, and will be glad to accept contributions . 
 
-Command bindings for this controller are located in `com.spikes2212.lib.command.drivetrains.command`
+Command bindings for this controller are located in `com.spikes2212.command.drivetrains.command`
