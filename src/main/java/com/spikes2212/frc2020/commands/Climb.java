@@ -7,17 +7,19 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class Climb extends CommandBase {
 
-    private double lastSetpoint;
+    private double targetSetpoint;
     private int numberOfSetpoints;
-    private double setPoint;
+    private double currentSetpoint;
+    private Climber climber;
 
     private PIDController leftController, rightController;
 
-    public Climb(double lastSetpoint, int numberOfSetpoints, PIDSettings pidSettings) {
-        addRequirements(Climber.getInstance());
-        this.lastSetpoint = lastSetpoint;
+    public Climb(double targetSetpoint, int numberOfSetpoints, PIDSettings pidSettings) {
+        climber=Climber.getInstance();
+        addRequirements(climber);
+        this.targetSetpoint = targetSetpoint;
         this.numberOfSetpoints = numberOfSetpoints;
-        setPoint = lastSetpoint / numberOfSetpoints;
+        currentSetpoint = targetSetpoint / numberOfSetpoints;
         leftController = new PIDController(pidSettings.getkP(), pidSettings.getkI(), pidSettings.getkD());
         rightController = new PIDController(pidSettings.getkP(), pidSettings.getkI(), pidSettings.getkD());
     }
@@ -25,21 +27,21 @@ public class Climb extends CommandBase {
     @Override
     public void execute() {
         if (leftController.atSetpoint() && rightController.atSetpoint())
-            setPoint += lastSetpoint / numberOfSetpoints;
-        leftController.setSetpoint(setPoint);
-        rightController.setSetpoint(setPoint);
-        Climber.getInstance().setLeftMotor(leftController.calculate(Climber.getInstance().getLeftDistance()));
-        Climber.getInstance().setRightMotor(rightController.calculate(Climber.getInstance().getLeftDistance()));
+            currentSetpoint += targetSetpoint / numberOfSetpoints;
+        leftController.setSetpoint(currentSetpoint);
+        rightController.setSetpoint(currentSetpoint);
+        climber.setLeftMotor(leftController.calculate(climber.getLeftDistance()));
+        climber.setRightMotor(rightController.calculate(climber.getLeftDistance()));
     }
 
     @Override
     public boolean isFinished() {
-        return (leftController.atSetpoint() && rightController.atSetpoint() && setPoint == lastSetpoint);
+        return (leftController.atSetpoint() && rightController.atSetpoint() && currentSetpoint == targetSetpoint);
     }
 
     @Override
     public void end(boolean interrupted) {
-        Climber.getInstance().stopLeftMotor();
-        Climber.getInstance().stopRightMotor();
+        climber.stopLeftMotor();
+        climber.stopRightMotor();
     }
 }
