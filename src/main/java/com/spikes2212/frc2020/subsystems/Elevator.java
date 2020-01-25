@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 
 public class Elevator extends GenericSubsystem {
     private static final Namespace namespace = new RootNamespace("Elevator");
-    public static final Supplier<Double> distancePerPulse= namespace.addConstantDouble("Distance Per Pulse",0 );
+    public static final Supplier<Double> distancePerPulse = namespace.addConstantDouble("Distance Per Pulse", 0);
     private static final Namespace pidNamespace = namespace.addChild("PID");
     private static final Supplier<Double> kP = pidNamespace.addConstantDouble("kP", 0);
     private static final Supplier<Double> kI = pidNamespace.addConstantDouble("kI", 0);
@@ -29,6 +29,7 @@ public class Elevator extends GenericSubsystem {
     private WPI_TalonSRX motor;
     private Encoder encoder;
     private DigitalInput bottomLimitSwitch = new DigitalInput(RobotMap.DIO.ELEVATOR_BOTTOM_SWITCH);
+    private DigitalInput topLimitSwitch = new DigitalInput(RobotMap.DIO.ELEVATOR_TOP_SWITCH);
 
     private Elevator(WPI_TalonSRX motor, Encoder encoder) {
         this.motor = motor;
@@ -55,7 +56,7 @@ public class Elevator extends GenericSubsystem {
 
     @Override
     public boolean canMove(double speed) {
-        return bottomLimitSwitch.get() || !(speed > 0);
+        return (!bottomLimitSwitch.get() || !(speed < 0)) && (!topLimitSwitch.get() || !(speed > 0));
     }
 
     @Override
