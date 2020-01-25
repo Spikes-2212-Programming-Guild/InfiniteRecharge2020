@@ -13,14 +13,14 @@ import edu.wpi.first.wpilibj.Encoder;
 import java.util.function.Supplier;
 
 public class Elevator extends GenericSubsystem {
-    private static final Namespace ElevatorNamespace = new RootNamespace("Elevator");
-    public static final Supplier<Double> distancePerPulse = ElevatorNamespace.addConstantDouble("Distance Per Pulse", 0);
-    private static final Namespace pidNamespace = ElevatorNamespace.addChild("PID");
+    private static final Namespace elevatorNamespace = new RootNamespace("Elevator");
+    public static final Supplier<Double> distancePerPulse = elevatorNamespace.addConstantDouble("Distance Per Pulse", 0);
+    private static final Namespace pidNamespace = elevatorNamespace.addChild("PID");
     private static final Supplier<Double> kP = pidNamespace.addConstantDouble("kP", 0);
     private static final Supplier<Double> kI = pidNamespace.addConstantDouble("kI", 0);
     private static final Supplier<Double> kD = pidNamespace.addConstantDouble("kD", 0);
     public static final PIDSettings PID_SETTINGS = new PIDSettings(kP, kI, kD);
-    private static final Namespace feedForwardNamespace = ElevatorNamespace.addChild("Feed Forward");
+    private static final Namespace feedForwardNamespace = elevatorNamespace.addChild("Feed Forward");
     private static final Supplier<Double> kS = feedForwardNamespace.addConstantDouble("kS", 0);
     private static final Supplier<Double> kG = feedForwardNamespace.addConstantDouble("kG", 0);
     public static final FeedForwardSettings FEED_FORWARD_SETTINGS = new FeedForwardSettings(kS, () -> 0.0, () -> 0.0, kG);
@@ -70,8 +70,8 @@ public class Elevator extends GenericSubsystem {
 
     @Override
     public void configureDashboard() {
-        ElevatorNamespace.putNumber("encoder", encoder::get);
-        ElevatorNamespace.putBoolean("bottom limit switch", bottomLimitSwitch::get);
-        ElevatorNamespace.putBoolean("top limit switch", topLimitSwitch::get);
+        elevatorNamespace.putNumber("encoder", encoder::get);
+        elevatorNamespace.putBoolean("bottom limit switch", bottomLimitSwitch::get);
+        elevatorNamespace.putBoolean("top limit switch", topLimitSwitch::get);
     }
 }
