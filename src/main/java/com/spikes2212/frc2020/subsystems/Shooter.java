@@ -80,7 +80,7 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
         master.configNominalOutputForward(0, timeout.get());
         master.configNominalOutputReverse(0, timeout.get());
         master.configPeakOutputForward(maxSpeed.get(), timeout.get());
-        master.configPeakOutputReverse(0, timeout.get());
+        master.configPeakOutputReverse(minSpeed.get(), timeout.get());
 
         master.configAllowableClosedloopError(loop.get(), 0, timeout.get());
         master.config_kI(loop.get(), pidSettings.getkI(), timeout.get());
