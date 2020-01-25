@@ -41,7 +41,7 @@ public class Lift extends GenericSubsystem {
     public static Lift getInstance() {
         if (instance == null) {
             WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.ELEVATOR_TALON);
-            Encoder encoder = new Encoder(RobotMap.DIO.ELEVATOR_ENCODER_A, RobotMap.DIO.ELEVATOR_ENCODER_B);
+            Encoder encoder = new Encoder(RobotMap.DIO.ELEVATOR_ENCODER_POS, RobotMap.DIO.ELEVATOR_ENCODER_NEG);
             DigitalInput bottomLimitSwitch = new DigitalInput(RobotMap.DIO.ELEVATOR_BOTTOM_SWITCH);
             DigitalInput topLimitSwitch = new DigitalInput(RobotMap.DIO.ELEVATOR_TOP_SWITCH);
             instance = new Lift(motor, encoder, bottomLimitSwitch, topLimitSwitch);
