@@ -8,6 +8,6 @@ public class RobotMap {
 
     public interface DIO {
         int TURRET_FIRST_LIMIT = 0;
-        int TURRET_SECOND_LIMIT = 0;
+        int TURRET_SECOND_LIMIT = 1;
     }
 }
