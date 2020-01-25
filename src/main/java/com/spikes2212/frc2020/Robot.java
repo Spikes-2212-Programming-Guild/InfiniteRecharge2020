@@ -6,6 +6,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
-        Intake.getInstance().initTestingDashboard();
+        Intake.getInstance().configureDashboard();
     }
 }

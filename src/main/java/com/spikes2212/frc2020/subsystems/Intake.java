@@ -84,7 +84,8 @@ public class Intake extends GenericSubsystem {
         rightSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
-    public void initTestingDashboard() {
+    @Override
+    public void configureDashboard() {
         minSpeed = intakeNamespace.addConstantDouble("min speed", -1);
         maxSpeed = intakeNamespace.addConstantDouble("max speed", 1);
         gripSpeed = intakeNamespace.addConstantDouble("grip speed", 0.5);
