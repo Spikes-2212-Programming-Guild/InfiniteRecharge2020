@@ -9,9 +9,7 @@ import com.spikes2212.lib.command.genericsubsystem.TalonSubsystem;
 import com.spikes2212.lib.control.PIDSettings;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
-import edu.wpi.first.wpilibj.Timer;
 
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 public class Shooter extends GenericSubsystem implements TalonSubsystem {
@@ -109,15 +107,8 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public boolean onTarget(double setpoint) {
-        if(!inPosition(setpoint)) {
-            lastTimeNotOnTarget = Timer.getFPGATimestamp();
-        }
-
-        return Timer.getFPGATimestamp() - lastTimeNotOnTarget >= pidSettings.getWaitTime()
+        return Math.abs(setpoint - master.getSelectedSensorPosition(loop.get())) < pidSettings.getTolerance()
                 || !canMove(master.getMotorOutputPercent());
     }
 
-    private boolean inPosition(double setpoint) {
-        return Math.abs(setpoint - master.getSelectedSensorPosition(loop.get())) < pidSettings.getTolerance();
-    }
 }
