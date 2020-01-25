@@ -6,8 +6,8 @@ public class RobotMap {
     }
 
     public interface DIO {
-        int ELEVATOR_ENCODER_A = 1;
-        int ELEVATOR_ENCODER_B = 2;
+        int ELEVATOR_ENCODER_POS = 1;
+        int ELEVATOR_ENCODER_NEG = 2;
         int ELEVATOR_BOTTOM_SWITCH = 3;
         int ELEVATOR_TOP_SWITCH = 4;
 
