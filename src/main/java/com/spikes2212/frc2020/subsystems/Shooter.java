@@ -33,23 +33,18 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
     private PIDSettings pidSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
 
     private WPI_TalonSRX master;
-    private WPI_TalonSRX slave;
 
     private double lastTimeNotOnTarget;
 
-    private Shooter(WPI_TalonSRX master, WPI_TalonSRX slave) {
+    private Shooter(WPI_TalonSRX master) {
         super(minSpeed, maxSpeed);
         this.master = master;
-        this.slave = slave;
     }
 
     public static Shooter getInstance() {
         if(instance == null) {
             WPI_TalonSRX master = new WPI_TalonSRX(RobotMap.CAN.SHOOTER_MASTER);
-            WPI_TalonSRX slave = new WPI_TalonSRX(RobotMap.CAN.SHOOTER_SLAVE);
-            slave.follow(master);
-
-            instance = new Shooter(master, slave);
+            instance = new Shooter(master);
         }
 
         return instance;
@@ -110,5 +105,4 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
         return Math.abs(setpoint - master.getSelectedSensorPosition(loop.get())) < pidSettings.getTolerance()
                 || !canMove(master.getMotorOutputPercent());
     }
-
 }
