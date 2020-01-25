@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.TalonSubsystem;
+import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
 import com.spikes2212.lib.control.PIDSettings;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
@@ -18,6 +19,7 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
 
     public static final Supplier<Double> maxSpeed = namespace.addConstantDouble("Max Speed", 0.6);
     public static final Supplier<Double> minSpeed = namespace.addConstantDouble("Min Speed", 0);
+    public static final Supplier<Double> shootSpeed = namespace.addConstantDouble("Shooting Speed", 0.6);
 
     public static final Supplier<Double> kP = PID.addConstantDouble("kP", 0);
     public static final Supplier<Double> kI = PID.addConstantDouble("kI", 0);
@@ -104,5 +106,10 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
     public boolean onTarget(double setpoint) {
         return Math.abs(setpoint - master.getSelectedSensorPosition(loop.get())) < pidSettings.getTolerance()
                 || !canMove(master.getMotorOutputPercent());
+    }
+
+    @Override
+    public void configureDashboard() {
+        namespace.putData("shoot", new MoveTalonSubsystem(this, shootSpeed, pidSettings::getWaitTime));
     }
 }
