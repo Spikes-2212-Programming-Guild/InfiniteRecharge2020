@@ -72,20 +72,24 @@ public class Intake extends GenericSubsystem {
         motor.stopMotor();
     }
 
+    public void open() {
+        setState(IntakeState.DOWN);
+        leftSolenoid.set(DoubleSolenoid.Value.kForward);
+        rightSolenoid.set(DoubleSolenoid.Value.kForward);
+    }
+
+    public void close() {
+        setState(IntakeState.UP);
+        leftSolenoid.set(DoubleSolenoid.Value.kReverse);
+        rightSolenoid.set(DoubleSolenoid.Value.kReverse);
+    }
+
     public void initTestingDashboard() {
         minSpeed = intakeNamespace.addConstantDouble("min speed", -1);
         maxSpeed = intakeNamespace.addConstantDouble("max speed", 1);
         gripSpeed = intakeNamespace.addConstantDouble("grip speed", 0.5);
-        intakeNamespace.putData("open", new InstantCommand(() -> {
-            state = IntakeState.DOWN;
-            leftSolenoid.set(DoubleSolenoid.Value.kForward);
-            rightSolenoid.set(DoubleSolenoid.Value.kForward);
-        }, this));
-        intakeNamespace.putData("close", new InstantCommand(() -> {
-            state = IntakeState.UP;
-            leftSolenoid.set(DoubleSolenoid.Value.kReverse);
-            rightSolenoid.set(DoubleSolenoid.Value.kReverse);
-        }, this));
+        intakeNamespace.putData("open", new InstantCommand(this::open, this));
+        intakeNamespace.putData("close", new InstantCommand(this::close, this));
         intakeNamespace.putData("grip", new MoveGenericSubsystem(this, gripSpeed));
         intakeNamespace.putString("state", state::name);
     }
