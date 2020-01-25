@@ -11,6 +11,7 @@ import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.Timer;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 public class Shooter extends GenericSubsystem implements TalonSubsystem {
@@ -23,6 +24,7 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
     public static final Supplier<Double> kP = PID.addConstantDouble("kP", 0);
     public static final Supplier<Double> kI = PID.addConstantDouble("kI", 0);
     public static final Supplier<Double> kD = PID.addConstantDouble("kD", 0);
+    public static final Supplier<Double> kF = PID.addConstantDouble("kF", 0);
     public static final Supplier<Double> tolerance = PID.addConstantDouble("Tolerance", 0);
     public static final Supplier<Double> waitTime = PID.addConstantDouble("Wait Time", 0);
     public static final Supplier<Integer> loop = PID.addConstantInt("Loop", 0);
@@ -84,6 +86,7 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
         master.config_kI(loop.get(), pidSettings.getkI(), timeout.get());
         master.config_kP(loop.get(), pidSettings.getkP(), timeout.get());
         master.config_kD(loop.get(), pidSettings.getkD(), timeout.get());
+        master.config_kF(loop.get(), kF.get(), timeout.get());
     }
 
     @Override
