@@ -70,6 +70,11 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
     }
 
     @Override
+    public void periodic() {
+        ((RootNamespace)shooterNamespace).update();
+    }
+
+    @Override
     public void configureLoop() {
         master.configFactoryDefault();
         master.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, loop.get(), timeout.get());

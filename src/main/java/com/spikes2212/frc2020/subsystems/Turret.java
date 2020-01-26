@@ -105,6 +105,11 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     }
 
     @Override
+    public void periodic() {
+        ((RootNamespace)turretNamespace).update();
+    }
+
+    @Override
     public void configureLoop() {
         motor.configFactoryDefault();
         motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, TIMEOUT.get());
