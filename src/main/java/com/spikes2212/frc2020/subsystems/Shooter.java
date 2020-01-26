@@ -11,11 +11,11 @@ import com.spikes2212.frc2020.RobotMap;
 import java.util.function.Supplier;
 
 public class Shooter extends GenericSubsystem {
-    public static final Namespace NAMESPACE = new RootNamespace("Shooter");
-    public static final Namespace PID = NAMESPACE.addChild("PID");
+    public static final Namespace shooterNamespace = new RootNamespace("Shooter");
+    public static final Namespace PID = shooterNamespace.addChild("PID");
 
-    public static final Supplier<Double> MAX_SPEED = NAMESPACE.addConstantDouble("Max Speed", 0.6);
-    public static final Supplier<Double> MIN_SPEED = NAMESPACE.addConstantDouble("Min Speed", -0.6);
+    public static final Supplier<Double> MAX_SPEED = shooterNamespace.addConstantDouble("Max Speed", 0.6);
+    public static final Supplier<Double> MIN_SPEED = shooterNamespace.addConstantDouble("Min Speed", -0.6);
 
     public static final Supplier<Double> K_P = PID.addConstantDouble("kP", 0);
     public static final Supplier<Double> K_I = PID.addConstantDouble("kI", 0);
@@ -65,6 +65,11 @@ public class Shooter extends GenericSubsystem {
     @Override
     public void stop() {
         master.stopMotor();
+    }
+
+    @Override
+    public void periodic() {
+        ((RootNamespace)shooterNamespace).update();
     }
 
     public PIDLoop getPIDForSpeed() {
