@@ -20,7 +20,7 @@ import edu.wpi.first.wpiutil.math.MathUtil;
 import java.util.function.Supplier;
 
 public class Turret extends GenericSubsystem implements TalonSubsystem {
-    private static final double DEGREES_TO_PULSES = 4096*Math.PI/180 * 11/9;
+    private static final double DEGREES_TO_PULSES = 4096*Math.PI/180 * 9/11;
 
     public static final Namespace turretNamespace = new RootNamespace("Turret");
 
@@ -126,6 +126,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         setpoint = MathUtil.clamp(setpoint % 360, MIN_ANGLE.get(), MAX_ANGLE.get());
 
         setpoint *= DEGREES_TO_PULSES;
+        turretNamespace.putNumber("target", setpoint);
 
         motor.configPeakOutputForward(MAX_SPEED.get(), TIMEOUT.get());
         motor.configPeakOutputReverse(MIN_SPEED.get(), TIMEOUT.get());
@@ -134,7 +135,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         motor.config_kI(0, kI.get(), TIMEOUT.get());
         motor.config_kD(0, kD.get(), TIMEOUT.get());
 
-        motor.set(ControlMode.Current, setpoint);
+        motor.set(ControlMode.Position, setpoint);
     }
 
     @Override
