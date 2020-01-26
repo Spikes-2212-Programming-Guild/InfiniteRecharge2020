@@ -56,7 +56,8 @@ public class Drivetrain extends OdometryDrivetrain {
 
     @Override
     public void periodic() {
-        odometry.calculate();
+        super.periodic();
+        ((RootNamespace)drivetrainNamespace).update();
     }
 
     @Override

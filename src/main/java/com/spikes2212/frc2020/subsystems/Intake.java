@@ -72,6 +72,11 @@ public class Intake extends GenericSubsystem {
         motor.stopMotor();
     }
 
+    @Override
+    public void periodic() {
+        ((RootNamespace)intakeNamespace).update();
+    }
+
     public void open() {
         setState(IntakeState.DOWN);
         leftSolenoid.set(DoubleSolenoid.Value.kForward);

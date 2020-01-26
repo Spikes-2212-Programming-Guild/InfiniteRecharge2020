@@ -56,6 +56,11 @@ public class Feeder extends GenericSubsystem {
         motor.stopMotor();
     }
 
+    @Override
+    public void periodic() {
+        ((RootNamespace)feederNamespace).update();
+    }
+
     public void open() {solenoid.set(DoubleSolenoid.Value.kForward);}
 
     public void close() {solenoid.set(DoubleSolenoid.Value.kReverse);}
