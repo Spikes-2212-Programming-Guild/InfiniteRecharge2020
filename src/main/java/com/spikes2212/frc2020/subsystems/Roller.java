@@ -51,4 +51,9 @@ public class Roller extends GenericSubsystem {
     public void stop() {
         motor.stopMotor();
     }
+
+    @Override
+    public void periodic() {
+        ((RootNamespace)rollerNamespace).update();
+    }
 }
