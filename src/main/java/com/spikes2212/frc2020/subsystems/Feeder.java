@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 public class Feeder extends GenericSubsystem {
 
-    public static final Namespace feederNamespace = new RootNamespace("feeder");
+    public static final RootNamespace feederNamespace = new RootNamespace("feeder");
 
     private static Supplier<Double> MIN_SPEED;
     private static Supplier<Double> MAX_SPEED;
@@ -58,7 +58,7 @@ public class Feeder extends GenericSubsystem {
 
     @Override
     public void periodic() {
-        ((RootNamespace)feederNamespace).update();
+        feederNamespace.update();
     }
 
     public void open() {solenoid.set(DoubleSolenoid.Value.kForward);}

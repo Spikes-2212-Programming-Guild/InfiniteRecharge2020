@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 public class Intake extends GenericSubsystem {
 
-    public static Namespace intakeNamespace = new RootNamespace("intake");
+    public static RootNamespace intakeNamespace = new RootNamespace("intake");
 
     public static Supplier<Double> minSpeed;
     public static Supplier<Double> maxSpeed;
@@ -74,7 +74,7 @@ public class Intake extends GenericSubsystem {
 
     @Override
     public void periodic() {
-        ((RootNamespace)intakeNamespace).update();
+        intakeNamespace.update();
     }
 
     public void open() {

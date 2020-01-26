@@ -20,7 +20,7 @@ public class Drivetrain extends OdometryDrivetrain {
     private PigeonWrapper imu;
     private OdometryHandler odometry;
 
-    public static Namespace drivetrainNamespace = new RootNamespace("drivetrain");
+    public static RootNamespace drivetrainNamespace = new RootNamespace("drivetrain");
     public static Supplier<Double> width = drivetrainNamespace.addConstantDouble("width", 0.7);
     public static Supplier<Double> wheelDiameter = drivetrainNamespace.
             addConstantDouble("wheel diameter (inches)", 6);
@@ -57,7 +57,7 @@ public class Drivetrain extends OdometryDrivetrain {
     @Override
     public void periodic() {
         super.periodic();
-        ((RootNamespace)drivetrainNamespace).update();
+        drivetrainNamespace.update();
     }
 
     @Override
