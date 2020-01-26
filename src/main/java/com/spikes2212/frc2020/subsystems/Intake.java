@@ -15,9 +15,9 @@ public class Intake extends GenericSubsystem {
 
     public static Namespace intakeNamespace = new RootNamespace("intake");
 
-    public static Supplier<Double> minSpeed;
-    public static Supplier<Double> maxSpeed;
-    public static Supplier<Double> gripSpeed;
+    public static final Supplier<Double> minSpeed = intakeNamespace.addConstantDouble("min speed", -1);
+    public static final Supplier<Double> maxSpeed = intakeNamespace.addConstantDouble("max speed", 1);
+    public static final Supplier<Double> gripSpeed = intakeNamespace.addConstantDouble("grip speed", 0.5);
 
     public enum IntakeState {
         UP, DOWN;
@@ -86,9 +86,6 @@ public class Intake extends GenericSubsystem {
 
     @Override
     public void configureDashboard() {
-        minSpeed = intakeNamespace.addConstantDouble("min speed", -1);
-        maxSpeed = intakeNamespace.addConstantDouble("max speed", 1);
-        gripSpeed = intakeNamespace.addConstantDouble("grip speed", 0.5);
         intakeNamespace.putData("open", new InstantCommand(this::open, this));
         intakeNamespace.putData("close", new InstantCommand(this::close, this));
         intakeNamespace.putData("grip", new MoveGenericSubsystem(this, gripSpeed));
