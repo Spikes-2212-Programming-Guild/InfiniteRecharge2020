@@ -98,6 +98,11 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     }
 
     @Override
+    public void periodic() {
+        ((RootNamespace)turretNamespace).update();
+    }
+
+    @Override
     public void configureDashboard(){
         turretNamespace.putData("rotate", new MoveTalonSubsystem(this, SETPOINT, WAIT_TIME));
     }
