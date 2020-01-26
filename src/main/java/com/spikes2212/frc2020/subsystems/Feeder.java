@@ -15,25 +15,24 @@ public class Feeder extends GenericSubsystem {
 
     public static final Namespace feederNamespace = new RootNamespace("feederNamespace");
 
-    private static Supplier<Double> MIN_SPEED;
-    private static Supplier<Double> MAX_SPEED;
+    private static final Supplier<Double> minSpeed = feederNamespace.addConstantDouble("min speed", -1);
+    private static final Supplier<Double> maxSpeed = feederNamespace.addConstantDouble("max speed", 1);
+    private static final Supplier<Double> speed = feederNamespace.addConstantDouble("speed", 0.5);
 
     private static Feeder instance;
 
-    private VictorSP motor;
-    private DoubleSolenoid solenoid;
-
     public static Feeder getInstance() {
         if(instance == null) {
-            MIN_SPEED = feederNamespace.addConstantDouble("min speed", -1);
-            MAX_SPEED = feederNamespace.addConstantDouble("max speed", 1);
             VictorSP motor = new VictorSP(RobotMap.PWM.FEEDER_MOTOR);
             DoubleSolenoid solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.FEEDER_FORWARD,
                     RobotMap.PCM.FEEDER_BACKWARD);
-            instance = new Feeder(MIN_SPEED, MAX_SPEED, motor, solenoid);
+            instance = new Feeder(minSpeed, maxSpeed, motor, solenoid);
         }
         return instance;
     }
+
+    private VictorSP motor;
+    private DoubleSolenoid solenoid;
 
     public Feeder(Supplier<Double> minSpeed, Supplier<Double> maxSpeed, VictorSP motor, DoubleSolenoid solenoid) {
         super(minSpeed, maxSpeed);
@@ -62,7 +61,6 @@ public class Feeder extends GenericSubsystem {
 
     @Override
     public void configureDashboard() {
-        Supplier<Double> speed = feederNamespace.addConstantDouble("speed", 0.5);
         feederNamespace.putData("feed", new MoveGenericSubsystem(this, speed));
         feederNamespace.putData("open level 1", new InstantCommand(this::open, this));
         feederNamespace.putData("close level 1", new InstantCommand(this::close, this));
