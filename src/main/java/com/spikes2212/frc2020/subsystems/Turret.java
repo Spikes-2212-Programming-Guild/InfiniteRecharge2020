@@ -6,12 +6,15 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.TalonSubsystem;
+import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
 import com.spikes2212.lib.control.PIDSettings;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import com.spikes2212.lib.util.TalonEncoder;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpiutil.math.MathUtil;
 
 import java.util.function.Supplier;
@@ -23,14 +26,13 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
     public static final Namespace PID = turretNamespace.addChild("PID");
 
-    public static final Supplier<Double> MAX_SPEED = turretNamespace.addConstantDouble("Max Speed", 0.6);
-
-    public static final Supplier<Double> MIN_SPEED = turretNamespace.addConstantDouble("Min Speed", -0.6);
+    public static final Supplier<Double> TEST_SPEED = turretNamespace.addConstantDouble("Test Speed", 0.9);
+    public static final Supplier<Double> MAX_SPEED = turretNamespace.addConstantDouble("Max Speed", 1);
+    public static final Supplier<Double> MIN_SPEED = turretNamespace.addConstantDouble("Min Speed", -1);
     public static final Supplier<Double> MIN_ANGLE = turretNamespace.addConstantDouble("Min Angle", 30);
     public static final Supplier<Double> MAX_ANGLE = turretNamespace.addConstantDouble("Max Angle", 330);
     public static final Supplier<Double> kP = PID.addConstantDouble("kP", 0);
     public static final Supplier<Double> kI = PID.addConstantDouble("kI", 0);
-
     public static final Supplier<Double> kD = PID.addConstantDouble("kD", 0);
     public static final Supplier<Double> TOLERANCE = PID.addConstantDouble("Tolerance", 0);
     public static final Supplier<Double> WAIT_TIME = PID.addConstantDouble("Wait Time", 0);
@@ -54,9 +56,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     private TalonEncoder encoder;
 
     private DigitalInput endLimit;
-
     private DigitalInput startLimit;
-
 
     private Turret(WPI_TalonSRX motor, DigitalInput endLimit, DigitalInput startLimit) {
         super(MIN_SPEED, MAX_SPEED);
@@ -100,12 +100,15 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     @Override
     public void configureDashboard(){
         turretNamespace.putData("rotate", new MoveTalonSubsystem(this, SETPOINT, WAIT_TIME));
+        turretNamespace.putData("move with no pid", new MoveGenericSubsystem(this, TEST_SPEED));
+        turretNamespace.putNumber("encoder value", encoder::getPosition);
     }
 
     @Override
     public void configureLoop() {
         motor.configFactoryDefault();
         motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, TIMEOUT.get());
+        motor.setSelectedSensorPosition(0,0, TIMEOUT.get());
 
         motor.configNominalOutputForward(0, TIMEOUT.get());
         motor.configNominalOutputReverse(0, TIMEOUT.get());
