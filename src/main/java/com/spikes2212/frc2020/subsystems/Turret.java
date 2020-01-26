@@ -43,6 +43,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     public static Turret getInstance() {
         if (instance == null) {
             WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.TURRET_TALON);
+            motor.setInverted(true);
             DigitalInput endLimit = new DigitalInput(RobotMap.DIO.END_LIMIT);
             DigitalInput startLimit = new DigitalInput(RobotMap.DIO.START_LIMIT);
             instance = new Turret(motor, endLimit, startLimit);
