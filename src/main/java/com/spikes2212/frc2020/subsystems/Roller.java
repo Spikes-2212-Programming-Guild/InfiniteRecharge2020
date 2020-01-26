@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 
 public class Roller extends GenericSubsystem {
 
-    public static Namespace rollerNamespace = new RootNamespace("roller");
+    public static RootNamespace rollerNamespace = new RootNamespace("roller");
 
     public static Supplier<Double> MIN_SPEED = rollerNamespace.addConstantDouble("min speed", -1);
     public static Supplier<Double> MAX_SPEED = rollerNamespace.addConstantDouble("max speed", 1);
@@ -54,6 +54,6 @@ public class Roller extends GenericSubsystem {
 
     @Override
     public void periodic() {
-        ((RootNamespace)rollerNamespace).update();
+        rollerNamespace.update();
     }
 }
