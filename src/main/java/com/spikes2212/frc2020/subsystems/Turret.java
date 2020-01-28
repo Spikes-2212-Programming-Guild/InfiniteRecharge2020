@@ -6,15 +6,11 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.TalonSubsystem;
-import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
 import com.spikes2212.lib.control.PIDSettings;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
-import com.spikes2212.lib.util.TalonEncoder;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpiutil.math.MathUtil;
 
 import java.util.function.Supplier;
@@ -58,7 +54,6 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
 
     private WPI_TalonSRX motor;
-    private TalonEncoder encoder;
 
     private DigitalInput endLimit;
 
@@ -69,7 +64,6 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         this.motor = motor;
         this.endLimit = endLimit;
         this.startLimit = startLimit;
-        encoder = new TalonEncoder(this.motor);
     }
 
     @Override
@@ -93,14 +87,6 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
     public boolean atEnd() {
         return endLimit.get();
-    }
-
-    public void setDistancePerPulse(double distancePerPulse) {
-        encoder.setDistancePerPulse(distancePerPulse);
-    }
-
-    public double getDistancePerPulse() {
-        return encoder.getDistancePerPulse();
     }
 
     @Override
