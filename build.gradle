@@ -1,6 +1,8 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2020.2.2"
+    id "idea"
+    id "eclipse"
+    id "edu.wpi.first.GradleRIO" version "2020.1.2"
 }
 
 def ROBOT_MAIN_CLASS = "com.spikes2212.frc2020.Main"
@@ -40,7 +42,9 @@ def includeDesktopSupport = false
 // Maven central needed for JUnit
 repositories {
     mavenCentral()
-    mavenLocal()
+    maven {
+        url "https://jitpack.io"
+    }
 }
 
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
@@ -54,7 +58,6 @@ dependencies {
 
     nativeDesktopZip wpi.deps.wpilibJni(wpi.platforms.desktop)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
-    simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
