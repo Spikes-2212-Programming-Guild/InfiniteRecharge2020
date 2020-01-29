@@ -2,7 +2,7 @@ plugins {
     id "java"
     id "idea"
     id "eclipse"
-    id "edu.wpi.first.GradleRIO" version "2020.1.2"
+    id "edu.wpi.first.GradleRIO" version "2020.2.2"
 }
 
 def ROBOT_MAIN_CLASS = "com.spikes2212.frc2020.Main"
@@ -49,18 +49,14 @@ repositories {
 // Also defines JUnit 4.
 dependencies {
     implementation wpi.deps.wpilib()
-    nativeZip wpi.deps.wpilibJni(wpi.platforms.roborio)
-    nativeDesktopZip wpi.deps.wpilibJni(wpi.platforms.desktop)
-
-
     implementation wpi.deps.vendor.java()
+
+    nativeZip wpi.deps.wpilibJni(wpi.platforms.roborio)
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
+
+    nativeDesktopZip wpi.deps.wpilibJni(wpi.platforms.desktop)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
-    testImplementation 'junit:junit:4.12'
-
-    // Enable simulation gui support. Must check the box in vscode to enable support
-    // upon debugging
     simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)
 }
 
