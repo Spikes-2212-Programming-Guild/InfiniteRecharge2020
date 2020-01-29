@@ -26,7 +26,7 @@ public class Feeder extends GenericSubsystem {
             VictorSP motor = new VictorSP(RobotMap.PWM.FEEDER_MOTOR);
             DoubleSolenoid solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.FEEDER_FORWARD,
                     RobotMap.PCM.FEEDER_BACKWARD);
-            instance = new Feeder(minSpeed, maxSpeed, motor, solenoid);
+            instance = new Feeder(motor, solenoid);
         }
         return instance;
     }
@@ -34,7 +34,7 @@ public class Feeder extends GenericSubsystem {
     private VictorSP motor;
     private DoubleSolenoid solenoid;
 
-    public Feeder(Supplier<Double> minSpeed, Supplier<Double> maxSpeed, VictorSP motor, DoubleSolenoid solenoid) {
+    public Feeder(VictorSP motor, DoubleSolenoid solenoid) {
         super(minSpeed, maxSpeed);
         this.motor = motor;
         this.solenoid = solenoid;
