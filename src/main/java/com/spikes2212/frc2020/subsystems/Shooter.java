@@ -35,6 +35,10 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
 
     private static Shooter instance;
 
+    public enum ShooterState{
+        OFF, ON
+    }
+
     public static Shooter getInstance() {
         if(instance == null) {
             WPI_TalonSRX master = new WPI_TalonSRX(RobotMap.CAN.SHOOTER_MASTER);
@@ -48,10 +52,12 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
 
     private WPI_TalonSRX master;
 
+    private ShooterState state;
 
     private Shooter(WPI_TalonSRX master) {
         super(minSpeed, maxSpeed);
         this.master = master;
+        state=ShooterState.OFF;
     }
 
     @Override
@@ -61,12 +67,21 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public boolean canMove(double speed) {
-        return speed >= 0;
+        return (speed >= 0 && state == Shooter.ShooterState.ON) || (speed==0&&state== Shooter.ShooterState.OFF);
     }
 
     @Override
     public void stop() {
+        setState(ShooterState.OFF);
         master.stopMotor();
+    }
+
+    public ShooterState getState() {
+        return state;
+    }
+
+    public void setState(ShooterState state) {
+        this.state = state;
     }
 
     @Override
@@ -89,6 +104,7 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
         master.config_kP(loop.get(), pidSettings.getkP(), timeout.get());
         master.config_kD(loop.get(), pidSettings.getkD(), timeout.get());
         master.config_kF(loop.get(), kF.get(), timeout.get());
+        setState(ShooterState.ON);
     }
 
     @Override

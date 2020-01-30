@@ -21,6 +21,10 @@ public class Feeder extends GenericSubsystem {
 
     private static Feeder instance;
 
+    public enum FeederState{
+        OFF, ON, OPEN
+    }
+
     public static Feeder getInstance() {
         if(instance == null) {
             VictorSP motor = new VictorSP(RobotMap.PWM.FEEDER_MOTOR);
@@ -33,11 +37,13 @@ public class Feeder extends GenericSubsystem {
 
     private VictorSP motor;
     private DoubleSolenoid solenoid;
+    private FeederState state;
 
     public Feeder(VictorSP motor, DoubleSolenoid solenoid) {
         super(minSpeed, maxSpeed);
         this.motor = motor;
         this.solenoid = solenoid;
+        state=FeederState.OFF;
     }
 
     @Override
@@ -46,23 +52,39 @@ public class Feeder extends GenericSubsystem {
     }
 
     @Override
-    public boolean canMove(double speed) { //TODO implement
-        return true;
+    public boolean canMove(double speed) {
+        return (state!=FeederState.OFF && speed>0) || (state==FeederState.OFF && speed==0);
     }
 
     @Override
     public void stop() {
+        setState(FeederState.OFF);
         motor.stopMotor();
     }
 
-    public void open() {solenoid.set(DoubleSolenoid.Value.kForward);}
+    public FeederState getState() {
+        return state;
+    }
 
-    public void close() {solenoid.set(DoubleSolenoid.Value.kReverse);}
+    public void setState(FeederState state) {
+        this.state = state;
+    }
+
+    public void open() {
+        setState(FeederState.OPEN);
+        solenoid.set(DoubleSolenoid.Value.kForward);
+    }
+
+    public void close() {
+        setState(FeederState.ON);
+        solenoid.set(DoubleSolenoid.Value.kReverse);
+    }
 
     @Override
     public void configureDashboard() {
         feederNamespace.putData("feed", new MoveGenericSubsystem(this, speed));
         feederNamespace.putData("open level 1", new InstantCommand(this::open, this));
         feederNamespace.putData("close level 1", new InstantCommand(this::close, this));
+        feederNamespace.putString("state", state::name);
     }
 }

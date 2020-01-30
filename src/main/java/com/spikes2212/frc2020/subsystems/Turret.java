@@ -37,9 +37,13 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
     public static final PIDSettings pidSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
 
-    private static final double DEGREES_TO_PULSES = 4096*Math.PI/180 * 11/9;
+    private static final double DEGREES_TO_PULSES = 4096 * Math.PI / 180 * 11 / 9;
 
     private static Turret instance;
+
+    public enum TurretState {
+        OFF, VISION, MANUAL, ABSOLUTE
+    }
 
     public static Turret getInstance() {
         if (instance == null) {
@@ -59,11 +63,14 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
     private DigitalInput startLimit;
 
+    private TurretState state;
+
     private Turret(WPI_TalonSRX motor, DigitalInput endLimit, DigitalInput startLimit) {
         super(minSpeed, maxSpeed);
         this.motor = motor;
         this.endLimit = endLimit;
         this.startLimit = startLimit;
+        state = TurretState.OFF;
     }
 
     @Override
@@ -73,12 +80,22 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public boolean canMove(double speed) {
-        return (speed > 0 && !endLimit.get()) || (speed < 0 && !startLimit.get());
+        return (((speed > 0 && !endLimit.get()) || (speed < 0 && !startLimit.get())) && state != TurretState.OFF)
+                || (state == TurretState.OFF && speed == 0);
     }
 
     @Override
     public void stop() {
+        setState(TurretState.OFF);
         motor.stopMotor();
+    }
+
+    public TurretState getState() {
+        return state;
+    }
+
+    public void setState(TurretState state) {
+        this.state = state;
     }
 
     public boolean atStart() {
@@ -103,6 +120,10 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     public void configureLoop() {
         motor.configFactoryDefault();
         motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, timeout.get());
+        if(tolerance.get() == 0)
+            setState(TurretState.ABSOLUTE);
+        else
+            setState(TurretState.VISION);
 
         motor.configNominalOutputForward(0, timeout.get());
         motor.configNominalOutputReverse(0, timeout.get());

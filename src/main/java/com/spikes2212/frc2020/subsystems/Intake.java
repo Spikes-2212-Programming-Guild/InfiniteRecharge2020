@@ -20,7 +20,7 @@ public class Intake extends GenericSubsystem {
     public static final Supplier<Double> gripSpeed = intakeNamespace.addConstantDouble("grip speed", 0.5);
 
     public enum IntakeState {
-        UP, DOWN;
+        CLOSE, OPEN
     }
 
     private DoubleSolenoid leftSolenoid, rightSolenoid;
@@ -46,7 +46,7 @@ public class Intake extends GenericSubsystem {
         this.leftSolenoid = left;
         this.rightSolenoid = right;
         this.motor = motor;
-        this.state = IntakeState.UP;
+        this.state = IntakeState.CLOSE;
     }
 
     public IntakeState getState() {
@@ -54,7 +54,8 @@ public class Intake extends GenericSubsystem {
     }
 
     public void setState(IntakeState state) {
-        this.state = state;
+        if(StateMachineSync.validate(state, Feeder.getInstance().getState(), Shooter.getInstance().getState(), Turret.getInstance().getState()))
+            this.state = state;
     }
 
     @Override
@@ -64,7 +65,7 @@ public class Intake extends GenericSubsystem {
 
     @Override
     public boolean canMove(double speed) {
-        return speed >= 0 && state == IntakeState.DOWN;
+        return (speed >= 0 && state == IntakeState.OPEN) || (speed==0&&state==IntakeState.CLOSE);
     }
 
     @Override
@@ -73,13 +74,13 @@ public class Intake extends GenericSubsystem {
     }
 
     public void open() {
-        setState(IntakeState.DOWN);
+        setState(IntakeState.OPEN);
         leftSolenoid.set(DoubleSolenoid.Value.kForward);
         rightSolenoid.set(DoubleSolenoid.Value.kForward);
     }
 
     public void close() {
-        setState(IntakeState.UP);
+        setState(IntakeState.CLOSE);
         leftSolenoid.set(DoubleSolenoid.Value.kReverse);
         rightSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
