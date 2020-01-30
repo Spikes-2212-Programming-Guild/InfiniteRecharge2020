@@ -67,7 +67,8 @@ public class Feeder extends GenericSubsystem {
     }
 
     public void setState(FeederState state) {
-        this.state = state;
+        if(StateMachineSync.validate(Intake.getInstance().getState(), state, Shooter.getInstance().getState(), Turret.getInstance().getState()))
+            this.state = state;
     }
 
     public void open() {
