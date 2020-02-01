@@ -65,11 +65,13 @@ public class Intake extends GenericSubsystem {
     public void open() {
         leftSolenoid.set(DoubleSolenoid.Value.kForward);
         rightSolenoid.set(DoubleSolenoid.Value.kForward);
+        setEnabled(true);
     }
 
     public void close() {
         leftSolenoid.set(DoubleSolenoid.Value.kReverse);
         rightSolenoid.set(DoubleSolenoid.Value.kReverse);
+        setEnabled(false);
     }
 
     public boolean isEnabled() {

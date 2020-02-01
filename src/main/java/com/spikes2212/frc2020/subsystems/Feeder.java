@@ -57,9 +57,15 @@ public class Feeder extends GenericSubsystem {
         motor.stopMotor();
     }
 
-    public void open() {solenoid.set(DoubleSolenoid.Value.kForward);}
+    public void open() {
+        solenoid.set(DoubleSolenoid.Value.kForward);
+        setEnabled(true);
+    }
 
-    public void close() {solenoid.set(DoubleSolenoid.Value.kReverse);}
+    public void close() {
+        solenoid.set(DoubleSolenoid.Value.kReverse);
+        setEnabled(true);
+    }
 
     public boolean isEnabled() {
         return enabled;
