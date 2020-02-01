@@ -17,7 +17,7 @@ public class Feeder extends GenericSubsystem {
 
     private static final Supplier<Double> minSpeed = feederNamespace.addConstantDouble("min speed", -1);
     private static final Supplier<Double> maxSpeed = feederNamespace.addConstantDouble("max speed", 1);
-    private static final Supplier<Double> speed = feederNamespace.addConstantDouble("speed", 0.5);
+    public static final Supplier<Double> speed = feederNamespace.addConstantDouble("speed", 0.5);
 
     private static Feeder instance;
 
