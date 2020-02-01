@@ -1,13 +1,11 @@
 package com.spikes2212.frc2020.statemachines;
 
-import com.spikes2212.frc2020.subsystems.Feeder;
 import com.spikes2212.frc2020.subsystems.Shooter;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.state.StateMachine;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 
-public class ShooterStateMachine extends StateMachine<ShooterStateMachine.FeederState> {
-    enum FeederState {
+public class ShooterStateMachine extends StateMachine<ShooterStateMachine.ShooterState> {
+    enum ShooterState {
         OFF, ON,
     }
 
@@ -20,14 +18,14 @@ public class ShooterStateMachine extends StateMachine<ShooterStateMachine.Feeder
     }
 
     private ShooterStateMachine() {
-        super(FeederState.OFF);
+        super(ShooterState.OFF);
 
     }
 
     @Override
     protected void generateTransformations() {
-        addTransformation(FeederState.OFF, new MoveGenericSubsystem(Shooter.getInstance(), 0));
-        addTransformation(FeederState.ON, new MoveGenericSubsystem(Shooter.getInstance(), Shooter.shootSpeed));
+        addTransformation(ShooterState.OFF, new MoveGenericSubsystem(Shooter.getInstance(), 0));
+        addTransformation(ShooterState.ON, new MoveGenericSubsystem(Shooter.getInstance(), Shooter.shootSpeed));
     }
 
 }
