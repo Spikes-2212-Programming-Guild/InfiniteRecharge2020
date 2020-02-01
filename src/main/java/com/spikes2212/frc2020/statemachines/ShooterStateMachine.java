@@ -5,6 +5,8 @@ import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem
 import com.spikes2212.lib.state.StateMachine;
 
 public class ShooterStateMachine extends StateMachine<ShooterStateMachine.ShooterState> {
+    private Shooter shooter = Shooter.getInstance();
+
     enum ShooterState {
         OFF, ON,
     }
@@ -19,13 +21,12 @@ public class ShooterStateMachine extends StateMachine<ShooterStateMachine.Shoote
 
     private ShooterStateMachine() {
         super(ShooterState.OFF);
-
     }
 
     @Override
     protected void generateTransformations() {
-        addTransformation(ShooterState.OFF, new MoveGenericSubsystem(Shooter.getInstance(), 0));
-        addTransformation(ShooterState.ON, new MoveGenericSubsystem(Shooter.getInstance(), Shooter.shootSpeed));
+        addTransformation(ShooterState.OFF, new MoveGenericSubsystem(shooter, 0));
+        addTransformation(ShooterState.ON, new MoveGenericSubsystem(shooter, Shooter.shootSpeed));
     }
 
 }

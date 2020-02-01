@@ -1,11 +1,12 @@
 package com.spikes2212.frc2020.statemachines;
 
 import com.spikes2212.frc2020.subsystems.Feeder;
-import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.state.StateMachine;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class FeederStateMachine extends StateMachine<FeederStateMachine.FeederState> {
+    private Feeder feeder = Feeder.getInstance();
+
     enum FeederState {
         CLOSE,OPEN,
     }
@@ -20,13 +21,12 @@ public class FeederStateMachine extends StateMachine<FeederStateMachine.FeederSt
 
     private FeederStateMachine() {
         super(FeederState.CLOSE);
-
     }
 
     @Override
     protected void generateTransformations() {
-        addTransformation(FeederState.CLOSE, new InstantCommand(Feeder.getInstance()::close));
-        addTransformation(FeederState.OPEN, new InstantCommand(Feeder.getInstance()::open));
+        addTransformation(FeederState.CLOSE, new InstantCommand(feeder::close, feeder));
+        addTransformation(FeederState.OPEN, new InstantCommand(feeder::open, feeder));
     }
 
 }
