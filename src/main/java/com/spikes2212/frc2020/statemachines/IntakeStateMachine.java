@@ -5,14 +5,12 @@ import com.spikes2212.lib.state.StateMachine;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class IntakeStateMachine extends StateMachine<IntakeStateMachine.IntakeState> {
-    private Intake intake = Intake.getInstance();
 
     enum IntakeState {
-        CLOSE, OPEN
+        CLOSE, OPEN,
     }
 
     private static IntakeStateMachine instance;
-
     public static IntakeStateMachine getInstance() {
         if (instance == null)
             instance = new IntakeStateMachine();
@@ -22,6 +20,8 @@ public class IntakeStateMachine extends StateMachine<IntakeStateMachine.IntakeSt
     private IntakeStateMachine() {
         super(IntakeState.CLOSE);
     }
+
+    private Intake intake = Intake.getInstance();
 
     @Override
     protected void generateTransformations() {

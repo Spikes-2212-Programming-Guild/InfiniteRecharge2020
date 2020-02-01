@@ -5,14 +5,12 @@ import com.spikes2212.lib.state.StateMachine;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class FeederStateMachine extends StateMachine<FeederStateMachine.FeederState> {
-    private Feeder feeder = Feeder.getInstance();
 
     enum FeederState {
-        CLOSE,OPEN,
+        CLOSE, OPEN,
     }
 
     private static FeederStateMachine instance;
-
     public static FeederStateMachine getInstance() {
         if (instance == null)
             instance = new FeederStateMachine();
@@ -22,6 +20,8 @@ public class FeederStateMachine extends StateMachine<FeederStateMachine.FeederSt
     private FeederStateMachine() {
         super(FeederState.CLOSE);
     }
+
+    private Feeder feeder = Feeder.getInstance();
 
     @Override
     protected void generateTransformations() {

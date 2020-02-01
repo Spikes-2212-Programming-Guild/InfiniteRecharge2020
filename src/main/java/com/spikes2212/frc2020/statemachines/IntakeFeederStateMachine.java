@@ -7,15 +7,14 @@ import static com.spikes2212.frc2020.statemachines.FeederStateMachine.FeederStat
 import static com.spikes2212.frc2020.statemachines.IntakeStateMachine.IntakeState;
 
 public class IntakeFeederStateMachine extends StateMachine <IntakeFeederStateMachine.IntakeFeederState> {
-    private IntakeStateMachine intake = IntakeStateMachine.getInstance();
-    private FeederStateMachine feeder = FeederStateMachine.getInstance();
 
     public enum IntakeFeederState {
         CLOSE_INTAKE_CLOSE_FEEDER,
         CLOSE_INTAKE_OPEN_FEEDER,
         OPEN_INTAKE_CLOSE_FEEDER,
-        OPEN_INTAKE_OPEN_FEEDER
+        OPEN_INTAKE_OPEN_FEEDER;
     }
+
     private static IntakeFeederStateMachine instance;
 
     public static IntakeFeederStateMachine getInstance() {
@@ -27,6 +26,9 @@ public class IntakeFeederStateMachine extends StateMachine <IntakeFeederStateMac
     private IntakeFeederStateMachine() {
         super(IntakeFeederState.CLOSE_INTAKE_CLOSE_FEEDER);
     }
+
+    private IntakeStateMachine intake = IntakeStateMachine.getInstance();
+    private FeederStateMachine feeder = FeederStateMachine.getInstance();
 
     @Override
     protected void generateTransformations() {
