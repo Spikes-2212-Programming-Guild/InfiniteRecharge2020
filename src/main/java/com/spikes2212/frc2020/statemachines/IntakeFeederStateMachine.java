@@ -27,22 +27,22 @@ public class IntakeFeederStateMachine extends StateMachine <IntakeFeederStateMac
         super(IntakeFeederState.CLOSE_INTAKE_CLOSE_FEEDER);
     }
 
-    private IntakeStateMachine intake = IntakeStateMachine.getInstance();
-    private FeederStateMachine feeder = FeederStateMachine.getInstance();
+    private IntakeStateMachine intakeFSM = IntakeStateMachine.getInstance();
+    private FeederStateMachine feederFSM = FeederStateMachine.getInstance();
 
     @Override
     protected void generateTransformations() {
         addTransformation(IntakeFeederState.CLOSE_INTAKE_OPEN_FEEDER,
-                new ParallelCommandGroup(intake.getTransformationFor(IntakeState.CLOSE),
-                        feeder.getTransformationFor(FeederState.OPEN)));
+                new ParallelCommandGroup(intakeFSM.getTransformationFor(IntakeState.CLOSE),
+                        feederFSM.getTransformationFor(FeederState.OPEN)));
         addTransformation(IntakeFeederState.CLOSE_INTAKE_CLOSE_FEEDER,
-                new ParallelCommandGroup(intake.getTransformationFor(IntakeState.CLOSE),
-                        feeder.getTransformationFor(FeederState.CLOSE)));
+                new ParallelCommandGroup(intakeFSM.getTransformationFor(IntakeState.CLOSE),
+                        feederFSM.getTransformationFor(FeederState.CLOSE)));
         addTransformation(IntakeFeederState.OPEN_INTAKE_OPEN_FEEDER,
-                new ParallelCommandGroup(intake.getTransformationFor(IntakeState.OPEN),
-                        feeder.getTransformationFor(FeederState.OPEN)));;
+                new ParallelCommandGroup(intakeFSM.getTransformationFor(IntakeState.OPEN),
+                        feederFSM.getTransformationFor(FeederState.OPEN)));;
         addTransformation(IntakeFeederState.OPEN_INTAKE_CLOSE_FEEDER,
-                new ParallelCommandGroup(intake.getTransformationFor(IntakeState.OPEN),
-                        feeder.getTransformationFor(FeederState.CLOSE)));
+                new ParallelCommandGroup(intakeFSM.getTransformationFor(IntakeState.OPEN),
+                        feederFSM.getTransformationFor(FeederState.CLOSE)));
     }
 }
