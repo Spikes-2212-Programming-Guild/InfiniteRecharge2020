@@ -54,8 +54,7 @@ public class Intake extends GenericSubsystem {
     }
 
     public void setState(IntakeState state) {
-        if(StateMachineSync.validate(state, Feeder.getInstance().getState(), Shooter.getInstance().getState(), Turret.getInstance().getState()))
-            this.state = state;
+        this.state = state;
     }
 
     @Override

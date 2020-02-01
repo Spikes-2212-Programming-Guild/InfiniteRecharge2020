@@ -95,8 +95,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     }
 
     public void setState(TurretState state) {
-        if(StateMachineSync.validate(Intake.getInstance().getState(), Feeder.getInstance().getState(), Shooter.getInstance().getState(), state))
-            this.state = state;
+        this.state = state;
     }
 
     public boolean atStart() {

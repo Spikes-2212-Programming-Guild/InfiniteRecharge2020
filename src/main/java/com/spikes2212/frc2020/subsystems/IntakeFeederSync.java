@@ -22,4 +22,9 @@ public enum IntakeFeederSync {
     public Feeder.FeederState getFeederState() {
         return feederState;
     }
+
+    public void setState() {
+        Intake.getInstance().setState(getIntakeState());
+        Feeder.getInstance().setState(getFeederState());
+    }
 }

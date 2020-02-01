@@ -28,28 +28,29 @@ public enum StateMachineSync {
     OPEN_INTAKE_OPEN_FEEDER_ON_SHOOTER_OFF_TURRET(IntakeFeederSync.OPEN_INTAKE_OPEN_FEEDER, Shooter.ShooterState.ON, Turret.TurretState.OFF);
 
     private IntakeFeederSync intakeFeederSync;
-    private Shooter.ShooterState shooter;
-    private Turret.TurretState turret;
-    StateMachineSync(IntakeFeederSync intakeFeederSync, Shooter.ShooterState shooter, Turret.TurretState turret){
+    private Shooter.ShooterState shooterState;
+    private Turret.TurretState turretState;
+    StateMachineSync(IntakeFeederSync intakeFeederSync, Shooter.ShooterState shooterState, Turret.TurretState turretState){
         this.intakeFeederSync = intakeFeederSync;
-        this.shooter=shooter;
-        this.turret=turret;
+        this.shooterState = shooterState;
+        this.turretState = turretState;
     }
 
     public IntakeFeederSync getIntakeFeederSync() {
         return intakeFeederSync;
     }
 
-    public Shooter.ShooterState getShooter() {
-        return shooter;
+    public Shooter.ShooterState getShooterState() {
+        return shooterState;
     }
 
-    public Turret.TurretState getTurret() {
-        return turret;
+    public Turret.TurretState getTurretState() {
+        return turretState;
     }
 
-    public static boolean validate(Intake.IntakeState intakeState, Feeder.FeederState feederState, Shooter.ShooterState shooterState, Turret.TurretState turretState) {
-        return (intakeState != Intake.IntakeState.OPEN || feederState != Feeder.FeederState.OFF) &&
-                (shooterState == Shooter.ShooterState.OFF || turretState == Turret.TurretState.OFF);
+    public void setState() {
+        getIntakeFeederSync().setState();
+        Turret.getInstance().setState(getTurretState());
+        Shooter.getInstance().setState(getShooterState());
     }
 }
