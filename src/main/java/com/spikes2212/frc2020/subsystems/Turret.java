@@ -89,6 +89,10 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         return endLimit.get();
     }
 
+    public double getAngle() {
+        return motor.getSelectedSensorPosition(0) / DEGREES_TO_PULSES;
+    }
+
     @Override
     public void periodic() {
         turretNamespace.update();
