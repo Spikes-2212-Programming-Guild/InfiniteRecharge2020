@@ -11,6 +11,7 @@ import com.spikes2212.lib.control.PIDSettings;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpiutil.math.MathUtil;
 
 import java.util.function.Supplier;
@@ -59,11 +60,14 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
     private DigitalInput startLimit;
 
+    private boolean enabled;
+
     private Turret(WPI_TalonSRX motor, DigitalInput endLimit, DigitalInput startLimit) {
         super(minSpeed, maxSpeed);
         this.motor = motor;
         this.endLimit = endLimit;
         this.startLimit = startLimit;
+        enabled=true;
     }
 
     @Override
@@ -72,9 +76,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     }
 
     @Override
-    public boolean canMove(double speed) {
-        return (speed > 0 && !endLimit.get()) || (speed < 0 && !startLimit.get());
-    }
+    public boolean canMove(double speed) { return (speed > 0 && !endLimit.get()) || (speed < 0 && !startLimit.get()) && enabled; }
 
     @Override
     public void stop() {
@@ -146,5 +148,13 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         int position = motor.getSelectedSensorPosition();
 
         return !canMove(motor.getMotorOutputPercent()) || Math.abs(setpoint - position) < tolerance;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

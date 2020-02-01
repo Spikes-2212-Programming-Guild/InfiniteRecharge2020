@@ -19,15 +19,11 @@ public class Intake extends GenericSubsystem {
     public static final Supplier<Double> maxSpeed = intakeNamespace.addConstantDouble("max speed", 1);
     public static final Supplier<Double> gripSpeed = intakeNamespace.addConstantDouble("grip speed", 0.5);
 
-    public enum IntakeState {
-        UP, DOWN;
-    }
+    private static Intake instance;
 
     private DoubleSolenoid leftSolenoid, rightSolenoid;
     private VictorSP motor;
-    private IntakeState state;
-
-    private static Intake instance;
+    private boolean enabled;
 
     public static Intake getInstance() {
         if (instance == null) {
@@ -46,16 +42,10 @@ public class Intake extends GenericSubsystem {
         this.leftSolenoid = left;
         this.rightSolenoid = right;
         this.motor = motor;
-        this.state = IntakeState.UP;
+        enabled=false;
     }
 
-    public IntakeState getState() {
-        return state;
-    }
 
-    public void setState(IntakeState state) {
-        this.state = state;
-    }
 
     @Override
     public void apply(double speed) {
@@ -64,7 +54,7 @@ public class Intake extends GenericSubsystem {
 
     @Override
     public boolean canMove(double speed) {
-        return speed >= 0 && state == IntakeState.DOWN;
+        return speed >= 0 && enabled ;
     }
 
     @Override
@@ -73,15 +63,23 @@ public class Intake extends GenericSubsystem {
     }
 
     public void open() {
-        setState(IntakeState.DOWN);
         leftSolenoid.set(DoubleSolenoid.Value.kForward);
         rightSolenoid.set(DoubleSolenoid.Value.kForward);
+        setEnabled(true);
     }
 
     public void close() {
-        setState(IntakeState.UP);
         leftSolenoid.set(DoubleSolenoid.Value.kReverse);
         rightSolenoid.set(DoubleSolenoid.Value.kReverse);
+        setEnabled(false);
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     @Override
@@ -89,6 +87,5 @@ public class Intake extends GenericSubsystem {
         intakeNamespace.putData("open", new InstantCommand(this::open, this));
         intakeNamespace.putData("close", new InstantCommand(this::close, this));
         intakeNamespace.putData("grip", new MoveGenericSubsystem(this, gripSpeed));
-        intakeNamespace.putString("state", state::name);
     }
 }
