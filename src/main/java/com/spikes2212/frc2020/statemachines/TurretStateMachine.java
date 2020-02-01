@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 public class TurretStateMachine extends StateMachine<TurretStateMachine.TurretState> {
 
     enum TurretState {
-        OFF, VISION, MANUAL, ABSOLUTE,DISABLED
+        OFF, VISION, MANUAL, ABSOLUTE
     }
 
     private static TurretStateMachine instance;
@@ -27,11 +27,10 @@ public class TurretStateMachine extends StateMachine<TurretStateMachine.TurretSt
 
     @Override
     protected void generateTransformations() {
-        addTransformation(TurretState.OFF, new PrintCommand("implement")); //@TODO@//////////////////////////////////
+        addTransformation(TurretState.OFF, new InstantCommand(()-> turret.setEnabled(false))); //@TODO@//////////////////////////////////
         addTransformation(TurretState.VISION, new PrintCommand("implement")); //@TODO@///////////////////////////////
         addTransformation(TurretState.MANUAL, new PrintCommand("implement")); //@TODO@///////////////////////////////
         addTransformation(TurretState.ABSOLUTE, new PrintCommand("implement")); //@TODO@/////////////////////////////
-        addTransformation(TurretState.DISABLED, new InstantCommand(()->turret.setEnabled(false)));
     }
 
 }

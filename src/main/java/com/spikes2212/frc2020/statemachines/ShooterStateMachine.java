@@ -4,11 +4,12 @@ import com.spikes2212.frc2020.subsystems.Shooter;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.state.StateMachine;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class ShooterStateMachine extends StateMachine<ShooterStateMachine.ShooterState> {
 
     enum ShooterState {
-        OFF, ON,DISABLED,
+        OFF, ON,
     }
 
     private static ShooterStateMachine instance;
@@ -26,9 +27,8 @@ public class ShooterStateMachine extends StateMachine<ShooterStateMachine.Shoote
 
     @Override
     protected void generateTransformations() {
-        addTransformation(ShooterState.OFF, new MoveGenericSubsystem(shooter, 0));
-        addTransformation(ShooterState.ON, new MoveGenericSubsystem(shooter, Shooter.shootSpeed));
-        addTransformation(ShooterState.DISABLED, new InstantCommand(()->shooter.setEnabled(false)));
+        addTransformation(ShooterState.ON, new SequentialCommandGroup(new InstantCommand(()->shooter.setEnabled(true)) ,new MoveGenericSubsystem(shooter, Shooter.shootSpeed)));
+        addTransformation(ShooterState.OFF, new InstantCommand(()->shooter.setEnabled(false)));
     }
 
 }

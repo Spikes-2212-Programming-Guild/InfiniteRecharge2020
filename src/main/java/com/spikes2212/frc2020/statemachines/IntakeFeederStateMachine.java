@@ -34,15 +34,15 @@ public class IntakeFeederStateMachine extends StateMachine <IntakeFeederStateMac
     protected void generateTransformations() {
         addTransformation(IntakeFeederState.CLOSE_INTAKE_OPEN_FEEDER,
                 new ParallelCommandGroup(intakeFSM.getTransformationFor(IntakeState.CLOSE),
-                        feederFSM.getTransformationFor(FeederState.OPEN)));
+                        feederFSM.getTransformationFor(FeederState.LEVEL_1)));
         addTransformation(IntakeFeederState.CLOSE_INTAKE_CLOSE_FEEDER,
                 new ParallelCommandGroup(intakeFSM.getTransformationFor(IntakeState.CLOSE),
-                        feederFSM.getTransformationFor(FeederState.CLOSE)));
+                        feederFSM.getTransformationFor(FeederState.SHOOTER)));
         addTransformation(IntakeFeederState.OPEN_INTAKE_OPEN_FEEDER,
                 new ParallelCommandGroup(intakeFSM.getTransformationFor(IntakeState.OPEN),
-                        feederFSM.getTransformationFor(FeederState.OPEN)));;
+                        feederFSM.getTransformationFor(FeederState.LEVEL_1)));;
         addTransformation(IntakeFeederState.OPEN_INTAKE_CLOSE_FEEDER,
                 new ParallelCommandGroup(intakeFSM.getTransformationFor(IntakeState.OPEN),
-                        feederFSM.getTransformationFor(FeederState.CLOSE)));
+                        feederFSM.getTransformationFor(FeederState.SHOOTER)));
     }
 }
