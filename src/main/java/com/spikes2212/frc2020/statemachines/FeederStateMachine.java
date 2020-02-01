@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 public class FeederStateMachine extends StateMachine<FeederStateMachine.FeederState> {
 
     enum FeederState {
-        SHOOTER, LEVEL_1, OFF,
+        FEEDS_TO_SHOOTER, FEED_TO_LVL_1, OFF,
     }
 
     private static FeederStateMachine instance;
@@ -18,15 +18,15 @@ public class FeederStateMachine extends StateMachine<FeederStateMachine.FeederSt
     }
 
     private FeederStateMachine() {
-        super(FeederState.SHOOTER);
+        super(FeederState.FEEDS_TO_SHOOTER);
     }
 
     private Feeder feeder = Feeder.getInstance();
 
     @Override
     protected void generateTransformations() {
-        addTransformation(FeederState.SHOOTER, new InstantCommand(feeder::close, feeder));
-        addTransformation(FeederState.LEVEL_1, new InstantCommand(feeder::open, feeder));
+        addTransformation(FeederState.FEEDS_TO_SHOOTER, new InstantCommand(feeder::close, feeder));
+        addTransformation(FeederState.FEED_TO_LVL_1, new InstantCommand(feeder::open, feeder));
         addTransformation(FeederState.OFF, new InstantCommand(()-> feeder.setEnabled(false)));
     }
 

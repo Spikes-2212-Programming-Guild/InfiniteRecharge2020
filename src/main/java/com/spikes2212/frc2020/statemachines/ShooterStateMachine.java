@@ -27,8 +27,8 @@ public class ShooterStateMachine extends StateMachine<ShooterStateMachine.Shoote
 
     @Override
     protected void generateTransformations() {
-        addTransformation(ShooterState.ON, new SequentialCommandGroup(new InstantCommand(()->shooter.setEnabled(true)) ,new MoveGenericSubsystem(shooter, Shooter.shootSpeed)));
-        addTransformation(ShooterState.OFF, new InstantCommand(()->shooter.setEnabled(false)));
+        addTransformation(ShooterState.ON, new InstantCommand(()->shooter.setEnabled(true),shooter));
+        addTransformation(ShooterState.OFF, new InstantCommand(()->shooter.setEnabled(false),shooter));
     }
 
 }
