@@ -19,10 +19,11 @@ public class Intake extends GenericSubsystem {
     public static final Supplier<Double> maxSpeed = intakeNamespace.addConstantDouble("max speed", 1);
     public static final Supplier<Double> gripSpeed = intakeNamespace.addConstantDouble("grip speed", 0.5);
 
+    private static Intake instance;
+
     private DoubleSolenoid leftSolenoid, rightSolenoid;
     private VictorSP motor;
-
-    private static Intake instance;
+    private boolean enabled;
 
     public static Intake getInstance() {
         if (instance == null) {
@@ -41,6 +42,7 @@ public class Intake extends GenericSubsystem {
         this.leftSolenoid = left;
         this.rightSolenoid = right;
         this.motor = motor;
+        enabled=false;
     }
 
 
@@ -52,7 +54,7 @@ public class Intake extends GenericSubsystem {
 
     @Override
     public boolean canMove(double speed) {
-        return speed >= 0 ;
+        return speed >= 0 && enabled ;
     }
 
     @Override
@@ -68,6 +70,14 @@ public class Intake extends GenericSubsystem {
     public void close() {
         leftSolenoid.set(DoubleSolenoid.Value.kReverse);
         rightSolenoid.set(DoubleSolenoid.Value.kReverse);
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     @Override

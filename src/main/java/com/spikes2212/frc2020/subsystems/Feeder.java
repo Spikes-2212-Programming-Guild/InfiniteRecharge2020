@@ -33,11 +33,13 @@ public class Feeder extends GenericSubsystem {
 
     private VictorSP motor;
     private DoubleSolenoid solenoid;
+    private boolean enabled;
 
     public Feeder(VictorSP motor, DoubleSolenoid solenoid) {
         super(minSpeed, maxSpeed);
         this.motor = motor;
         this.solenoid = solenoid;
+        enabled=true;
     }
 
     @Override
@@ -47,7 +49,7 @@ public class Feeder extends GenericSubsystem {
 
     @Override
     public boolean canMove(double speed) { //TODO implement
-        return true;
+        return enabled;
     }
 
     @Override
@@ -58,6 +60,14 @@ public class Feeder extends GenericSubsystem {
     public void open() {solenoid.set(DoubleSolenoid.Value.kForward);}
 
     public void close() {solenoid.set(DoubleSolenoid.Value.kReverse);}
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
     @Override
     public void configureDashboard() {
