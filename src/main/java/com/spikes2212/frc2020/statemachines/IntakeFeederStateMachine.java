@@ -9,18 +9,11 @@ import static com.spikes2212.frc2020.statemachines.IntakeStateMachine.IntakeStat
 import static com.spikes2212.frc2020.statemachines.FeederStateMachine.FeederState;
 
 public class IntakeFeederStateMachine extends StateMachine <IntakeFeederStateMachine.IntakeFeederState> {
-    @Override
-    protected void generateTransformations() {
-        addTransformation(IntakeFeederState.CLOSE_INTAKE_OPEN_FEEDER, new ParallelCommandGroup(IntakeStateMachine.getInstance().getTransformationFor(IntakeState.CLOSE), FeederStateMachine.getInstance().getTransformationFor(FeederState.OPEN)));
-        addTransformation(IntakeFeederState.CLOSE_INTAKE_CLOSE_FEEDER, new ParallelCommandGroup(IntakeStateMachine.getInstance().getTransformationFor(IntakeState.CLOSE), FeederStateMachine.getInstance().getTransformationFor(FeederState.CLOSE)));
-        addTransformation(IntakeFeederState.OPEN_INTAKE_OPEN_FEEDER, new ParallelCommandGroup(IntakeStateMachine.getInstance().getTransformationFor(IntakeState.OPEN), FeederStateMachine.getInstance().getTransformationFor(FeederState.OPEN)));;
-
-    }
-
     public enum IntakeFeederState {
         CLOSE_INTAKE_CLOSE_FEEDER,
         CLOSE_INTAKE_OPEN_FEEDER,
-        OPEN_INTAKE_OPEN_FEEDER;
+        OPEN_INTAKE_CLOSE_FEEDER,
+        OPEN_INTAKE_OPEN_FEEDER
     }
     private static IntakeFeederStateMachine instance;
 
@@ -32,5 +25,21 @@ public class IntakeFeederStateMachine extends StateMachine <IntakeFeederStateMac
 
     private IntakeFeederStateMachine() {
         super(IntakeFeederState.CLOSE_INTAKE_CLOSE_FEEDER);
+    }
+
+    @Override
+    protected void generateTransformations() {
+        addTransformation(IntakeFeederState.CLOSE_INTAKE_OPEN_FEEDER,
+                new ParallelCommandGroup(IntakeStateMachine.getInstance().getTransformationFor(IntakeState.CLOSE),
+                        FeederStateMachine.getInstance().getTransformationFor(FeederState.OPEN)));
+        addTransformation(IntakeFeederState.CLOSE_INTAKE_CLOSE_FEEDER,
+                new ParallelCommandGroup(IntakeStateMachine.getInstance().getTransformationFor(IntakeState.CLOSE),
+                        FeederStateMachine.getInstance().getTransformationFor(FeederState.CLOSE)));
+        addTransformation(IntakeFeederState.OPEN_INTAKE_OPEN_FEEDER,
+                new ParallelCommandGroup(IntakeStateMachine.getInstance().getTransformationFor(IntakeState.OPEN),
+                        FeederStateMachine.getInstance().getTransformationFor(FeederState.OPEN)));;
+        addTransformation(IntakeFeederState.OPEN_INTAKE_CLOSE_FEEDER,
+                new ParallelCommandGroup(IntakeStateMachine.getInstance().getTransformationFor(IntakeState.OPEN),
+                        FeederStateMachine.getInstance().getTransformationFor(FeederState.CLOSE)));
     }
 }
