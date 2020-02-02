@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 public class Feeder extends GenericSubsystem {
 
-    public static final Namespace feederNamespace = new RootNamespace("feederNamespace");
+    public static final RootNamespace feederNamespace = new RootNamespace("feeder");
 
     private static final Supplier<Double> minSpeed = feederNamespace.addConstantDouble("min speed", -1);
     private static final Supplier<Double> maxSpeed = feederNamespace.addConstantDouble("max speed", 1);
@@ -48,13 +48,17 @@ public class Feeder extends GenericSubsystem {
     }
 
     @Override
-    public boolean canMove(double speed) { //TODO implement
+    public boolean canMove(double speed) {
         return enabled;
     }
 
     @Override
     public void stop() {
         motor.stopMotor();
+    }
+    @Override
+    public void periodic() {
+        feederNamespace.update();
     }
 
     public void open() {

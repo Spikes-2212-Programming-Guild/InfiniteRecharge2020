@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 public class Intake extends GenericSubsystem {
 
-    public static Namespace intakeNamespace = new RootNamespace("intake");
+    public static RootNamespace intakeNamespace = new RootNamespace("intake");
 
     public static final Supplier<Double> minSpeed = intakeNamespace.addConstantDouble("min speed", -1);
     public static final Supplier<Double> maxSpeed = intakeNamespace.addConstantDouble("max speed", 1);
@@ -60,6 +60,11 @@ public class Intake extends GenericSubsystem {
     @Override
     public void stop() {
         motor.stopMotor();
+    }
+
+    @Override
+    public void periodic() {
+        intakeNamespace.update();
     }
 
     public void open() {
