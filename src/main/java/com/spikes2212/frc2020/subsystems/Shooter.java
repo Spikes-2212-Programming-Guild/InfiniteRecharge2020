@@ -50,10 +50,13 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
 
     private WPI_TalonSRX master;
 
+    private boolean enabled;
 
     private Shooter(WPI_TalonSRX master) {
         super(minSpeed, maxSpeed);
         this.master = master;
+        enabled=true;
+
     }
 
     @Override
@@ -63,7 +66,7 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public boolean canMove(double speed) {
-        return speed >= 0;
+        return speed >= 0 && enabled;
     }
 
     @Override
@@ -73,7 +76,7 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public void periodic() {
-        shooterNamespace.update();
+      shooterNamespace.update();
     }
 
     @Override
@@ -115,6 +118,14 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
     public boolean onTarget(double setpoint) {
         return Math.abs(setpoint - master.getSelectedSensorPosition(loop.get())) < pidSettings.getTolerance()
                 || !canMove(master.getMotorOutputPercent());
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     @Override
