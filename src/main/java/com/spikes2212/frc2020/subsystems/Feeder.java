@@ -15,30 +15,31 @@ public class Feeder extends GenericSubsystem {
 
     public static final RootNamespace feederNamespace = new RootNamespace("feeder");
 
-    private static Supplier<Double> MIN_SPEED;
-    private static Supplier<Double> MAX_SPEED;
+    private static final Supplier<Double> minSpeed = feederNamespace.addConstantDouble("min speed", -1);
+    private static final Supplier<Double> maxSpeed = feederNamespace.addConstantDouble("max speed", 1);
+    private static final Supplier<Double> speed = feederNamespace.addConstantDouble("speed", 0.5);
 
     private static Feeder instance;
 
-    private VictorSP motor;
-    private DoubleSolenoid solenoid;
-
     public static Feeder getInstance() {
         if(instance == null) {
-            MIN_SPEED = feederNamespace.addConstantDouble("min speed", -1);
-            MAX_SPEED = feederNamespace.addConstantDouble("max speed", 1);
             VictorSP motor = new VictorSP(RobotMap.PWM.FEEDER_MOTOR);
             DoubleSolenoid solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.FEEDER_FORWARD,
                     RobotMap.PCM.FEEDER_BACKWARD);
-            instance = new Feeder(MIN_SPEED, MAX_SPEED, motor, solenoid);
+            instance = new Feeder(motor, solenoid);
         }
         return instance;
     }
 
-    public Feeder(Supplier<Double> minSpeed, Supplier<Double> maxSpeed, VictorSP motor, DoubleSolenoid solenoid) {
+    private VictorSP motor;
+    private DoubleSolenoid solenoid;
+    private boolean enabled;
+
+    public Feeder(VictorSP motor, DoubleSolenoid solenoid) {
         super(minSpeed, maxSpeed);
         this.motor = motor;
         this.solenoid = solenoid;
+        enabled=true;
     }
 
     @Override
@@ -47,27 +48,39 @@ public class Feeder extends GenericSubsystem {
     }
 
     @Override
-    public boolean canMove(double speed) { //TODO implement
-        return false;
+    public boolean canMove(double speed) {
+        return enabled;
     }
 
     @Override
     public void stop() {
         motor.stopMotor();
     }
-
     @Override
     public void periodic() {
         feederNamespace.update();
     }
 
-    public void open() {solenoid.set(DoubleSolenoid.Value.kForward);}
+    public void open() {
+        solenoid.set(DoubleSolenoid.Value.kForward);
+        setEnabled(true);
+    }
 
-    public void close() {solenoid.set(DoubleSolenoid.Value.kReverse);}
+    public void close() {
+        solenoid.set(DoubleSolenoid.Value.kReverse);
+        setEnabled(true);
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
     @Override
     public void configureDashboard() {
-        Supplier<Double> speed = feederNamespace.addConstantDouble("speed", 0.5);
         feederNamespace.putData("feed", new MoveGenericSubsystem(this, speed));
         feederNamespace.putData("open level 1", new InstantCommand(this::open, this));
         feederNamespace.putData("close level 1", new InstantCommand(this::close, this));

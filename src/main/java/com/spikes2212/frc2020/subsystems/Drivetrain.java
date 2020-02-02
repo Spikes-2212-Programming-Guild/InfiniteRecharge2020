@@ -19,23 +19,23 @@ public class Drivetrain extends OdometryDrivetrain {
     private Encoder rightEncoder;
     private PigeonWrapper imu;
     private OdometryHandler odometry;
-
     public static RootNamespace drivetrainNamespace = new RootNamespace("drivetrain");
+    public static Namespace drivetrainNamespace = new RootNamespace("drivetrain");
     public static Supplier<Double> width = drivetrainNamespace.addConstantDouble("width", 0.7);
-    public static Supplier<Double> wheelDiameter = drivetrainNamespace.
-            addConstantDouble("wheel diameter (inches)", 6);
+    public static Supplier<Double> wheelDiameter = drivetrainNamespace
+            .addConstantDouble("wheel diameter (inches)", 6);
 
     private static Drivetrain instance;
 
     public static Drivetrain getInstance() {
         if(instance == null) {
-            WPI_TalonSRX left = new WPI_TalonSRX(RobotMap.CAN.LEFT_TALON);
-            WPI_TalonSRX right = new WPI_TalonSRX(RobotMap.CAN.RIGHT_TALON);
-            new WPI_VictorSPX(RobotMap.CAN.LEFT_VICTOR).follow(left);
-            new WPI_VictorSPX(RobotMap.CAN.RIGHT_VICTOR).follow(right);
+            WPI_TalonSRX left = new WPI_TalonSRX(RobotMap.CAN.DRIVETRAIN_LEFT_TALON);
+            WPI_TalonSRX right = new WPI_TalonSRX(RobotMap.CAN.DRIVETRAIN_RIGHT_TALON);
+            new WPI_VictorSPX(RobotMap.CAN.DRIVETRAIN_LEFT_VICTOR).follow(left);
+            new WPI_VictorSPX(RobotMap.CAN.DRIVETRAIN_RIGHT_VICTOR).follow(right);
             right.setInverted(true);
-            Encoder leftEncoder = new Encoder(RobotMap.DIO.LEFT_ENCODER_POS, RobotMap.DIO.LEFT_ENCODER_NEG);
-            Encoder rightEncoder = new Encoder(RobotMap.DIO.RIGHT_ENCODER_POS, RobotMap.DIO.RIGHT_ENCODER_NEG);
+            Encoder leftEncoder = new Encoder(RobotMap.DIO.DRIVETRAIN_LEFT_ENCODER_POS, RobotMap.DIO.DRIVETRAIN_LEFT_ENCODER_NEG);
+            Encoder rightEncoder = new Encoder(RobotMap.DIO.DRIVETRAIN_RIGHT_ENCODER_POS, RobotMap.DIO.DRIVETRAIN_RIGHT_ENCODER_NEG);
             leftEncoder.setDistancePerPulse(wheelDiameter.get() * 0.0254 * Math.PI / 360);
             rightEncoder.setDistancePerPulse(wheelDiameter.get() * 0.0254 * Math.PI / 360);
             PigeonWrapper imu = new PigeonWrapper(left);
@@ -43,6 +43,11 @@ public class Drivetrain extends OdometryDrivetrain {
         }
         return instance;
     }
+
+    private Encoder leftEncoder;
+    private Encoder rightEncoder;
+    private PigeonWrapper imu;
+    private OdometryHandler odometry;
 
     private Drivetrain(SpeedController left, SpeedController right, Encoder leftEncoder, Encoder rightEncoder,
                        PigeonWrapper imu) {
@@ -56,7 +61,7 @@ public class Drivetrain extends OdometryDrivetrain {
 
     @Override
     public void periodic() {
-        super.periodic();
+        odometry.update();
         drivetrainNamespace.update();
     }
 
