@@ -11,7 +11,6 @@ import com.spikes2212.lib.control.PIDSettings;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpiutil.math.MathUtil;
 
 import java.util.function.Supplier;
@@ -39,6 +38,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     public static final PIDSettings pidSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
 
     private static final double DEGREES_TO_PULSES = 4096*Math.PI/180 * 11/9;
+
 
     private static Turret instance;
 

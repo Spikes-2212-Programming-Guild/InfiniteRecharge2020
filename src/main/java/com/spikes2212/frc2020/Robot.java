@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends TimedRobot {
 
-    private static OI oi;
+    public static OI oi;
 
     @Override
     public void robotInit() {
@@ -21,11 +21,6 @@ public class Robot extends TimedRobot {
         Intake.getInstance().configureDashboard();
 
         oi = new OI();
-    }
-
-    @Override
-    public void robotPeriodic() {
-        CommandScheduler.getInstance().run();
     }
 
     @Override
