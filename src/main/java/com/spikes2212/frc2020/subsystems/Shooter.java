@@ -14,9 +14,11 @@ import com.spikes2212.lib.dashboard.RootNamespace;
 import java.util.function.Supplier;
 
 public class Shooter extends GenericSubsystem implements TalonSubsystem {
-    public static final Namespace shooterNamespace = new RootNamespace("Shooter");
+    public static final RootNamespace shooterNamespace = new RootNamespace("shooter");
     public static final Namespace PID = shooterNamespace.addChild("PID");
 
+    public static final Supplier<Double> MAX_SPEED = shooterNamespace.addConstantDouble("Max Speed", 0.6);
+    public static final Supplier<Double> MIN_SPEED = shooterNamespace.addConstantDouble("Min Speed", -0.6);
     public static final double distancePerPulse = 2 * 0.0254 * Math.PI / 2048;
 
     public static final Supplier<Double> maxSpeed = shooterNamespace.addConstantDouble("Max Speed", 0.6);
@@ -74,7 +76,7 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public void periodic() {
-        ((RootNamespace)shooterNamespace).update();
+      shooterNamespace.update();
     }
 
     @Override
