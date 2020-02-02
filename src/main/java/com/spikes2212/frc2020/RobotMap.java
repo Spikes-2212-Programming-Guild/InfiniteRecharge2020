@@ -3,7 +3,6 @@ package com.spikes2212.frc2020;
 public class RobotMap {
     public interface PWM {
         int FEEDER_MOTOR = 0;
-        int ROLLER_MOTOR = 2;
     }
 
     public interface PCM {
@@ -13,5 +12,6 @@ public class RobotMap {
 
     public interface CAN {
         int PCM = 0;
+        int ROLLER_MOTOR = 12;
     }
 }
