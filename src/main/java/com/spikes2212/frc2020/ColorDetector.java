@@ -32,6 +32,7 @@ public class ColorDetector extends ColorSensorV3 {
     public static Supplier<Double> yellowRValue = colors.addConstantDouble("yellow r value", 0);
     public static Supplier<Double> yellowGValue = colors.addConstantDouble("yellow g value", 1);
     public static Supplier<Double> yellowBValue = colors.addConstantDouble("yellow b value", 1);
+    public static Supplier<Double> confidence = colors.addConstantDouble("sensor confidence", 0.95);
 
     public static Color redTarget;
     public static Color blueTarget;
@@ -54,6 +55,7 @@ public class ColorDetector extends ColorSensorV3 {
 
     public void calibrateColors() {
         matcher = new ColorMatch();
+        matcher.setConfidenceThreshold(confidence.get());
         redTarget = ColorMatch.makeColor(redRValue.get(), redGValue.get(), redBValue.get());
         blueTarget = ColorMatch.makeColor(blueRValue.get(), blueGValue.get(), blueBValue.get());
         greenTarget = ColorMatch.makeColor(greenRValue.get(), greenGValue.get(), greenBValue.get());
