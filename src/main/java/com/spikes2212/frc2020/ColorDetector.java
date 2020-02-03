@@ -12,36 +12,20 @@ import java.util.function.Supplier;
 
 public class ColorDetector extends ColorSensorV3 {
 
-    private static Namespace colors = new RootNamespace("colors");
-
-    public enum WheelColor {
-        RED, BLUE, GREEN, YELLOW, OTHER
-    }
-
     private ColorMatch matcher;
 
-    public static Supplier<Double> redRValue = colors.addConstantDouble("red r value", 1);
-    public static Supplier<Double> redGValue = colors.addConstantDouble("red g value", 0);
-    public static Supplier<Double> redBValue = colors.addConstantDouble("red b value", 0);
-    public static Supplier<Double> blueRValue = colors.addConstantDouble("blue r value", 0);
-    public static Supplier<Double> blueGValue = colors.addConstantDouble("blue g value", 0);
-    public static Supplier<Double> blueBValue = colors.addConstantDouble("blue b value", 1);
-    public static Supplier<Double> greenRValue = colors.addConstantDouble("green r value", 0);
-    public static Supplier<Double> greenGValue = colors.addConstantDouble("green g value", 1);
-    public static Supplier<Double> greenBValue = colors.addConstantDouble("green b value", 0);
-    public static Supplier<Double> yellowRValue = colors.addConstantDouble("yellow r value", 0);
-    public static Supplier<Double> yellowGValue = colors.addConstantDouble("yellow g value", 1);
-    public static Supplier<Double> yellowBValue = colors.addConstantDouble("yellow b value", 1);
-    public static Supplier<Double> confidence = colors.addConstantDouble("sensor confidence", 0.95);
-
-    public static Color redTarget;
-    public static Color blueTarget;
-    public static Color greenTarget;
-    public static Color yellowTarget;
+    private static final Color blueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
+    private static final Color greenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
+    private static final Color redTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
+    private static final Color yellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
 
     public ColorDetector(I2C.Port port) {
         super(port);
-        calibrateColors();
+        matcher = new ColorMatch();
+        matcher.addColorMatch(redTarget);
+        matcher.addColorMatch(blueTarget);
+        matcher.addColorMatch(greenTarget);
+        matcher.addColorMatch(yellowTarget);
     }
 
     public Color getDetectedColor() {
@@ -51,18 +35,5 @@ public class ColorDetector extends ColorSensorV3 {
         if(match.color.equals(greenTarget)) return Color.kGreen;
         if(match.color.equals(yellowTarget)) return Color.kDarkOliveGreen;
         return Color.kWheat;
-    }
-
-    public void calibrateColors() {
-        matcher = new ColorMatch();
-        matcher.setConfidenceThreshold(confidence.get());
-        redTarget = Color.kRed;
-        blueTarget = Color.kSeaGreen;
-        greenTarget = Color.kGreen;
-        yellowTarget = Color.kDarkOliveGreen;
-        matcher.addColorMatch(redTarget);
-        matcher.addColorMatch(blueTarget);
-        matcher.addColorMatch(greenTarget);
-        matcher.addColorMatch(yellowTarget);
     }
 }
