@@ -75,6 +75,15 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
     public void configureDashboard() {
         rollerNamespace.putData("roll to yellow",
                 new MoveTalonSubsystem(this, getSetpoint(Color.kYellow), () -> 0.0));
+        rollerNamespace.putString("color", getMatchingConstant(detector.getColor())::name);
+    }
+
+    private com.spikes2212.frc2020.Color getMatchingConstant(Color color) {
+        for(com.spikes2212.frc2020.Color value : com.spikes2212.frc2020.Color.values()) {
+            if(value.getBlue() == color.blue && value.getRed() == color.red && value.getGreen() == color.green)
+                return value;
+        }
+        return com.spikes2212.frc2020.Color.kWTF;
     }
 
     private int indexOf(Color[] array, Color value) {
@@ -87,6 +96,7 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
     private Supplier<Double> getSetpoint(Color color) {
         int destIndex = indexOf(COLOR_ORDER, color);
         int currIndex = indexOf(COLOR_ORDER, detector.getColor());
+        if(destIndex == -1 || currIndex == -1) return null;
         double offset = destIndex - currIndex;
         if (Math.abs(offset) == 3) offset *= -(1/3.0);
         double effectivelyFinalOffset = offset;
