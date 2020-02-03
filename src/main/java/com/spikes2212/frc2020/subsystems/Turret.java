@@ -3,7 +3,9 @@ package com.spikes2212.frc2020.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.spikes2212.frc2020.Robot;
 import com.spikes2212.frc2020.RobotMap;
+import com.spikes2212.frc2020.commands.MoveTurretToFieldRelativeAngle;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.TalonSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
@@ -37,9 +39,9 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
     public static final PIDSettings pidSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
 
-    private static final double DEGREES_TO_PULSES = 4096*Math.PI/180 * 11/9;
+    private static final double DEGREES_TO_PULSES = 4096 * Math.PI / 180 * 11 / 9;
 
-
+    private double defaultYaw;
     private static Turret instance;
 
     public static Turret getInstance() {
@@ -67,7 +69,9 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         this.motor = motor;
         this.endLimit = endLimit;
         this.startLimit = startLimit;
-        enabled=true;
+        enabled = true;
+        defaultYaw = 0;
+        setAutomaticDefaultCommand();
     }
 
     @Override
@@ -76,7 +80,9 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     }
 
     @Override
-    public boolean canMove(double speed) { return (speed > 0 && !endLimit.get()) || (speed < 0 && !startLimit.get()) && enabled; }
+    public boolean canMove(double speed) {
+        return (speed > 0 && !endLimit.get()) || (speed < 0 && !startLimit.get()) && enabled;
+    }
 
     @Override
     public void stop() {
@@ -96,9 +102,21 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         turretNamespace.update();
     }
 
+    public void setDefaultYaw(double angle) {
+        defaultYaw = angle;
+    }
+
     @Override
     public void configureDashboard() {
         turretNamespace.putData("rotate", new MoveTalonSubsystem(this, setpoint, waitTime));
+    }
+
+    public void setManualDefaultCommand(){
+        this.setDefaultCommand(new MoveTalonSubsystem(this, Robot.oi::getControllerRightX, () -> 0.0));
+    }
+
+    public void setAutomaticDefaultCommand(){
+        this.setDefaultCommand(new MoveTurretToFieldRelativeAngle());
     }
 
     @Override
@@ -157,4 +175,5 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
+
 }
