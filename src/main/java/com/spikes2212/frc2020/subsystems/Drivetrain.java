@@ -15,8 +15,11 @@ import java.util.function.Supplier;
 
 public class Drivetrain extends OdometryDrivetrain {
 
+    private Encoder leftEncoder;
+    private Encoder rightEncoder;
+    private PigeonWrapper imu;
+    private OdometryHandler odometry;
     public static RootNamespace drivetrainNamespace = new RootNamespace("drivetrain");
-    public static Namespace drivetrainNamespace = new RootNamespace("drivetrain");
     public static Supplier<Double> width = drivetrainNamespace.addConstantDouble("width", 0.7);
     public static Supplier<Double> wheelDiameter = drivetrainNamespace
             .addConstantDouble("wheel diameter (inches)", 6);
@@ -40,11 +43,6 @@ public class Drivetrain extends OdometryDrivetrain {
         return instance;
     }
 
-    private Encoder leftEncoder;
-    private Encoder rightEncoder;
-    private PigeonWrapper imu;
-    private OdometryHandler odometry;
-
     private Drivetrain(SpeedController left, SpeedController right, Encoder leftEncoder, Encoder rightEncoder,
                        PigeonWrapper imu) {
         super(left, right);
@@ -57,7 +55,7 @@ public class Drivetrain extends OdometryDrivetrain {
 
     @Override
     public void periodic() {
-        odometry.update();
+        super.periodic();
         drivetrainNamespace.update();
     }
 
