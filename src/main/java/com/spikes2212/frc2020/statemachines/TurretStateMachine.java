@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 public class TurretStateMachine extends StateMachine<TurretStateMachine.TurretState> {
 
     enum TurretState {
-        OFF, VISION, MANUAL, ABSOLUTE
+        OFF, AUTOMATIC, MANUAL
     }
 
     private static TurretStateMachine instance;
@@ -33,9 +33,9 @@ public class TurretStateMachine extends StateMachine<TurretStateMachine.TurretSt
     @Override
     protected void generateTransformations() {
         addTransformation(TurretState.OFF, new InstantCommand(()-> turret.setEnabled(false)));
-//        addTransformation(TurretState.VISION, new MoveTalonSubsystem(turret,o,0));
-        addTransformation(TurretState.MANUAL, new MoveTalonSubsystem(turret, Robot.oi::getRightX, () -> 0.0).perpetually()); //should be something else from OI
-        addTransformation(TurretState.ABSOLUTE, new MoveTalonSubsystem(turret, () -> setpoint.get() - drivetrain.getHandler().getYaw(), 0).perpetually();
+        addTransformation(TurretState.MANUAL, new InstantCommand(() -> turret.setManualDefaultCommand()));
+        /* target angle for AUTOMATIC state should be the angle Vision service returns. */
+//        addTransformation(TurretState.AUTOMATIC, new MoveTalonSubsystem(turret, targetAngle, 0).perpetually();
     }
 
 }
