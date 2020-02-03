@@ -44,22 +44,22 @@ public class ColorDetector extends ColorSensorV3 {
         calibrateColors();
     }
 
-    public WheelColor getDetectedColor() {
+    public Color getDetectedColor() {
         ColorMatchResult match = matcher.matchClosestColor(getColor());
-        if(match.color.equals(redTarget)) return WheelColor.RED;
-        if(match.color.equals(blueTarget)) return WheelColor.BLUE;
-        if(match.color.equals(greenTarget)) return WheelColor.GREEN;
-        if(match.color.equals(yellowTarget)) return WheelColor.YELLOW;
-        return WheelColor.OTHER;
+        if(match.color.equals(redTarget)) return Color.kRed;
+        if(match.color.equals(blueTarget)) return Color.kSeaGreen;
+        if(match.color.equals(greenTarget)) return Color.kGreen;
+        if(match.color.equals(yellowTarget)) return Color.kDarkOliveGreen;
+        return Color.kWheat;
     }
 
     public void calibrateColors() {
         matcher = new ColorMatch();
         matcher.setConfidenceThreshold(confidence.get());
-        redTarget = ColorMatch.makeColor(redRValue.get(), redGValue.get(), redBValue.get());
-        blueTarget = ColorMatch.makeColor(blueRValue.get(), blueGValue.get(), blueBValue.get());
-        greenTarget = ColorMatch.makeColor(greenRValue.get(), greenGValue.get(), greenBValue.get());
-        yellowTarget = ColorMatch.makeColor(yellowRValue.get(), yellowGValue.get(), yellowBValue.get());
+        redTarget = Color.kRed;
+        blueTarget = Color.kSeaGreen;
+        greenTarget = Color.kGreen;
+        yellowTarget = Color.kDarkOliveGreen;
         matcher.addColorMatch(redTarget);
         matcher.addColorMatch(blueTarget);
         matcher.addColorMatch(greenTarget);

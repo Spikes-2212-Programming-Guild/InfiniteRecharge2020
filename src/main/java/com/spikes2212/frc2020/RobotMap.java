@@ -10,7 +10,7 @@ public class RobotMap {
         int DRIVETRAIN_LEFT_TALON = 2;
         int DRIVETRAIN_LEFT_VICTOR = 3;
         int DRIVETRAIN_RIGHT_TALON = 4;
-        int DRIVETRAIN_RIGHT_VICTOR = 5;
+        int DRIVETRAIN_RIGHT_VICTOR = 9;
 
         int ROLLER_MOTOR = 12;
         int PCM = 0;
@@ -38,6 +38,6 @@ public class RobotMap {
 
     public interface PWM {
         int INTAKE_MOTOR = 0;
-        int FEEDER_MOTOR = 0;
+        int FEEDER_MOTOR = 1;
     }
 }

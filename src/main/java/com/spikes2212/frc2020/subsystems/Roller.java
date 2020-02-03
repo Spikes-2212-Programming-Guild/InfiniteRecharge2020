@@ -75,15 +75,12 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
     public void configureDashboard() {
         rollerNamespace.putData("roll to yellow",
                 new MoveTalonSubsystem(this, getSetpoint(Color.kYellow), () -> 0.0));
-        rollerNamespace.putString("color", getMatchingConstant(detector.getColor())::name);
-    }
-
-    private com.spikes2212.frc2020.Color getMatchingConstant(Color color) {
-        for(com.spikes2212.frc2020.Color value : com.spikes2212.frc2020.Color.values()) {
-            if(value.getBlue() == color.blue && value.getRed() == color.red && value.getGreen() == color.green)
-                return value;
-        }
-        return com.spikes2212.frc2020.Color.kWTF;
+        rollerNamespace.putNumber("red value", () -> detector.getColor().red);
+        rollerNamespace.putNumber("blue value", () -> detector.getColor().blue);
+        rollerNamespace.putNumber("green value", () -> detector.getColor().green);
+        rollerNamespace.putNumber("red processed value", () -> detector.getDetectedColor().red);
+        rollerNamespace.putNumber("blue processed value", () -> detector.getDetectedColor().blue);
+        rollerNamespace.putNumber("green processed value", () -> detector.getDetectedColor().green);
     }
 
     private int indexOf(Color[] array, Color value) {
