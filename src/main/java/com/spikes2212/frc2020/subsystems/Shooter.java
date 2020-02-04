@@ -40,7 +40,8 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
     public static Shooter getInstance() {
         if(instance == null) {
             WPI_TalonSRX master = new WPI_TalonSRX(RobotMap.CAN.SHOOTER_MASTER);
-            instance = new Shooter(master);
+            WPI_TalonSRX slave = new WPI_TalonSRX(RobotMap.CAN.SHOOTER_SLAVE);
+            instance = new Shooter(master, slave);
         }
 
         return instance;
@@ -49,14 +50,15 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
     private PIDSettings pidSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
 
     private WPI_TalonSRX master;
+    private WPI_TalonSRX slave;
 
     private boolean enabled;
 
-    private Shooter(WPI_TalonSRX master) {
+    private Shooter(WPI_TalonSRX master, WPI_TalonSRX slave) {
         super(minSpeed, maxSpeed);
         this.master = master;
+        this.slave = slave;
         enabled=true;
-
     }
 
     @Override

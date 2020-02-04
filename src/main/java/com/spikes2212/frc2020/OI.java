@@ -10,12 +10,12 @@ public class OI /* GEVALD */{
         return left.getX() * Math.abs(left.getX());
     }
     public double getLeftY() {
-        return left.getY() * Math.abs(left.getY());
+        return -left.getY() * Math.abs(left.getY());
     }
     public double getRightX() {
         return right.getX() * Math.abs(right.getX());
     }
     public double getRightY() {
-        return right.getY() * Math.abs(right.getY());
+        return -right.getY() * Math.abs(right.getY());
     }
 }
