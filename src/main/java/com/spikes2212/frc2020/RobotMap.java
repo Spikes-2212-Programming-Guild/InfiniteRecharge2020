@@ -4,13 +4,13 @@ public class RobotMap {
 
     public interface CAN {
         int TURRET_TALON = 5;
-        int SHOOTER_MASTER = 1;
-        int SHOOTER_SLAVE = 2;
+        int SHOOTER_MASTER = 11;
+        int SHOOTER_SLAVE = 12;
 
-        int DRIVETRAIN_LEFT_TALON = 2;
-        int DRIVETRAIN_LEFT_VICTOR = 3;
-        int DRIVETRAIN_RIGHT_TALON = 4;
-        int DRIVETRAIN_RIGHT_VICTOR = 5;
+        int DRIVETRAIN_LEFT_TALON = 4;
+        int DRIVETRAIN_LEFT_VICTOR = 2;
+        int DRIVETRAIN_RIGHT_TALON = 3;
+        int DRIVETRAIN_RIGHT_VICTOR = 1;
 
         int PCM = 0;
     }
@@ -19,10 +19,10 @@ public class RobotMap {
         int START_LIMIT = 0;
         int END_LIMIT = 1;
 
-        int DRIVETRAIN_LEFT_ENCODER_POS = 0;
-        int DRIVETRAIN_LEFT_ENCODER_NEG = 1;
-        int DRIVETRAIN_RIGHT_ENCODER_POS = 2;
-        int DRIVETRAIN_RIGHT_ENCODER_NEG = 3;
+        int DRIVETRAIN_LEFT_ENCODER_POS = 6;
+        int DRIVETRAIN_LEFT_ENCODER_NEG = 7;
+        int DRIVETRAIN_RIGHT_ENCODER_POS = 8;
+        int DRIVETRAIN_RIGHT_ENCODER_NEG = 9;
     }
 
     public interface PCM {

@@ -12,6 +12,7 @@ public class TurretStateMachine extends StateMachine<TurretStateMachine.TurretSt
     }
 
     private static TurretStateMachine instance;
+
     public static TurretStateMachine getInstance() {
         if (instance == null)
             instance = new TurretStateMachine();
@@ -31,5 +32,4 @@ public class TurretStateMachine extends StateMachine<TurretStateMachine.TurretSt
         addTransformation(TurretState.MANUAL, new PrintCommand("implement")); //@TODO@///////////////////////////////
         addTransformation(TurretState.ABSOLUTE, new PrintCommand("implement")); //@TODO@/////////////////////////////
     }
-
 }

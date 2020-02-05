@@ -52,7 +52,6 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         return instance;
     }
 
-
     private WPI_TalonSRX motor;
 
     private DigitalInput endLimit;

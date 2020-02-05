@@ -56,7 +56,6 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
         super(minSpeed, maxSpeed);
         this.master = master;
         enabled=true;
-
     }
 
     @Override

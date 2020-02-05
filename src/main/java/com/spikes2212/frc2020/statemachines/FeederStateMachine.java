@@ -11,6 +11,7 @@ public class FeederStateMachine extends StateMachine<FeederStateMachine.FeederSt
     }
 
     private static FeederStateMachine instance;
+
     public static FeederStateMachine getInstance() {
         if (instance == null)
             instance = new FeederStateMachine();
@@ -29,5 +30,4 @@ public class FeederStateMachine extends StateMachine<FeederStateMachine.FeederSt
         addTransformation(FeederState.FEED_TO_LVL_1, new InstantCommand(feeder::open, feeder));
         addTransformation(FeederState.OFF, new InstantCommand(()-> feeder.setEnabled(false)));
     }
-
 }

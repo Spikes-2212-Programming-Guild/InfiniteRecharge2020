@@ -11,6 +11,7 @@ public class ShooterStateMachine extends StateMachine<ShooterStateMachine.Shoote
     }
 
     private static ShooterStateMachine instance;
+
     public static ShooterStateMachine getInstance() {
         if (instance == null)
             instance = new ShooterStateMachine();
@@ -28,5 +29,4 @@ public class ShooterStateMachine extends StateMachine<ShooterStateMachine.Shoote
         addTransformation(ShooterState.ON, new InstantCommand(()->shooter.setEnabled(true),shooter));
         addTransformation(ShooterState.OFF, new InstantCommand(()->shooter.setEnabled(false),shooter));
     }
-
 }

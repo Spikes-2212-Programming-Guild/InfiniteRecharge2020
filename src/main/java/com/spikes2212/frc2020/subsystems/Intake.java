@@ -20,10 +20,6 @@ public class Intake extends GenericSubsystem {
 
     private static Intake instance;
 
-    private DoubleSolenoid leftSolenoid, rightSolenoid;
-    private VictorSP motor;
-    private boolean enabled;
-
     public static Intake getInstance() {
         if (instance == null) {
             DoubleSolenoid left = new DoubleSolenoid(RobotMap.PCM.LEFT_INTAKE_FORWARD
@@ -36,6 +32,10 @@ public class Intake extends GenericSubsystem {
         return instance;
     }
 
+    private DoubleSolenoid leftSolenoid, rightSolenoid;
+    private VictorSP motor;
+    private boolean enabled;
+
     private Intake(DoubleSolenoid left, DoubleSolenoid right, VictorSP motor) {
         super(minSpeed, maxSpeed);
         this.leftSolenoid = left;
@@ -43,8 +43,6 @@ public class Intake extends GenericSubsystem {
         this.motor = motor;
         enabled=false;
     }
-
-
 
     @Override
     public void apply(double speed) {
