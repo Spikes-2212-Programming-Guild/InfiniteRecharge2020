@@ -26,7 +26,7 @@ public class IntakeStateMachine extends StateMachine<IntakeStateMachine.IntakeSt
 
     @Override
     protected void generateTransformations() {
-        addTransformation(IntakeState.CLOSE, new InstantCommand(intake :: close, intake));
-        addTransformation(IntakeState.OPEN, new InstantCommand(intake :: open, intake));
+        addTransformation(IntakeState.CLOSE, new InstantCommand(intake::close, intake));
+        addTransformation(IntakeState.OPEN, new InstantCommand(intake::open, intake));
     }
 }

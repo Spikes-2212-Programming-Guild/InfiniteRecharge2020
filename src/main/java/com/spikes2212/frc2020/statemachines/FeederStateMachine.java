@@ -28,6 +28,6 @@ public class FeederStateMachine extends StateMachine<FeederStateMachine.FeederSt
     protected void generateTransformations() {
         addTransformation(FeederState.FEEDS_TO_SHOOTER, new InstantCommand(feeder::close, feeder));
         addTransformation(FeederState.FEED_TO_LVL_1, new InstantCommand(feeder::open, feeder));
-        addTransformation(FeederState.OFF, new InstantCommand(()-> feeder.setEnabled(false)));
+        addTransformation(FeederState.OFF, new InstantCommand(()-> feeder.setEnabled(false), feeder));
     }
 }
