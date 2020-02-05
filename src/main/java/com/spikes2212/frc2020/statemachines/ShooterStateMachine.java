@@ -25,8 +25,8 @@ public class ShooterStateMachine extends StateMachine<ShooterStateMachine.Shoote
 
     @Override
     protected void generateTransformations() {
-        addTransformation(ShooterState.CLOSE, new InstantCommand(shooter::close));
-        addTransformation(ShooterState.FAR, new InstantCommand(shooter::open));
+        addTransformation(ShooterState.CLOSE, new InstantCommand(shooter::closeHood));
+        addTransformation(ShooterState.FAR, new InstantCommand(shooter::openHood));
         addTransformation(ShooterState.OFF, new InstantCommand(()->shooter.setEnabled(false),shooter));
     }
 

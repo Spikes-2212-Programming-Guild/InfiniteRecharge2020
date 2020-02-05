@@ -122,11 +122,11 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
                 || !canMove(master.getMotorOutputPercent());
     }
 
-    public void open() {
+    public void openHood() {
         solenoid.set(DoubleSolenoid.Value.kForward);
     }
 
-    public void close() {
+    public void closeHood() {
         solenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
@@ -141,7 +141,7 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
     @Override
     public void configureDashboard() {
         shooterNamespace.putData("shoot", new MoveTalonSubsystem(this, shootSpeed, pidSettings::getWaitTime));
-        shooterNamespace.putData("open", new InstantCommand(this::open, this));
-        shooterNamespace.putData("close", new InstantCommand(this::close, this));
+        shooterNamespace.putData("open", new InstantCommand(this::openHood, this));
+        shooterNamespace.putData("close", new InstantCommand(this::closeHood, this));
     }
 }
