@@ -47,9 +47,7 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
     }
 
     private PIDSettings pidSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
-
     private WPI_TalonSRX master;
-
     private boolean enabled;
 
     private Shooter(WPI_TalonSRX master) {
