@@ -4,30 +4,27 @@ import edu.wpi.first.wpilibj.DigitalInput;
 
 public class HallEffectCounter {
     private DigitalInput hallEffect;
-    private int counter;
-    private boolean lastIndex;
+    private int counter = 0;
+    private boolean lastOn = false;
 
     public HallEffectCounter(DigitalInput hallEffect) {
         this.hallEffect = hallEffect;
-        counter = 0;
-        lastIndex = false;
     }
 
     public void update(double speed) {
-        if (!hallEffect.get())
-            lastIndex = false;
-        else {
-            if (!lastIndex) {
+        boolean isOn=hallEffect.get();
+        if (isOn) {
+            if (!lastOn) {
                 if (speed > 0)
                     counter++;
                 else
                     counter--;
-                lastIndex = true;
             }
         }
+        lastOn=isOn;
     }
 
-    public int getCounter() {
+    public int getCurrentMagnet() {
         return counter;
     }
 }
