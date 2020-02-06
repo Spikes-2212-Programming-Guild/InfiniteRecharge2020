@@ -13,8 +13,10 @@ public class IntakeStateMachine extends StateMachine<IntakeStateMachine.IntakeSt
     private static IntakeStateMachine instance;
 
     public static IntakeStateMachine getInstance() {
-        if (instance == null)
+        if(instance == null) {
             instance = new IntakeStateMachine();
+        }
+
         return instance;
     }
 
