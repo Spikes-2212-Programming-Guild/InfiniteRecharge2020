@@ -15,6 +15,7 @@ import java.util.function.Supplier;
 public class Drivetrain extends OdometryDrivetrain {
 
     public static RootNamespace drivetrainNamespace = new RootNamespace("drivetrain");
+
     public static Supplier<Double> width = drivetrainNamespace.addConstantDouble("width", 0.7);
     public static Supplier<Double> wheelDiameter = drivetrainNamespace
             .addConstantDouble("wheel diameter (inches)", 6);
