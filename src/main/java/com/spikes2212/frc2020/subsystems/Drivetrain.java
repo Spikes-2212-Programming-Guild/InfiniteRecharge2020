@@ -35,6 +35,7 @@ public class Drivetrain extends OdometryDrivetrain {
             PigeonWrapper imu = new PigeonWrapper(left);
             instance = new Drivetrain(left, right, leftEncoder, rightEncoder, imu);
         }
+
         return instance;
     }
 
@@ -50,7 +51,7 @@ public class Drivetrain extends OdometryDrivetrain {
         this.rightEncoder = rightEncoder;
         this.imu = imu;
         this.odometry = new OdometryHandler(leftEncoder::getDistance, rightEncoder::getDistance, imu::getY,
-                0,0);
+                0, 0);
     }
 
     @Override
