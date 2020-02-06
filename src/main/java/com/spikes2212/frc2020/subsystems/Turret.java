@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 
 public class Turret extends GenericSubsystem implements TalonSubsystem {
 
-    public static RootNamespace turretNamespace = new RootNamespace("Turret");
+    public static RootNamespace turretNamespace = new RootNamespace("turret");
     public static Namespace PID = turretNamespace.addChild("PID");
 
     public static Supplier<Double> maxSpeed = turretNamespace.addConstantDouble("Max Speed", 0.6);

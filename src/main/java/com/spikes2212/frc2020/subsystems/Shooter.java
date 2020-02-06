@@ -14,6 +14,7 @@ import com.spikes2212.lib.dashboard.RootNamespace;
 import java.util.function.Supplier;
 
 public class Shooter extends GenericSubsystem implements TalonSubsystem {
+
     public static RootNamespace shooterNamespace = new RootNamespace("shooter");
     public static Namespace PID = shooterNamespace.addChild("PID");
 
