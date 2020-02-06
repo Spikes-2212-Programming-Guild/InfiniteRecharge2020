@@ -1,25 +1,27 @@
 package com.spikes2212.frc2020.commands;
 
-import com.spikes2212.control.PIDSettings;
 import com.spikes2212.frc2020.subsystems.Climber;
+import com.spikes2212.lib.control.PIDSettings;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
+import java.util.function.Supplier;
+
 public class Climb extends CommandBase {
 
-    private double targetSetpoint;
+    private Supplier <Double> targetSetpoint;
     private int numberOfSetpoints;
     private double currentSetpoint;
     private Climber climber;
 
     private PIDController leftController, rightController;
 
-    public Climb(double targetSetpoint, int numberOfSetpoints, PIDSettings pidSettings) {
+    public Climb(Supplier <Double> targetSetpoint, int numberOfSetpoints, PIDSettings pidSettings) {
         climber=Climber.getInstance();
         addRequirements(climber);
         this.targetSetpoint = targetSetpoint;
         this.numberOfSetpoints = numberOfSetpoints;
-        currentSetpoint = targetSetpoint / numberOfSetpoints;
+        currentSetpoint = targetSetpoint.get() / numberOfSetpoints;
         leftController = new PIDController(pidSettings.getkP(), pidSettings.getkI(), pidSettings.getkD());
         rightController = new PIDController(pidSettings.getkP(), pidSettings.getkI(), pidSettings.getkD());
     }
@@ -27,7 +29,7 @@ public class Climb extends CommandBase {
     @Override
     public void execute() {
         if (leftController.atSetpoint() && rightController.atSetpoint())
-            currentSetpoint += targetSetpoint / numberOfSetpoints;
+            currentSetpoint += targetSetpoint.get() / numberOfSetpoints;
         leftController.setSetpoint(currentSetpoint);
         rightController.setSetpoint(currentSetpoint);
         climber.setLeftMotor(leftController.calculate(climber.getLeftDistance()));
@@ -36,7 +38,7 @@ public class Climb extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return (leftController.atSetpoint() && rightController.atSetpoint() && currentSetpoint == targetSetpoint);
+        return (leftController.atSetpoint() && rightController.atSetpoint() && currentSetpoint == targetSetpoint.get());
     }
 
     @Override
