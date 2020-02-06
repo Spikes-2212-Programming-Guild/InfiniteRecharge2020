@@ -25,5 +25,5 @@ public class HallEffectCounter {
     public int getCurrentMagnet() {
         return counter;
     }
-    public boolean atTop(int numOfMagnets){return numOfMagnets==getCurrentMagnet();}
+    public boolean atTop(int numOfMagnets){return numOfMagnets-1==getCurrentMagnet();}
 }

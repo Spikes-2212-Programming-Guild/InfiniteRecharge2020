@@ -15,13 +15,13 @@ import java.util.function.Supplier;
 
 public class Elevator extends GenericSubsystem {
     private static final Namespace elevator = new RootNamespace("elevator");
-    public static final Supplier<Double> distancePerPulse = elevator.addConstantDouble("distance per pulse", 0);
     private static final Namespace pidNamespace = elevator.addChild("PID");
+    private static final Namespace feedForwardNamespace = elevator.addChild("feed forward");
+    public static final Supplier<Double> distancePerPulse = elevator.addConstantDouble("distance per pulse", 0);
     private static final Supplier<Double> kP = pidNamespace.addConstantDouble("kP", 0);
     private static final Supplier<Double> kI = pidNamespace.addConstantDouble("kI", 0);
     private static final Supplier<Double> kD = pidNamespace.addConstantDouble("kD", 0);
     public static final PIDSettings PID_SETTINGS = new PIDSettings(kP, kI, kD);
-    private static final Namespace feedForwardNamespace = elevator.addChild("feed forward");
     private static final Supplier<Double> kS = feedForwardNamespace.addConstantDouble("kS", 0);
     private static final Supplier<Double> kG = feedForwardNamespace.addConstantDouble("kG", 0);
     public static final FeedForwardSettings FEED_FORWARD_SETTINGS = new FeedForwardSettings(kS, () -> 0.0, () -> 0.0, kG);
@@ -33,13 +33,6 @@ public class Elevator extends GenericSubsystem {
     private DigitalInput bottomHallEffect;
     private HallEffectCounter hallEffectCounter;
 
-    private Elevator(WPI_TalonSRX motor, Encoder encoder, DigitalInput bottomHallEffect, DigitalInput hallEffectCounter) {
-        this.motor = motor;
-        this.encoder = encoder;
-        this.bottomHallEffect = bottomHallEffect;
-        this.hallEffectCounter = new HallEffectCounter(hallEffectCounter);
-    }
-
     public static Elevator getInstance() {
         if (instance == null) {
             WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.ELEVATOR_TALON);
@@ -49,6 +42,19 @@ public class Elevator extends GenericSubsystem {
             instance = new Elevator(motor, encoder, bottomHallEffect, topHallEffect);
         }
         return instance;
+    }
+
+    private Elevator(WPI_TalonSRX motor, Encoder encoder, DigitalInput bottomHallEffect, DigitalInput hallEffectCounter) {
+        this.motor = motor;
+        this.encoder = encoder;
+        this.bottomHallEffect = bottomHallEffect;
+        this.hallEffectCounter = new HallEffectCounter(hallEffectCounter);
+    }
+
+
+    @Override
+    public void periodic() {
+        hallEffectCounter.update(motor.get());
     }
 
     public double getDistance() {
