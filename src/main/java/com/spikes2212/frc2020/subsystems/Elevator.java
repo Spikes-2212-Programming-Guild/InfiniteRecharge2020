@@ -63,7 +63,7 @@ public class Elevator extends GenericSubsystem {
     @Override
     public boolean canMove(double speed) {
         return !((bottomHallEffect.get() && speed < 0) &&
-                !(hallEffectCounter.getCurrentMagnet() == NUM_OF_MAGNETS.get() &&
+                !(hallEffectCounter.atTop(NUM_OF_MAGNETS.get()) &&
                         speed > 0));
     }
 
