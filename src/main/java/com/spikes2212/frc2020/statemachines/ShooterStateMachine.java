@@ -13,8 +13,10 @@ public class ShooterStateMachine extends StateMachine<ShooterStateMachine.Shoote
     private static ShooterStateMachine instance;
 
     public static ShooterStateMachine getInstance() {
-        if (instance == null)
+        if(instance == null) {
             instance = new ShooterStateMachine();
+        }
+
         return instance;
     }
 
