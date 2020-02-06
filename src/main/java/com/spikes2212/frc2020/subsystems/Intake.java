@@ -14,26 +14,29 @@ public class Intake extends GenericSubsystem {
 
     public static RootNamespace intakeNamespace = new RootNamespace("intake");
 
-    public static final Supplier<Double> minSpeed = intakeNamespace.addConstantDouble("min speed", -1);
-    public static final Supplier<Double> maxSpeed = intakeNamespace.addConstantDouble("max speed", 1);
-    public static final Supplier<Double> gripSpeed = intakeNamespace.addConstantDouble("grip speed", 0.5);
+    public static Supplier<Double> minSpeed = intakeNamespace.addConstantDouble("min speed", -1);
+    public static Supplier<Double> maxSpeed = intakeNamespace.addConstantDouble("max speed", 1);
+    public static Supplier<Double> gripSpeed = intakeNamespace.addConstantDouble("grip speed", 0.5);
 
     private static Intake instance;
 
     public static Intake getInstance() {
         if (instance == null) {
-            DoubleSolenoid left = new DoubleSolenoid(RobotMap.PCM.LEFT_INTAKE_FORWARD
-                    , RobotMap.PCM.LEFT_INTAKE_BACKWARD);
+            DoubleSolenoid left = new DoubleSolenoid(RobotMap.PCM.LEFT_INTAKE_FORWARD,
+                    RobotMap.PCM.LEFT_INTAKE_BACKWARD);
             DoubleSolenoid right = new DoubleSolenoid(RobotMap.PCM.RIGHT_INTAKE_FORWARD,
                     RobotMap.PCM.RIGHT_INTAKE_BACKWARD);
             VictorSP motor = new VictorSP(RobotMap.PWM.INTAKE_MOTOR);
             instance = new Intake(left, right, motor);
         }
+
         return instance;
     }
 
-    private DoubleSolenoid leftSolenoid, rightSolenoid;
+    private DoubleSolenoid leftSolenoid;
+    private DoubleSolenoid rightSolenoid;
     private VictorSP motor;
+
     private boolean enabled;
 
     private Intake(DoubleSolenoid left, DoubleSolenoid right, VictorSP motor) {
@@ -51,7 +54,7 @@ public class Intake extends GenericSubsystem {
 
     @Override
     public boolean canMove(double speed) {
-        return speed >= 0 && enabled ;
+        return speed >= 0 && enabled;
     }
 
     @Override
@@ -86,8 +89,8 @@ public class Intake extends GenericSubsystem {
 
     @Override
     public void configureDashboard() {
+        intakeNamespace.putData("grip", new MoveGenericSubsystem(this, gripSpeed));
         intakeNamespace.putData("open", new InstantCommand(this::open, this));
         intakeNamespace.putData("close", new InstantCommand(this::close, this));
-        intakeNamespace.putData("grip", new MoveGenericSubsystem(this, gripSpeed));
     }
 }
