@@ -12,11 +12,11 @@ import java.util.function.Supplier;
 
 public class Feeder extends GenericSubsystem {
 
-    public static final RootNamespace feederNamespace = new RootNamespace("feeder");
+    public static RootNamespace feederNamespace = new RootNamespace("feeder");
 
-    private static final Supplier<Double> minSpeed = feederNamespace.addConstantDouble("min speed", -1);
-    private static final Supplier<Double> maxSpeed = feederNamespace.addConstantDouble("max speed", 1);
-    private static final Supplier<Double> speed = feederNamespace.addConstantDouble("speed", 0.5);
+    private static Supplier<Double> minSpeed = feederNamespace.addConstantDouble("min speed", -1);
+    private static Supplier<Double> maxSpeed = feederNamespace.addConstantDouble("max speed", 1);
+    private static Supplier<Double> speed = feederNamespace.addConstantDouble("speed", 0.5);
 
     private static Feeder instance;
 
@@ -27,18 +27,20 @@ public class Feeder extends GenericSubsystem {
                     RobotMap.PCM.FEEDER_BACKWARD);
             instance = new Feeder(motor, solenoid);
         }
+
         return instance;
     }
 
     private VictorSP motor;
     private DoubleSolenoid solenoid;
+
     private boolean enabled;
 
     public Feeder(VictorSP motor, DoubleSolenoid solenoid) {
         super(minSpeed, maxSpeed);
         this.motor = motor;
         this.solenoid = solenoid;
-        enabled=true;
+        enabled = true;
     }
 
     @Override
@@ -55,6 +57,7 @@ public class Feeder extends GenericSubsystem {
     public void stop() {
         motor.stopMotor();
     }
+
     @Override
     public void periodic() {
         feederNamespace.update();
