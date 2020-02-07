@@ -1,9 +1,6 @@
 package com.spikes2212.frc2020;
 
-import com.spikes2212.frc2020.subsystems.Feeder;
-import com.spikes2212.frc2020.subsystems.Intake;
-import com.spikes2212.frc2020.subsystems.Shooter;
-import com.spikes2212.frc2020.subsystems.Turret;
+import com.spikes2212.frc2020.subsystems.*;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -11,12 +8,17 @@ public class Robot extends TimedRobot {
 
     private static OI oi;
 
+    private static Shooter shooter = Shooter.getInstance();
+    private static Turret turret = Turret.getInstance();
+    private static Feeder feeder = Feeder.getInstance();
+    private static Intake intake = Intake.getInstance();
+
     @Override
     public void robotInit() {
-        Shooter.getInstance().configureDashboard();
-        Turret.getInstance().configureDashboard();
-        Feeder.getInstance().configureDashboard();
-        Intake.getInstance().configureDashboard();
+        shooter.configureDashboard();
+        turret.configureDashboard();
+        feeder.configureDashboard();
+        intake.configureDashboard();
 
         oi = new OI();
     }
@@ -25,5 +27,4 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
     }
-
 }

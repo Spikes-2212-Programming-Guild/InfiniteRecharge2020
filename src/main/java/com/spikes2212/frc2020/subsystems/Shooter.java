@@ -10,53 +10,54 @@ import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
 import com.spikes2212.lib.control.PIDSettings;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import java.util.function.Supplier;
 
 public class Shooter extends GenericSubsystem implements TalonSubsystem {
-    public static final RootNamespace shooterNamespace = new RootNamespace("shooter");
-    public static final Namespace PID = shooterNamespace.addChild("PID");
 
-    public static final Supplier<Double> MAX_SPEED = shooterNamespace.addConstantDouble("Max Speed", 0.6);
-    public static final Supplier<Double> MIN_SPEED = shooterNamespace.addConstantDouble("Min Speed", -0.6);
+    public static RootNamespace shooterNamespace = new RootNamespace("shooter");
+    public static Namespace PID = shooterNamespace.addChild("PID");
+
     public static final double distancePerPulse = 2 * 0.0254 * Math.PI / 2048;
 
-    public static final Supplier<Double> maxSpeed = shooterNamespace.addConstantDouble("Max Speed", 0.6);
-    public static final Supplier<Double> minSpeed = shooterNamespace.addConstantDouble("Min Speed", 0);
-    public static final Supplier<Double> shootSpeed =
+    public static Supplier<Double> maxSpeed = shooterNamespace.addConstantDouble("Max Speed", 0.6);
+    public static Supplier<Double> minSpeed = shooterNamespace.addConstantDouble("Min Speed", 0);
+    public static Supplier<Double> shootSpeed =
             shooterNamespace.addConstantDouble("Shooting Speed", 0.6);
 
-    public static final Supplier<Double> kP = PID.addConstantDouble("kP", 0);
-    public static final Supplier<Double> kI = PID.addConstantDouble("kI", 0);
-    public static final Supplier<Double> kD = PID.addConstantDouble("kD", 0);
-    public static final Supplier<Double> kF = PID.addConstantDouble("kF", 0);
-    public static final Supplier<Double> tolerance = PID.addConstantDouble("Tolerance", 0);
-    public static final Supplier<Double> waitTime = PID.addConstantDouble("Wait Time", 0);
-    public static final Supplier<Integer> loop = PID.addConstantInt("Loop", 0);
-    public static final Supplier<Integer> timeout = PID.addConstantInt("Timeout", 30);
+    public static Supplier<Double> kP = PID.addConstantDouble("kP", 0);
+    public static Supplier<Double> kI = PID.addConstantDouble("kI", 0);
+    public static Supplier<Double> kD = PID.addConstantDouble("kD", 0);
+    public static Supplier<Double> kF = PID.addConstantDouble("kF", 0);
+    public static Supplier<Double> tolerance = PID.addConstantDouble("Tolerance", 0);
+    public static Supplier<Double> waitTime = PID.addConstantDouble("Wait Time", 0);
+    public static Supplier<Integer> loop = PID.addConstantInt("Loop", 0);
+    public static Supplier<Integer> timeout = PID.addConstantInt("Timeout", 30);
 
     private static Shooter instance;
 
     public static Shooter getInstance() {
         if(instance == null) {
             WPI_TalonSRX master = new WPI_TalonSRX(RobotMap.CAN.SHOOTER_MASTER);
-            instance = new Shooter(master);
+            DoubleSolenoid solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.SHOOTER_FORWARD, RobotMap.PCM.SHOOTER_BACKWARD);
+            instance = new Shooter(master, solenoid);
         }
 
         return instance;
     }
 
     private PIDSettings pidSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
-
     private WPI_TalonSRX master;
-
     private boolean enabled;
+    private DoubleSolenoid solenoid;
 
-    private Shooter(WPI_TalonSRX master) {
+    private Shooter(WPI_TalonSRX master, DoubleSolenoid solenoid) {
         super(minSpeed, maxSpeed);
         this.master = master;
+        this.solenoid = solenoid;
         enabled=true;
-
     }
 
     @Override
@@ -76,7 +77,7 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public void periodic() {
-      shooterNamespace.update();
+        shooterNamespace.update();
     }
 
     @Override
@@ -120,6 +121,14 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
                 || !canMove(master.getMotorOutputPercent());
     }
 
+    public void openHood() {
+        solenoid.set(DoubleSolenoid.Value.kForward);
+    }
+
+    public void closeHood() {
+        solenoid.set(DoubleSolenoid.Value.kReverse);
+    }
+
     public boolean isEnabled() {
         return enabled;
     }
@@ -131,5 +140,7 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
     @Override
     public void configureDashboard() {
         shooterNamespace.putData("shoot", new MoveTalonSubsystem(this, shootSpeed, pidSettings::getWaitTime));
+        shooterNamespace.putData("open", new InstantCommand(this::openHood, this));
+        shooterNamespace.putData("close", new InstantCommand(this::closeHood, this));
     }
 }
