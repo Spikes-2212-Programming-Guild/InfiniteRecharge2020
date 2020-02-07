@@ -1,10 +1,12 @@
 package com.spikes2212.frc2020.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
@@ -26,7 +28,7 @@ public class Intake extends GenericSubsystem {
                     RobotMap.PCM.LEFT_INTAKE_BACKWARD);
             DoubleSolenoid right = new DoubleSolenoid(RobotMap.PCM.RIGHT_INTAKE_FORWARD,
                     RobotMap.PCM.RIGHT_INTAKE_BACKWARD);
-            VictorSP motor = new VictorSP(RobotMap.PWM.INTAKE_MOTOR);
+            WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.INTAKE_MOTOR);
             instance = new Intake(left, right, motor);
         }
 
@@ -35,11 +37,11 @@ public class Intake extends GenericSubsystem {
 
     private DoubleSolenoid leftSolenoid;
     private DoubleSolenoid rightSolenoid;
-    private VictorSP motor;
+    private WPI_TalonSRX motor;
 
     private boolean enabled;
 
-    private Intake(DoubleSolenoid left, DoubleSolenoid right, VictorSP motor) {
+    private Intake(DoubleSolenoid left, DoubleSolenoid right, WPI_TalonSRX motor) {
         super(minSpeed, maxSpeed);
         this.leftSolenoid = left;
         this.rightSolenoid = right;
@@ -93,4 +95,14 @@ public class Intake extends GenericSubsystem {
         intakeNamespace.putData("open", new InstantCommand(this::open, this));
         intakeNamespace.putData("close", new InstantCommand(this::close, this));
     }
+
+
+    public double getAppliedVoltage(){
+        return motor.getBusVoltage();
+    }
+
+    public double getActualVoltage(){
+        return motor.getMotorOutputVoltage();
+    }
+
 }

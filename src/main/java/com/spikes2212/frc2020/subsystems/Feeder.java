@@ -17,6 +17,7 @@ public class Feeder extends GenericSubsystem {
     private static Supplier<Double> minSpeed = feederNamespace.addConstantDouble("min speed", -1);
     private static Supplier<Double> maxSpeed = feederNamespace.addConstantDouble("max speed", 1);
     private static Supplier<Double> speed = feederNamespace.addConstantDouble("speed", 0.5);
+    private static Supplier<Double> feedTime = feederNamespace.addConstantDouble("feeding time", 0.5);
 
     private static Feeder instance;
 
@@ -86,5 +87,13 @@ public class Feeder extends GenericSubsystem {
         feederNamespace.putData("feed", new MoveGenericSubsystem(this, speed));
         feederNamespace.putData("open level 1", new InstantCommand(this::open, this));
         feederNamespace.putData("close level 1", new InstantCommand(this::close, this));
+    }
+
+    public double getProvidedSpeed(){
+        return speed.get();
+    }
+
+    public double getFeedTime(){
+        return feedTime.get();
     }
 }

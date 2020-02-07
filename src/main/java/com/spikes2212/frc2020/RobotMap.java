@@ -6,6 +6,8 @@ public class RobotMap {
 
         int PCM = 0;
 
+        int INTAKE_MOTOR = 9;
+
         int TURRET_TALON = 5;
 
         int SHOOTER_MASTER = 11;
@@ -49,7 +51,6 @@ public class RobotMap {
     }
 
     public interface PWM {
-        int INTAKE_MOTOR = 0;
 
         int FEEDER_MOTOR = 1;
     }
