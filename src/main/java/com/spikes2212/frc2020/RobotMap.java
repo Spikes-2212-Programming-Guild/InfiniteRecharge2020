@@ -32,7 +32,6 @@ public class RobotMap {
         int ELEVATOR_ENCODER_NEG = 5;
         int ELEVATOR_BOTTOM_SWITCH = 6;
         int ELEVATOR_TOP_SWITCH = 7;
-
         int ELEVATOR_HALL_EFFECT=10;
     }
 
