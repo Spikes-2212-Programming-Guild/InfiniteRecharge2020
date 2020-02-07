@@ -44,8 +44,6 @@ public class Climber extends SubsystemBase {
         this.rightEncoder = rightEncoder;
     }
 
-    public void move(Supplier <Double> speed){setRightMotor(speed.get()); setRightMotor(speed.get());}
-
     public double getLeftDistance() {
         return leftEncoder.getDistance();
     }
