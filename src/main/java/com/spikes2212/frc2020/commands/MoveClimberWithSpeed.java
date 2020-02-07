@@ -7,22 +7,24 @@ import java.util.function.Supplier;
 
 public class MoveClimberWithSpeed extends CommandBase {
 
-    Supplier<Double> speed;
-    Climber climber;
+    private Climber climber = Climber.getInstance();
+    private Supplier<Double> leftSpeed;
+    private Supplier<Double> rightSpeed;
 
-    public MoveClimberWithSpeed(Supplier<Double> speed){
+    public MoveClimberWithSpeed(Supplier<Double> leftSpeed, Supplier<Double> rightSpeed) {
         addRequirements(climber);
-        this.speed = speed;
-        climber=Climber.getInstance();
+        this.leftSpeed = leftSpeed;
+        this.rightSpeed = rightSpeed;
     }
 
     @Override
-    public void execute(){
-        climber.move(speed);
+    public void execute() {
+        climber.setLeftMotor(leftSpeed.get());
+        climber.setRightMotor(rightSpeed.get());
     }
 
     @Override
-    public void end(boolean interrupted){
+    public void end(boolean interrupted) {
         climber.stop();
     }
 }
