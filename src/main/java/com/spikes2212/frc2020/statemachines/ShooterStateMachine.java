@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 public class ShooterStateMachine extends StateMachine<ShooterStateMachine.ShooterState> {
 
     enum ShooterState {
-        OFF, ON,
+        OFF, FAR, CLOSE
     }
 
     private static ShooterStateMachine instance;
@@ -28,7 +28,9 @@ public class ShooterStateMachine extends StateMachine<ShooterStateMachine.Shoote
 
     @Override
     protected void generateTransformations() {
-        addTransformation(ShooterState.ON, new InstantCommand(() -> shooter.setEnabled(true), shooter));
         addTransformation(ShooterState.OFF, new InstantCommand(() -> shooter.setEnabled(false), shooter));
+        addTransformation(ShooterState.CLOSE, new InstantCommand(shooter::closeHood, shooter));
+        addTransformation(ShooterState.FAR, new InstantCommand(shooter::openHood, shooter));
     }
+
 }

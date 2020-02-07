@@ -34,6 +34,9 @@ public class RobotMap {
         int LEFT_INTAKE_BACKWARD = 5;
         int RIGHT_INTAKE_FORWARD = 2;
         int RIGHT_INTAKE_BACKWARD = 3;
+
+        int SHOOTER_FORWARD = 6;
+        int SHOOTER_BACKWARD = 7;
     }
 
     public interface PWM {
