@@ -44,6 +44,6 @@ public class RobotMap {
 
     public interface PWM {
         int INTAKE_MOTOR = 0;
-        int FEEDER_MOTOR = 0;
+        int FEEDER_MOTOR = 1;
     }
 }
