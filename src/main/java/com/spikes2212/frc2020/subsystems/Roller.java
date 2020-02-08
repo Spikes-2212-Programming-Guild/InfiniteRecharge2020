@@ -31,14 +31,12 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
     public static Supplier<Integer> timeout = PID.addConstantInt("timeout", 30);
 
     private static final double EIGHTHS_TO_PULSES = 45 * 4096 * 0.0;
+
     private static final List<Color> COLOR_ORDER = new ArrayList<>();
 
     private static Color inFrontOf(Color color) {
         return COLOR_ORDER.get((COLOR_ORDER.indexOf(color) + 2) % 4);
     }
-
-    private WPI_TalonSRX motor;
-    private ColorDetector detector;
 
     private static Roller instance;
 
@@ -50,6 +48,9 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
         }
         return instance;
     }
+
+    private WPI_TalonSRX motor;
+    private ColorDetector detector;
 
     private Roller(Supplier<Double> minSpeed, Supplier<Double> maxSpeed, WPI_TalonSRX motor, ColorDetector detector) {
         super(minSpeed, maxSpeed);
@@ -94,10 +95,10 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
     }
 
     private double getSetpoint(Color color) {
-        int destIndex = COLOR_ORDER.indexOf(inFrontOf(color));
-        int currIndex = COLOR_ORDER.indexOf(detector.getDetectedColor());
-        if(destIndex == -1 || currIndex == -1) return 0;
-        double offset = destIndex - currIndex;
+        int targetIndex = COLOR_ORDER.indexOf(inFrontOf(color));
+        int currentIndex = COLOR_ORDER.indexOf(detector.getDetectedColor());
+        if(targetIndex == -1 || currentIndex == -1) return 0;
+        double offset = targetIndex - currentIndex;
         if (Math.abs(offset) == 3) offset *= -(1/3.0);
         return offset;
     }
