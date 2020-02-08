@@ -32,7 +32,7 @@ public class Elevator extends GenericSubsystem implements TalonSubsystem {
     private static final Supplier<Double> kG = feedForwardNamespace.addConstantDouble("kG", 0);
     public static final FeedForwardSettings FEED_FORWARD_SETTINGS = new FeedForwardSettings(kS, () -> 0.0, () -> 0.0, kG);
 
-    public static final double METERS_TO_PULSES = 4096 * 3 / (Math.PI * 0.0254 * 1.6); //@todo
+    public static final double METERS_TO_PULSES = 4096 * 3 / (Math.PI * 0.0254 * 1.6);
 
     public static final Supplier<Integer> NUM_OF_MAGNETS = elevatorNamespace.addConstantInt("num of magnets", 0);
 
