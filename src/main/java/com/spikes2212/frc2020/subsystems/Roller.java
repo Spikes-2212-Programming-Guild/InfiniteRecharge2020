@@ -13,6 +13,8 @@ import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class Roller extends GenericSubsystem implements TalonSubsystem {
@@ -29,18 +31,10 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
     public static Supplier<Integer> timeout = PID.addConstantInt("timeout", 30);
 
     private static final double EIGHTHS_TO_PULSES = 45 * 4096 * 0.0;
-    private static final Color[] COLOR_ORDER = {ColorDetector.redTarget, ColorDetector.blueTarget, ColorDetector.yellowTarget,
-            ColorDetector.greenTarget};
-
-    private static int indexOf(Color[] array, Color value) {
-        for (int i = 0; i < array.length; i++)
-            if (array[i].equals(value))
-                return i;
-        return -1;
-    }
+    private static final List<Color> COLOR_ORDER = new ArrayList<>();
 
     private static Color inFrontOf(Color color) {
-        return COLOR_ORDER[(indexOf(COLOR_ORDER, color) + 2) % 4];
+        return COLOR_ORDER.get((COLOR_ORDER.indexOf(color) + 2) % 4);
     }
 
     private WPI_TalonSRX motor;
@@ -61,6 +55,10 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
         super(minSpeed, maxSpeed);
         this.motor = motor;
         this.detector = detector;
+        COLOR_ORDER.add(ColorDetector.blueTarget);
+        COLOR_ORDER.add(ColorDetector.redTarget);
+        COLOR_ORDER.add(ColorDetector.greenTarget);
+        COLOR_ORDER.add(ColorDetector.yellowTarget);
     }
 
     @Override
@@ -96,8 +94,8 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
     }
 
     private double getSetpoint(Color color) {
-        int destIndex = indexOf(COLOR_ORDER, inFrontOf(color));
-        int currIndex = indexOf(COLOR_ORDER, detector.getDetectedColor());
+        int destIndex = COLOR_ORDER.indexOf(inFrontOf(color));
+        int currIndex = COLOR_ORDER.indexOf(detector.getDetectedColor());
         if(destIndex == -1 || currIndex == -1) return 0;
         double offset = destIndex - currIndex;
         if (Math.abs(offset) == 3) offset *= -(1/3.0);
