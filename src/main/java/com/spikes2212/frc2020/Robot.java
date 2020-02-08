@@ -2,6 +2,7 @@ package com.spikes2212.frc2020;
 
 import com.spikes2212.frc2020.subsystems.*;
 import com.spikes2212.lib.command.drivetrains.commands.DriveArcade;
+import com.spikes2212.frc2020.commands.Climb;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -9,16 +10,21 @@ public class Robot extends TimedRobot {
 
     private static OI oi;
 
+    private static Shooter shooter = Shooter.getInstance();
+    private static Turret turret = Turret.getInstance();
+    private static Feeder feeder = Feeder.getInstance();
+    private static Intake intake = Intake.getInstance();
+    private static Climber climber = Climber.getInstance();
+
     @Override
     public void robotInit() {
-        Shooter.getInstance().configureDashboard();
-        Turret.getInstance().configureDashboard();
-        Feeder.getInstance().configureDashboard();
-        Intake.getInstance().configureDashboard();
+        shooter.configureDashboard();
+        turret.configureDashboard();
+        feeder.configureDashboard();
+        intake.configureDashboard();
+        climber.configureDashboard();
 
         oi = new OI();
-
-        Drivetrain.getInstance().setDefaultCommand(new DriveArcade(Drivetrain.getInstance(), oi::getLeftY, oi::getRightX));
     }
 
     @Override
