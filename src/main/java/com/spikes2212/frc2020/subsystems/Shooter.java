@@ -43,7 +43,7 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
             WPI_TalonSRX master = new WPI_TalonSRX(RobotMap.CAN.SHOOTER_MASTER);
             DoubleSolenoid solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.SHOOTER_FORWARD, RobotMap.PCM.SHOOTER_BACKWARD);
             WPI_TalonSRX slave = new WPI_TalonSRX(RobotMap.CAN.SHOOTER_SLAVE);
-            instance = new Shooter(master, slave);
+            instance = new Shooter(master, slave, solenoid);
         }
 
         return instance;
