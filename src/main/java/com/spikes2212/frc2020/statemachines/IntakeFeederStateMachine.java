@@ -19,7 +19,7 @@ public class IntakeFeederStateMachine extends StateMachine<IntakeFeederStateMach
     private static IntakeFeederStateMachine instance;
 
     public static IntakeFeederStateMachine getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new IntakeFeederStateMachine();
         }
 
@@ -37,8 +37,8 @@ public class IntakeFeederStateMachine extends StateMachine<IntakeFeederStateMach
     protected void generateTransformations() {
         addTransformation(IntakeFeederState.OFF,
                 new ParallelCommandGroup(intakeFSM.getTransformationFor(IntakeState.CLOSE),
-                    feederFSM.getTransformationFor(FeederState.OFF)
-        ));
+                        feederFSM.getTransformationFor(FeederState.OFF)
+                ));
         addTransformation(IntakeFeederState.FEED_TO_LEVEL_1,
                 new ParallelCommandGroup(intakeFSM.getTransformationFor(IntakeState.CLOSE),
                         feederFSM.getTransformationFor(FeederState.FEED_TO_LVL_1)));
@@ -52,9 +52,9 @@ public class IntakeFeederStateMachine extends StateMachine<IntakeFeederStateMach
 
     public void configureDashboard() {
         intakeFeederStateNamespace.putString("state", getState()::name);
-        intakeFeederStateNamespace.putData("turn off", (Sendable)getTransformationFor(IntakeFeederState.OFF));
-        intakeFeederStateNamespace.putData("feed to level 1", (Sendable)getTransformationFor(IntakeFeederState.FEED_TO_LEVEL_1));
-        intakeFeederStateNamespace.putData("feed to shooter", (Sendable)getTransformationFor(IntakeFeederState.FEED_TO_SHOOTER));
-        intakeFeederStateNamespace.putData("collect", (Sendable)getTransformationFor(IntakeFeederState.COLLECT));
+        intakeFeederStateNamespace.putData("turn off", (Sendable) getTransformationFor(IntakeFeederState.OFF));
+        intakeFeederStateNamespace.putData("feed to level 1", (Sendable) getTransformationFor(IntakeFeederState.FEED_TO_LEVEL_1));
+        intakeFeederStateNamespace.putData("feed to shooter", (Sendable) getTransformationFor(IntakeFeederState.FEED_TO_SHOOTER));
+        intakeFeederStateNamespace.putData("collect", (Sendable) getTransformationFor(IntakeFeederState.COLLECT));
     }
 }
