@@ -160,7 +160,6 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         turretNamespace.putData("vision",
                 (Sendable) TurretStateMachine.getInstance().getTransformationFor(TurretStateMachine.TurretState.VISION));
         turretNamespace.putData("off", (Sendable) TurretStateMachine.getInstance().getTransformationFor(TurretStateMachine.TurretState.OFF));
-
         turretNamespace.putString("state", TurretStateMachine.getInstance().getState()::name);
         turretNamespace.putData("rotate", new MoveTalonSubsystem(this, setpoint, waitTime));
     }

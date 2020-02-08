@@ -95,7 +95,6 @@ public class Intake extends GenericSubsystem {
         intakeNamespace.putString("state", IntakeStateMachine.getInstance().getState()::name);
         intakeNamespace.putData("close", (Sendable) IntakeStateMachine.getInstance().getTransformationFor(IntakeStateMachine.IntakeState.CLOSE));
         intakeNamespace.putData("open", (Sendable) IntakeStateMachine.getInstance().getTransformationFor(IntakeStateMachine.IntakeState.OPEN));
-
         intakeNamespace.putData("grip", new MoveGenericSubsystem(this, gripSpeed));
         intakeNamespace.putData("open", new InstantCommand(this::open, this));
         intakeNamespace.putData("close", new InstantCommand(this::close, this));

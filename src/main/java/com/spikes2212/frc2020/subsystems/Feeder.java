@@ -87,17 +87,12 @@ public class Feeder extends GenericSubsystem {
     @Override
     public void configureDashboard() {
         feederNamespace.putString("state", FeederStateMachine.getInstance().getState()::name);
-
         feederNamespace.putData("become level 1",
                 (Sendable) FeederStateMachine.getInstance().getTransformationFor(FeederStateMachine.FeederState.FEED_TO_LVL_1));
-
         feederNamespace.putData("become shooter",
                 (Sendable) FeederStateMachine.getInstance().getTransformationFor(FeederStateMachine.FeederState.FEED_TO_SHOOTER));
-
         feederNamespace.putData("off",
                 (Sendable) FeederStateMachine.getInstance().getTransformationFor(FeederStateMachine.FeederState.OFF));
-
-
         feederNamespace.putData("feed", new MoveGenericSubsystem(this, speed));
         feederNamespace.putData("open level 1", new InstantCommand(this::open, this));
         feederNamespace.putData("close level 1", new InstantCommand(this::close, this));

@@ -143,14 +143,12 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
     @Override
     public void configureDashboard() {
         shooterNamespace.putString("state", ShooterStateMachine.getInstance().getState()::name);
-
         shooterNamespace.putData("close",
                 (Sendable) ShooterStateMachine.getInstance().getTransformationFor(ShooterStateMachine.ShooterState.CLOSE));
         shooterNamespace.putData("off",
                 (Sendable) ShooterStateMachine.getInstance().getTransformationFor(ShooterStateMachine.ShooterState.OFF));
         shooterNamespace.putData("far",
                 (Sendable) ShooterStateMachine.getInstance().getTransformationFor(ShooterStateMachine.ShooterState.FAR));
-
         shooterNamespace.putData("shoot", new MoveTalonSubsystem(this, shootSpeed, pidSettings::getWaitTime));
         shooterNamespace.putData("open", new InstantCommand(this::openHood, this));
         shooterNamespace.putData("close", new InstantCommand(this::closeHood, this));
