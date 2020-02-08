@@ -14,11 +14,8 @@ import java.util.function.Supplier;
 
 public class Drivetrain extends OdometryDrivetrain {
 
-    private Encoder leftEncoder;
-    private Encoder rightEncoder;
-    private PigeonWrapper imu;
-    private OdometryHandler odometry;
     public static RootNamespace drivetrainNamespace = new RootNamespace("drivetrain");
+
     public static Supplier<Double> width = drivetrainNamespace.addConstantDouble("width", 0.7);
     public static Supplier<Double> wheelDiameter = drivetrainNamespace
             .addConstantDouble("wheel diameter (inches)", 6);
@@ -39,8 +36,14 @@ public class Drivetrain extends OdometryDrivetrain {
             PigeonWrapper imu = new PigeonWrapper(left);
             instance = new Drivetrain(left, right, leftEncoder, rightEncoder, imu);
         }
+
         return instance;
     }
+
+    private Encoder leftEncoder;
+    private Encoder rightEncoder;
+    private PigeonWrapper imu;
+    private OdometryHandler odometry;
 
     private Drivetrain(SpeedController left, SpeedController right, Encoder leftEncoder, Encoder rightEncoder,
                        PigeonWrapper imu) {
@@ -49,7 +52,7 @@ public class Drivetrain extends OdometryDrivetrain {
         this.rightEncoder = rightEncoder;
         this.imu = imu;
         this.odometry = new OdometryHandler(leftEncoder::getDistance, rightEncoder::getDistance, imu::getY,
-                0,0);
+                0, 0);
     }
 
     @Override

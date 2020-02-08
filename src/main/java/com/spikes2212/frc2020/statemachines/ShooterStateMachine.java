@@ -11,9 +11,12 @@ public class ShooterStateMachine extends StateMachine<ShooterStateMachine.Shoote
     }
 
     private static ShooterStateMachine instance;
+
     public static ShooterStateMachine getInstance() {
-        if (instance == null)
+        if(instance == null) {
             instance = new ShooterStateMachine();
+        }
+
         return instance;
     }
 
@@ -25,9 +28,9 @@ public class ShooterStateMachine extends StateMachine<ShooterStateMachine.Shoote
 
     @Override
     protected void generateTransformations() {
-        addTransformation(ShooterState.CLOSE, new InstantCommand(shooter::closeHood));
-        addTransformation(ShooterState.FAR, new InstantCommand(shooter::openHood));
-        addTransformation(ShooterState.OFF, new InstantCommand(()->shooter.setEnabled(false),shooter));
+        addTransformation(ShooterState.OFF, new InstantCommand(() -> shooter.setEnabled(false), shooter));
+        addTransformation(ShooterState.CLOSE, new InstantCommand(shooter::closeHood, shooter));
+        addTransformation(ShooterState.FAR, new InstantCommand(shooter::openHood, shooter));
     }
 
 }

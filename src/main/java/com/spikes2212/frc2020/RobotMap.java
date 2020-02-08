@@ -3,26 +3,44 @@ package com.spikes2212.frc2020;
 public class RobotMap {
 
     public interface CAN {
-        int TURRET_TALON = 5;
-        int SHOOTER_MASTER = 1;
-        int SHOOTER_SLAVE = 2;
-
-        int DRIVETRAIN_LEFT_TALON = 2;
-        int DRIVETRAIN_LEFT_VICTOR = 3;
-        int DRIVETRAIN_RIGHT_TALON = 4;
-        int DRIVETRAIN_RIGHT_VICTOR = 5;
 
         int PCM = 0;
+
+        int TURRET_TALON = 5;
+
+        int SHOOTER_MASTER = 11;
+        int SHOOTER_SLAVE = 12;
+
+        int DRIVETRAIN_LEFT_TALON = 4;
+        int DRIVETRAIN_LEFT_VICTOR = 2;
+        int DRIVETRAIN_RIGHT_TALON = 3;
+        int DRIVETRAIN_RIGHT_VICTOR = 1;
+
+        int ELEVATOR_TALON = 8;
+
+        int CLIMBER_TALON_LEFT = 6;
+        int CLIMBER_TALON_RIGHT = 7;
     }
 
     public interface DIO {
         int START_LIMIT = 0;
         int END_LIMIT = 1;
 
-        int DRIVETRAIN_LEFT_ENCODER_POS = 0;
-        int DRIVETRAIN_LEFT_ENCODER_NEG = 1;
-        int DRIVETRAIN_RIGHT_ENCODER_POS = 2;
-        int DRIVETRAIN_RIGHT_ENCODER_NEG = 3;
+        int DRIVETRAIN_LEFT_ENCODER_POS = 6;
+        int DRIVETRAIN_LEFT_ENCODER_NEG = 7;
+        int DRIVETRAIN_RIGHT_ENCODER_POS = 8;
+        int DRIVETRAIN_RIGHT_ENCODER_NEG = 9;
+
+        int ELEVATOR_ENCODER_POS = 4;
+        int ELEVATOR_ENCODER_NEG = 5;
+        int ELEVATOR_BOTTOM_SWITCH = 6;
+        int ELEVATOR_TOP_SWITCH = 7;
+        int ELEVATOR_HALL_EFFECT=10;
+
+        int CLIMBER_ENCODER_LEFT_POS = 11;
+        int CLIMBER_ENCODER_LEFT_NEG = 12;
+        int CLIMBER_ENCODER_RIGHT_POS = 13;
+        int CLIMBER_ENCODER_RIGHT_NEG = 14;
     }
 
     public interface PCM {
@@ -40,6 +58,7 @@ public class RobotMap {
 
     public interface PWM {
         int INTAKE_MOTOR = 0;
-        int FEEDER_MOTOR = 0;
+
+        int FEEDER_MOTOR = 1;
     }
 }
