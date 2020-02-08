@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.Supplier;
 
 public class Climber extends SubsystemBase {
+
     private static final Namespace climbingNamespace = new RootNamespace("Climber");
     private static final Namespace pidNamespace = climbingNamespace.addChild("PID");
     private static final Supplier<Double> kP = pidNamespace.addConstantDouble("kP", 0);
