@@ -16,9 +16,10 @@ public class Intake extends GenericSubsystem {
 
     public static RootNamespace intakeNamespace = new RootNamespace("intake");
 
-    public static Supplier<Double> minSpeed = intakeNamespace.addConstantDouble("min speed", -1);
-    public static Supplier<Double> maxSpeed = intakeNamespace.addConstantDouble("max speed", 1);
-    public static Supplier<Double> gripSpeed = intakeNamespace.addConstantDouble("grip speed", 0.5);
+    private static Supplier<Double> minSpeed = intakeNamespace.addConstantDouble("min speed", -1);
+    private static Supplier<Double> maxSpeed = intakeNamespace.addConstantDouble("max speed", 1);
+    private static Supplier<Double> gripSpeed = intakeNamespace.addConstantDouble("grip speed", 0.5);
+    private static Supplier<Double> currentLimit = intakeNamespace.addConstantDouble("current limit", 0);
 
     private static Intake instance;
 
@@ -97,12 +98,19 @@ public class Intake extends GenericSubsystem {
     }
 
 
-    public double getAppliedVoltage(){
-        return motor.getBusVoltage();
+    public Supplier<Double> getSuppliedCurrent(){
+        return motor::getSupplyCurrent;
     }
 
-    public double getActualVoltage(){
-        return motor.getMotorOutputVoltage();
+    public Supplier<Double> getStatorCurrent(){
+        return motor::getStatorCurrent;
     }
 
+    public Supplier<Double> getCurrentLimit() {
+        return currentLimit;
+    }
+
+    public Supplier<Double> getGripSpeed() {
+        return gripSpeed;
+    }
 }
