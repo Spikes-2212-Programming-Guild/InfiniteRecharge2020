@@ -29,7 +29,8 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
     public static Supplier<Integer> timeout = PID.addConstantInt("timeout", 30);
 
     private static final double EIGHTHS_TO_PULSES = 45 * 4096 * 0.0;
-    private static final Color[] COLOR_ORDER = {Color.kRed, Color.kGreen, Color.kYellow, Color.kBlue};
+    private static final Color[] COLOR_ORDER = {ColorDetector.redTarget, ColorDetector.blueTarget, ColorDetector.yellowTarget,
+            ColorDetector.greenTarget};
 
     private WPI_TalonSRX motor;
     private ColorDetector detector;
@@ -74,7 +75,13 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
     @Override
     public void configureDashboard() {
         rollerNamespace.putData("roll to yellow",
-                new MoveTalonSubsystem(this, getSetpoint(Color.kYellow), () -> 0.0));
+                new MoveTalonSubsystem(this, getSetpoint(ColorDetector.yellowTarget), () -> 0.0));
+        rollerNamespace.putData("roll to red",
+                new MoveTalonSubsystem(this, getSetpoint(ColorDetector.redTarget), () -> 0.0));
+        rollerNamespace.putData("roll to blue",
+                new MoveTalonSubsystem(this, getSetpoint(ColorDetector.blueTarget), () -> 0.0));
+        rollerNamespace.putData("roll to green",
+                new MoveTalonSubsystem(this, getSetpoint(ColorDetector.greenTarget), () -> 0.0));
     }
 
     private int indexOf(Color[] array, Color value) {
@@ -86,7 +93,7 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
 
     private Supplier<Double> getSetpoint(Color color) {
         int destIndex = indexOf(COLOR_ORDER, color);
-        int currIndex = indexOf(COLOR_ORDER, detector.getColor());
+        int currIndex = indexOf(COLOR_ORDER, detector.getDetectedColor());
         if(destIndex == -1 || currIndex == -1) return null;
         double offset = destIndex - currIndex;
         if (Math.abs(offset) == 3) offset *= -(1/3.0);

@@ -14,10 +14,10 @@ public class ColorDetector extends ColorSensorV3 {
 
     private ColorMatch matcher;
 
-    private static final Color blueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
-    private static final Color greenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
-    private static final Color redTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
-    private static final Color yellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
+    public static final Color blueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
+    public static final Color greenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
+    public static final Color redTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
+    public static final Color yellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
 
     public ColorDetector(I2C.Port port) {
         super(port);
