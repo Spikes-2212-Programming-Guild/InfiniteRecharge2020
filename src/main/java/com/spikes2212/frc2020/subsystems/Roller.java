@@ -84,7 +84,7 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
                 new MoveTalonSubsystem(this, getSetpoint(ColorDetector.greenTarget), () -> 0.0));
     }
 
-    private int indexOf(Color[] array, Color value) {
+    private static int indexOf(Color[] array, Color value) {
         for (int i = 0; i < array.length; i++)
             if (array[i].equals(value))
                 return i;
