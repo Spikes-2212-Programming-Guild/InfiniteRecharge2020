@@ -32,10 +32,9 @@ public class Elevator extends GenericSubsystem implements TalonSubsystem {
     private static final Supplier<Double> kG = feedForwardNamespace.addConstantDouble("kG", 0);
     public static final FeedForwardSettings FEED_FORWARD_SETTINGS = new FeedForwardSettings(kS, () -> 0.0, () -> 0.0, kG);
 
-    public static final double METERS_TO_PULSES = 4096*3/(Math.PI*0.0254*1.6); //@todo
+    public static final double METERS_TO_PULSES = 4096 * 3 / (Math.PI * 0.0254 * 1.6); //@todo
 
     public static final Supplier<Integer> NUM_OF_MAGNETS = elevatorNamespace.addConstantInt("num of magnets", 0);
-
 
 
     private static Elevator instance;
@@ -120,7 +119,7 @@ public class Elevator extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public void pidSet(double setpoint) {
-        setpoint*=METERS_TO_PULSES;
+        setpoint *= METERS_TO_PULSES;
 
         motor.config_kP(0, kP.get(), timeout.get());
         motor.config_kI(0, kI.get(), timeout.get());
@@ -138,7 +137,7 @@ public class Elevator extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public boolean onTarget(double setpoint) {
-        setpoint*=METERS_TO_PULSES;
+        setpoint *= METERS_TO_PULSES;
         return !canMove(motor.getMotorOutputPercent()) || setpoint == motor.getSelectedSensorPosition();
     }
 }
