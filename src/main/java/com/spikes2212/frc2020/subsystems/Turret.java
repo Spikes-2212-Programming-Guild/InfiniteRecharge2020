@@ -4,12 +4,16 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.spikes2212.frc2020.RobotMap;
+import com.spikes2212.frc2020.statemachines.IntakeStateMachine;
+import com.spikes2212.frc2020.statemachines.ShooterStateMachine;
+import com.spikes2212.frc2020.statemachines.TurretStateMachine;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.TalonSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpiutil.math.MathUtil;
 
 import java.util.function.Supplier;
@@ -149,6 +153,15 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public void configureDashboard() {
+        turretNamespace.putData("absolute",
+                (Sendable) TurretStateMachine.getInstance().getTransformationFor(TurretStateMachine.TurretState.ABSOLUTE));
+        turretNamespace.putData("manual",
+                (Sendable) TurretStateMachine.getInstance().getTransformationFor(TurretStateMachine.TurretState.MANUAL));
+        turretNamespace.putData("vision",
+                (Sendable) TurretStateMachine.getInstance().getTransformationFor(TurretStateMachine.TurretState.VISION));
+        turretNamespace.putData("off", (Sendable) TurretStateMachine.getInstance().getTransformationFor(TurretStateMachine.TurretState.OFF));
+
+        turretNamespace.putString("state", TurretStateMachine.getInstance().getState()::name);
         turretNamespace.putData("rotate", new MoveTalonSubsystem(this, setpoint, waitTime));
     }
 }

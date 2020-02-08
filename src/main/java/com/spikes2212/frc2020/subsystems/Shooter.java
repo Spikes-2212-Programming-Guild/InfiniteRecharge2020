@@ -4,6 +4,8 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.spikes2212.frc2020.RobotMap;
+import com.spikes2212.frc2020.statemachines.IntakeStateMachine;
+import com.spikes2212.frc2020.statemachines.ShooterStateMachine;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.TalonSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
@@ -11,6 +13,7 @@ import com.spikes2212.lib.control.PIDSettings;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import java.util.function.Supplier;
@@ -39,7 +42,7 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
     private static Shooter instance;
 
     public static Shooter getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             WPI_TalonSRX master = new WPI_TalonSRX(RobotMap.CAN.SHOOTER_MASTER);
             DoubleSolenoid solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.SHOOTER_FORWARD, RobotMap.PCM.SHOOTER_BACKWARD);
             instance = new Shooter(master, solenoid);
@@ -57,7 +60,7 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
         super(minSpeed, maxSpeed);
         this.master = master;
         this.solenoid = solenoid;
-        enabled=true;
+        enabled = true;
     }
 
     @Override
@@ -139,6 +142,15 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public void configureDashboard() {
+        shooterNamespace.putString("state", ShooterStateMachine.getInstance().getState()::name);
+
+        shooterNamespace.putData("close",
+                (Sendable) ShooterStateMachine.getInstance().getTransformationFor(ShooterStateMachine.ShooterState.CLOSE));
+        shooterNamespace.putData("off",
+                (Sendable) ShooterStateMachine.getInstance().getTransformationFor(ShooterStateMachine.ShooterState.OFF));
+        shooterNamespace.putData("far",
+                (Sendable) ShooterStateMachine.getInstance().getTransformationFor(ShooterStateMachine.ShooterState.FAR));
+
         shooterNamespace.putData("shoot", new MoveTalonSubsystem(this, shootSpeed, pidSettings::getWaitTime));
         shooterNamespace.putData("open", new InstantCommand(this::openHood, this));
         shooterNamespace.putData("close", new InstantCommand(this::closeHood, this));

@@ -1,10 +1,13 @@
 package com.spikes2212.frc2020.subsystems;
 
 import com.spikes2212.frc2020.RobotMap;
+import com.spikes2212.frc2020.statemachines.FeederStateMachine;
+import com.spikes2212.frc2020.statemachines.IntakeStateMachine;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
@@ -89,6 +92,10 @@ public class Intake extends GenericSubsystem {
 
     @Override
     public void configureDashboard() {
+        intakeNamespace.putString("state", IntakeStateMachine.getInstance().getState()::name);
+        intakeNamespace.putData("close", (Sendable) IntakeStateMachine.getInstance().getTransformationFor(IntakeStateMachine.IntakeState.CLOSE));
+        intakeNamespace.putData("open", (Sendable) IntakeStateMachine.getInstance().getTransformationFor(IntakeStateMachine.IntakeState.OPEN));
+
         intakeNamespace.putData("grip", new MoveGenericSubsystem(this, gripSpeed));
         intakeNamespace.putData("open", new InstantCommand(this::open, this));
         intakeNamespace.putData("close", new InstantCommand(this::close, this));

@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class IntakeStateMachine extends StateMachine<IntakeStateMachine.IntakeState> {
 
-    enum IntakeState {
+    public enum IntakeState {
         CLOSE, OPEN,
     }
 

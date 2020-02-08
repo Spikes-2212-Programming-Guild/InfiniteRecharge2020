@@ -1,10 +1,13 @@
 package com.spikes2212.frc2020.subsystems;
 
 import com.spikes2212.frc2020.RobotMap;
+import com.spikes2212.frc2020.statemachines.FeederStateMachine;
+import com.spikes2212.frc2020.statemachines.IntakeStateMachine;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
@@ -21,7 +24,7 @@ public class Feeder extends GenericSubsystem {
     private static Feeder instance;
 
     public static Feeder getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             VictorSP motor = new VictorSP(RobotMap.PWM.FEEDER_MOTOR);
             DoubleSolenoid solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.FEEDER_FORWARD,
                     RobotMap.PCM.FEEDER_BACKWARD);
@@ -83,6 +86,18 @@ public class Feeder extends GenericSubsystem {
 
     @Override
     public void configureDashboard() {
+        feederNamespace.putString("state", FeederStateMachine.getInstance().getState()::name);
+
+        feederNamespace.putData("become level 1",
+                (Sendable) FeederStateMachine.getInstance().getTransformationFor(FeederStateMachine.FeederState.FEED_TO_LVL_1));
+
+        feederNamespace.putData("become shooter",
+                (Sendable) FeederStateMachine.getInstance().getTransformationFor(FeederStateMachine.FeederState.FEED_TO_SHOOTER));
+
+        feederNamespace.putData("off",
+                (Sendable) FeederStateMachine.getInstance().getTransformationFor(FeederStateMachine.FeederState.OFF));
+
+
         feederNamespace.putData("feed", new MoveGenericSubsystem(this, speed));
         feederNamespace.putData("open level 1", new InstantCommand(this::open, this));
         feederNamespace.putData("close level 1", new InstantCommand(this::close, this));
