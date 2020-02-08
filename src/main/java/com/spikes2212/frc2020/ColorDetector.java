@@ -3,12 +3,8 @@ package com.spikes2212.frc2020;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
-import com.spikes2212.lib.dashboard.Namespace;
-import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
-
-import java.util.function.Supplier;
 
 public class ColorDetector extends ColorSensorV3 {
 

@@ -91,14 +91,13 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
         return -1;
     }
 
-    private Supplier<Double> getSetpoint(Color color) {
+    private double getSetpoint(Color color) {
         int destIndex = indexOf(COLOR_ORDER, color);
         int currIndex = indexOf(COLOR_ORDER, detector.getDetectedColor());
-        if(destIndex == -1 || currIndex == -1) return null;
+        if(destIndex == -1 || currIndex == -1) return Double.NaN;
         double offset = destIndex - currIndex;
         if (Math.abs(offset) == 3) offset *= -(1/3.0);
-        double effectivelyFinalOffset = offset;
-        return () -> effectivelyFinalOffset;
+        return offset;
     }
 
     @Override
