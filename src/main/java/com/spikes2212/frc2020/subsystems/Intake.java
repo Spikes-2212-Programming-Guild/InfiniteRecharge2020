@@ -6,8 +6,6 @@ import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import java.util.function.Supplier;
@@ -19,7 +17,7 @@ public class Intake extends GenericSubsystem {
     private static Supplier<Double> minSpeed = intakeNamespace.addConstantDouble("min speed", -1);
     private static Supplier<Double> maxSpeed = intakeNamespace.addConstantDouble("max speed", 1);
     private static Supplier<Double> gripSpeed = intakeNamespace.addConstantDouble("grip speed", 0.5);
-    private static Supplier<Double> currentLimit = intakeNamespace.addConstantDouble("current limit", 0);
+    private static Supplier<Double> intakeCurrent = intakeNamespace.addConstantDouble("intake Current", 0);
 
     private static Intake instance;
 
@@ -107,7 +105,7 @@ public class Intake extends GenericSubsystem {
     }
 
     public double getCurrentLimit() {
-        return currentLimit.get();
+        return intakeCurrent.get();
     }
 
     public double getGripSpeed() {

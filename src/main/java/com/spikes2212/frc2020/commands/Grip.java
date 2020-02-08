@@ -18,11 +18,11 @@ public class Grip extends SequentialCommandGroup {
         addCommands(
                 intakeFeederFSM.getTransformationFor(IntakeFeederState.OPEN_INTAKE_CLOSE_FEEDER),
                 new MoveGenericSubsystem(intake, intake.getGripSpeed()).withInterrupt
-                        (() -> intake.getSuppliedCurrent() - intake.getStatorCurrent() >= intake.getCurrentLimit())
-                , intakeFeederFSM.getTransformationFor(IntakeFeederState.OPEN_INTAKE_OPEN_FEEDER),
+                        (() -> intake.getSuppliedCurrent() - intake.getStatorCurrent() >= intake.getCurrentLimit()),
+                intakeFeederFSM.getTransformationFor(IntakeFeederState.OPEN_INTAKE_OPEN_FEEDER),
                 ((new MoveGenericSubsystem(feeder, feeder::getProvidedSpeed)).deadlineWith
-                        (new MoveGenericSubsystem(intake, intake.getGripSpeed()))).withTimeout(feeder.getFeedTime())
-                , intakeFeederFSM.getTransformationFor(IntakeFeederState.CLOSE_INTAKE_CLOSE_FEEDER));
+                        (new MoveGenericSubsystem(intake, intake.getGripSpeed()))).withTimeout(feeder.getFeedTime()),
+                intakeFeederFSM.getTransformationFor(IntakeFeederState.CLOSE_INTAKE_CLOSE_FEEDER));
     }
 
 }
