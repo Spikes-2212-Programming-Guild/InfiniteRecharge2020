@@ -30,10 +30,6 @@ public class ColorDetector extends ColorSensorV3 {
 
     public Color getDetectedColor() {
         ColorMatchResult match = matcher.matchClosestColor(getColor());
-        if(match.color.equals(redTarget)) return Color.kRed;
-        if(match.color.equals(blueTarget)) return Color.kSeaGreen;
-        if(match.color.equals(greenTarget)) return Color.kGreen;
-        if(match.color.equals(yellowTarget)) return Color.kDarkOliveGreen;
-        return Color.kWheat;
+        return match.color;
     }
 }
