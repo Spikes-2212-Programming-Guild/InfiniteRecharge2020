@@ -9,8 +9,6 @@ import static com.spikes2212.frc2020.statemachines.IntakeStateMachine.IntakeStat
 
 public class IntakeFeederStateMachine extends StateMachine<IntakeFeederStateMachine.IntakeFeederState> {
 
-    public static RootNamespace intakeFeederStateNamespace = new RootNamespace("intake feeder state");
-
     public enum IntakeFeederState {
         OFF, FEED_TO_LEVEL_1, COLLECT, FEED_TO_SHOOTER
     }
@@ -18,7 +16,7 @@ public class IntakeFeederStateMachine extends StateMachine<IntakeFeederStateMach
     private static IntakeFeederStateMachine instance;
 
     public static IntakeFeederStateMachine getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new IntakeFeederStateMachine();
         }
 
@@ -36,8 +34,8 @@ public class IntakeFeederStateMachine extends StateMachine<IntakeFeederStateMach
     protected void generateTransformations() {
         addTransformation(IntakeFeederState.OFF,
                 new ParallelCommandGroup(intakeFSM.getTransformationFor(IntakeState.CLOSE),
-                    feederFSM.getTransformationFor(FeederState.OFF)
-        ));
+                        feederFSM.getTransformationFor(FeederState.OFF)
+                ));
         addTransformation(IntakeFeederState.FEED_TO_LEVEL_1,
                 new ParallelCommandGroup(intakeFSM.getTransformationFor(IntakeState.CLOSE),
                         feederFSM.getTransformationFor(FeederState.FEED_TO_LVL_1)));
