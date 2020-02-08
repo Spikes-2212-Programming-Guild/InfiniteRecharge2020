@@ -13,13 +13,12 @@ import com.spikes2212.lib.control.FeedForwardSettings;
 import com.spikes2212.lib.control.PIDSettings;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Timer;
 
 import java.util.function.Supplier;
 
 public class Elevator extends GenericSubsystem implements TalonSubsystem {
 
-    private static final Namespace elevator = new RootNamespace("elevator");
+    private static final RootNamespace elevator = new RootNamespace("elevator");
 
     private static final Namespace pidNamespace = elevator.addChild("PID");
     private static final Supplier<Double> kP = pidNamespace.addConstantDouble("kP", 0);
@@ -44,25 +43,22 @@ public class Elevator extends GenericSubsystem implements TalonSubsystem {
     public static Elevator getInstance() {
         if (instance == null) {
             WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.ELEVATOR_TALON);
-            Encoder encoder = new Encoder(RobotMap.DIO.ELEVATOR_ENCODER_POS, RobotMap.DIO.ELEVATOR_ENCODER_NEG);
             DigitalInput bottomHallEffect = new DigitalInput(RobotMap.DIO.ELEVATOR_BOTTOM_SWITCH);
             DigitalInput topHallEffect = new DigitalInput(RobotMap.DIO.ELEVATOR_TOP_SWITCH);
-            instance = new Elevator(motor, encoder, bottomHallEffect, topHallEffect);
+            instance = new Elevator(motor, bottomHallEffect, topHallEffect);
         }
         return instance;
     }
 
     private WPI_TalonSRX motor;
-    private Encoder encoder;
     private DigitalInput bottomHallEffect;
 
     private HallEffectCounter hallEffectCounter;
 
     private double lastTimeNotOnTarget = 0;
 
-    private Elevator(WPI_TalonSRX motor, Encoder encoder, DigitalInput bottomHallEffect, DigitalInput hallEffectCounter) {
+    private Elevator(WPI_TalonSRX motor, DigitalInput bottomHallEffect, DigitalInput hallEffectCounter) {
         this.motor = motor;
-        this.encoder = encoder;
         this.bottomHallEffect = bottomHallEffect;
         this.hallEffectCounter = new HallEffectCounter(hallEffectCounter);
     }
@@ -71,10 +67,11 @@ public class Elevator extends GenericSubsystem implements TalonSubsystem {
     @Override
     public void periodic() {
         hallEffectCounter.update(motor.get());
+        elevator.update();
     }
 
-    public double getDistance() {
-        return encoder.getDistance();
+    public double getPosition() {
+        return motor.getSelectedSensorPosition();
     }
 
     @Override
@@ -84,13 +81,12 @@ public class Elevator extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public boolean canMove(double speed) {
-        return !((bottomHallEffect.get() && speed < 0) &&
-                !(hallEffectCounter.atTop(NUM_OF_MAGNETS.get()) &&
-                        speed > 0));
+        return !(bottomHallEffect.get() && speed < 0 || hallEffectCounter.atTop(NUM_OF_MAGNETS.get() - 1)
+                && speed > 0);
     }
 
-    public Supplier<Integer> getCurrentMagnet() {
-        return hallEffectCounter::getCurrentMagnet;
+    public int getCurrentMagnet() {
+        return hallEffectCounter.getCurrentMagnet();
     }
 
     @Override
@@ -100,15 +96,16 @@ public class Elevator extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public void configureDashboard() {
-        elevator.putNumber("encoder", encoder::get);
+        elevator.putNumber("encoder", motor::getSelectedSensorPosition);
         elevator.putBoolean("bottom limit switch", bottomHallEffect::get);
-        elevator.putNumber("top limit switch", hallEffectCounter::getCurrentMagnet);
+        elevator.putNumber("current magnet", this::getCurrentMagnet);
     }
 
     @Override
     public void configureLoop() {
         motor.configFactoryDefault();
         motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, timeout.get());
+        motor.setSelectedSensorPosition(0, 0, timeout.get());
 
         motor.configNominalOutputForward(0, timeout.get());
         motor.configNominalOutputReverse(0, timeout.get());
@@ -123,14 +120,13 @@ public class Elevator extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public void pidSet(double setpoint) {
-        motor.configPeakOutputForward(1, timeout.get());
-        motor.configPeakOutputReverse(-1, timeout.get());
 
         motor.config_kP(0, kP.get(), timeout.get());
         motor.config_kI(0, kI.get(), timeout.get());
         motor.config_kD(0, kD.get(), timeout.get());
 
         motor.set(ControlMode.Position, setpoint);
+
 
     }
 
@@ -141,9 +137,6 @@ public class Elevator extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public boolean onTarget(double setpoint) {
-        if (getCurrentMagnet().get() == setpoint)
-            lastTimeNotOnTarget = Timer.getFPGATimestamp();
-
-        return Timer.getFPGATimestamp() - lastTimeNotOnTarget >= waitTime.get();
+        return !canMove(motor.getMotorOutputPercent()) || setpoint == motor.getSelectedSensorPosition();
     }
 }
