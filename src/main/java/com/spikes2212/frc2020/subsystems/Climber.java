@@ -52,25 +52,27 @@ public class Climber extends SubsystemBase {
         return rightEncoder.getDistance();
     }
 
-    public void setLeftMotor(double speed) {
+    public void setLeft(double speed) {
         leftMotor.set(speed);
     }
 
-    public void stopLeftMotor() {
+    public void setRight(double speed) {
+        rightMotor.set(speed);
+    }
+
+    public void stopLeft() {
         leftMotor.stopMotor();
     }
 
-    public void setRightMotor(double speed) {
-        rightMotor.set(speed);
-    }
-    public void stop(){
-        stopLeftMotor();
-        stopRightMotor();
-    }
-
-    public void stopRightMotor() {
+    public void stopRight() {
         rightMotor.stopMotor();
     }
+
+    public void stop(){
+        stopLeft();
+        stopRight();
+    }
+
 
     public void configureDashboard() {
         climbingNamespace.putNumber("left encoder", leftEncoder::get);

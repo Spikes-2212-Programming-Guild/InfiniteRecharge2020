@@ -19,8 +19,8 @@ public class MoveClimberWithSpeed extends CommandBase {
 
     @Override
     public void execute() {
-        climber.setLeftMotor(leftSpeed.get());
-        climber.setRightMotor(rightSpeed.get());
+        climber.setLeft(leftSpeed.get());
+        climber.setRight(rightSpeed.get());
     }
 
     @Override

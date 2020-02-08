@@ -31,8 +31,8 @@ public class Climb extends CommandBase {
             currentSetpoint += targetSetpoint.get() / numberOfSetpoints;
         leftController.setSetpoint(currentSetpoint);
         rightController.setSetpoint(currentSetpoint);
-        climber.setLeftMotor(leftController.calculate(climber.getLeftDistance()));
-        climber.setRightMotor(rightController.calculate(climber.getRightDistance()));
+        climber.setLeft(leftController.calculate(climber.getLeftDistance()));
+        climber.setRight(rightController.calculate(climber.getRightDistance()));
     }
 
     @Override
@@ -42,7 +42,7 @@ public class Climb extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        climber.stopLeftMotor();
-        climber.stopRightMotor();
+        climber.stopLeft();
+        climber.stopRight();
     }
 }
