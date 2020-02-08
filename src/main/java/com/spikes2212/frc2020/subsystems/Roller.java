@@ -39,6 +39,10 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
         return -1;
     }
 
+    private static Color inFrontOf(Color color) {
+        return COLOR_ORDER[(indexOf(COLOR_ORDER, color) + 2) % 4];
+    }
+
     private WPI_TalonSRX motor;
     private ColorDetector detector;
 
@@ -92,7 +96,7 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
     }
 
     private double getSetpoint(Color color) {
-        int destIndex = indexOf(COLOR_ORDER, color);
+        int destIndex = indexOf(COLOR_ORDER, inFrontOf(color));
         int currIndex = indexOf(COLOR_ORDER, detector.getDetectedColor());
         if(destIndex == -1 || currIndex == -1) return 0;
         double offset = destIndex - currIndex;
