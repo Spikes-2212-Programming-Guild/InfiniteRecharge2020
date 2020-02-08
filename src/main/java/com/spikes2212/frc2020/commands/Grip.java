@@ -11,12 +11,10 @@ public class Grip extends SequentialCommandGroup {
 
     private Intake intake = Intake.getInstance();
     private Feeder feeder = Feeder.getInstance();
-    private Supplier<Double> appliedVoltage = intake.getSuppliedCurrent();
-    private Supplier<Double> actualVoltage = intake.getStatorCurrent();
 
     public Grip() {
         addCommands(new MoveGenericSubsystem(intake, intake.getGripSpeed()).withInterrupt
-                        (() -> appliedVoltage.get() - actualVoltage.get() > intake.getCurrentLimit().get())
+                        (() -> intake.getSuppliedCurrent() - intake.getStatorCurrent() >= intake.getCurrentLimit())
                 , ((new MoveGenericSubsystem(feeder, feeder::getProvidedSpeed)).deadlineWith
                         (new MoveGenericSubsystem(intake, intake.getGripSpeed()))).withTimeout(feeder.getFeedTime()));
     }

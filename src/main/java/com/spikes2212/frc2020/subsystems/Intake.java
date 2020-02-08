@@ -98,19 +98,19 @@ public class Intake extends GenericSubsystem {
     }
 
 
-    public Supplier<Double> getSuppliedCurrent(){
-        return motor::getSupplyCurrent;
+    public double getSuppliedCurrent(){
+        return motor.getSupplyCurrent();
     }
 
-    public Supplier<Double> getStatorCurrent(){
-        return motor::getStatorCurrent;
+    public double getStatorCurrent(){
+        return motor.getStatorCurrent();
     }
 
-    public Supplier<Double> getCurrentLimit() {
-        return currentLimit;
+    public double getCurrentLimit() {
+        return currentLimit.get();
     }
 
-    public Supplier<Double> getGripSpeed() {
-        return gripSpeed;
+    public double getGripSpeed() {
+        return gripSpeed.get();
     }
 }
