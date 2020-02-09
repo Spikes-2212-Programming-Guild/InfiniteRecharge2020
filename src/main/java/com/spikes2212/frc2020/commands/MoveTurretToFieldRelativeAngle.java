@@ -13,7 +13,7 @@ public class MoveTurretToFieldRelativeAngle extends SequentialCommandGroup {
 
     public MoveTurretToFieldRelativeAngle() {
         addCommands(
-                new InstantCommand(() ->targetAngle = drivetrain.getYaw()),
+                new InstantCommand(() -> targetAngle = drivetrain.getYaw()),
                 new MoveTalonSubsystem(Turret.getInstance(), () -> drivetrain.getYaw() - targetAngle, () -> 0.0)
         );
     }
