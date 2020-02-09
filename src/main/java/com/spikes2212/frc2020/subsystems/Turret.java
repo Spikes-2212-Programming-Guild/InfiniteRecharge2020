@@ -69,7 +69,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         this.endLimit = endLimit;
         this.startLimit = startLimit;
         enabled = true;
-        setAutomaticDefaultCommand();
+
     }
 
     @Override
@@ -102,6 +102,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public void configureDashboard() {
+        setAutomaticDefaultCommand();
         turretNamespace.putData("rotate", new MoveTalonSubsystem(this, setpoint, waitTime));
     }
 
