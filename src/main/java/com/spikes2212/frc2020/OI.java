@@ -26,7 +26,7 @@ public class OI /* GEVALD */ {
         return right.getY() * Math.abs(right.getY());
     }
 
-    public double getControllerRightX() {
-        return controller.getRightX();
+    public double getControllerRightAngle() {
+        return Math.atan2(controller.getRightY(),controller.getRightX());
     }
 }

@@ -1,64 +1,75 @@
 package com.spikes2212.frc2020.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.spikes2212.frc2020.Robot;
 import com.spikes2212.frc2020.RobotMap;
+import com.spikes2212.frc2020.commands.MoveTurretToFieldRelativeAngle;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
-import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystemWithPID;
-import com.spikes2212.lib.control.PIDLoop;
+import com.spikes2212.lib.command.genericsubsystem.TalonSubsystem;
+import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
 import com.spikes2212.lib.control.PIDSettings;
-import com.spikes2212.lib.control.TalonPIDLoop;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
-import com.spikes2212.lib.util.TalonEncoder;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpiutil.math.MathUtil;
 
 import java.util.function.Supplier;
 
-public class Turret extends GenericSubsystem {
+public class Turret extends GenericSubsystem implements TalonSubsystem {
 
-    public static final Namespace turretNamespace = new RootNamespace("Turret");
+    private static final RootNamespace turretNamespace = new RootNamespace("Turret");
 
+    private static final Namespace PID = turretNamespace.addChild("PID");
 
-    public static final Namespace PID = turretNamespace.addChild("PID");
+    private static final Supplier<Double> maxSpeed = turretNamespace.addConstantDouble("Max Speed", 0.6);
 
-    public static final Supplier<Double> MAX_SPEED = turretNamespace.addConstantDouble("Max Speed", 0.6);
-    public static final Supplier<Double> MIN_SPEED = turretNamespace.addConstantDouble("Min Speed", -0.6);
+    private static final Supplier<Double> minSpeed = turretNamespace.addConstantDouble("Min Speed", -0.6);
+    private static final Supplier<Double> minAngle = turretNamespace.addConstantDouble("Min Angle", 30);
+    private static final Supplier<Double> maxAngle = turretNamespace.addConstantDouble("Max Angle", 330);
+    private static final Supplier<Double> kP = PID.addConstantDouble("kP", 0);
+    private static final Supplier<Double> kI = PID.addConstantDouble("kI", 0);
 
-    public static final Supplier<Double> K_P = PID.addConstantDouble("kP", 0);
-    public static final Supplier<Double> K_I = PID.addConstantDouble("kI", 0);
-    public static final Supplier<Double> K_D = PID.addConstantDouble("kD", 0);
-    public static final Supplier<Double> TOLERANCE = PID.addConstantDouble("Tolerance", 0);
-    public static final Supplier<Double> WAIT_TIME = PID.addConstantDouble("Wait Time", 0);
-    public static final Supplier<Double> SETPOINT = PID.addConstantDouble("setpoint", 0);
+    private static final Supplier<Double> kD = PID.addConstantDouble("kD", 0);
+    private static final Supplier<Double> tolerance = PID.addConstantDouble("Tolerance", 0);
+    private static final Supplier<Double> waitTime = PID.addConstantDouble("Wait Time", 0);
+    private static final Supplier<Double> setpoint = PID.addConstantDouble("setpoint", 90);
+    private static final Supplier<Integer> timeout = PID.addConstantInt("timeout", 30);
+
+    private static final PIDSettings pidSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
+
+    private static final double DEGREES_TO_PULSES = 4096 * Math.PI / 180 * 11 / 9;
+
     private static Turret instance;
-
-    public PIDLoop pidLoop;
-
-    PIDSettings pidSettings = new PIDSettings(K_P, K_I, K_D, TOLERANCE, WAIT_TIME);
-
-    private WPI_TalonSRX motor;
-    private TalonEncoder encoder;
-    private DigitalInput startLimit;
-    private DigitalInput endLimit;
-
-    private Turret(WPI_TalonSRX motor, DigitalInput startLimit, DigitalInput endLimit) {
-        super(MIN_SPEED, MAX_SPEED);
-        this.motor = motor;
-        this.startLimit = startLimit;
-        this.endLimit = endLimit;
-        encoder = new TalonEncoder(this.motor);
-        pidLoop = new TalonPIDLoop(motor, pidSettings, MAX_SPEED);
-    }
 
     public static Turret getInstance() {
         if (instance == null) {
             WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.TURRET_TALON);
-            DigitalInput startLimit = new DigitalInput(RobotMap.DIO.TURRET_FIRST_LIMIT);
-            DigitalInput endLimit = new DigitalInput(RobotMap.DIO.TURRET_SECOND_LIMIT);
-            instance = new Turret(motor, startLimit, endLimit);
+            motor.setInverted(true);
+            DigitalInput endLimit = new DigitalInput(RobotMap.DIO.END_LIMIT);
+            DigitalInput startLimit = new DigitalInput(RobotMap.DIO.START_LIMIT);
+            instance = new Turret(motor, endLimit, startLimit);
         }
-
         return instance;
+    }
+
+
+    private WPI_TalonSRX motor;
+
+    private DigitalInput endLimit;
+
+    private DigitalInput startLimit;
+
+    private boolean enabled;
+
+    private Turret(WPI_TalonSRX motor, DigitalInput endLimit, DigitalInput startLimit) {
+        super(minSpeed, maxSpeed);
+        this.motor = motor;
+        this.endLimit = endLimit;
+        this.startLimit = startLimit;
+        enabled = true;
+        setAutomaticDefaultCommand();
     }
 
     @Override
@@ -68,7 +79,7 @@ public class Turret extends GenericSubsystem {
 
     @Override
     public boolean canMove(double speed) {
-        return (speed > 0 && !startLimit.get()) || (speed < 0 && !endLimit.get());
+        return (speed > 0 && !endLimit.get()) || (speed < 0 && !startLimit.get()) && enabled;
     }
 
     @Override
@@ -76,24 +87,87 @@ public class Turret extends GenericSubsystem {
         motor.stopMotor();
     }
 
-    public boolean isLeft(){
-        return endLimit.get();
-    }
-
-    public boolean isRight(){
+    public boolean atStart() {
         return startLimit.get();
     }
 
-    public void setDistancePerPulse(double distancePerPulse) {
-        encoder.setDistancePerPulse(distancePerPulse);
+    public boolean atEnd() {
+        return endLimit.get();
     }
 
-    public double getDistancePerPulse() {
-        return encoder.getDistancePerPulse();
+    @Override
+    public void periodic() {
+        turretNamespace.update();
     }
 
-    public void initDashboardTesting(){
-        turretNamespace.putData("move turret to setpoint", new MoveGenericSubsystemWithPID(this, pidLoop, SETPOINT));
+    @Override
+    public void configureDashboard() {
+        turretNamespace.putData("rotate", new MoveTalonSubsystem(this, setpoint, waitTime));
+    }
+
+    public void setManualDefaultCommand(){
+        this.setDefaultCommand(new MoveTalonSubsystem(this, Robot.oi::getControllerRightAngle, () -> 0.0));
+    }
+
+    public void setAutomaticDefaultCommand(){
+        this.setDefaultCommand(new MoveTurretToFieldRelativeAngle());
+    }
+
+    @Override
+    public void configureLoop() {
+        motor.configFactoryDefault();
+        motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, timeout.get());
+
+        motor.configNominalOutputForward(0, timeout.get());
+        motor.configNominalOutputReverse(0, timeout.get());
+        motor.configPeakOutputForward(maxSpeed.get(), timeout.get());
+        motor.configPeakOutputReverse(minSpeed.get(), timeout.get());
+
+        motor.configAllowableClosedloopError(0, 0, timeout.get());
+        motor.config_kP(0, kP.get(), timeout.get());
+        motor.config_kI(0, kI.get(), timeout.get());
+        motor.config_kD(0, kD.get(), timeout.get());
+    }
+
+    @Override
+    public void pidSet(double setpoint) {
+        setpoint = MathUtil.clamp(setpoint % 360, minAngle.get(), maxAngle.get());
+
+        setpoint *= DEGREES_TO_PULSES;
+
+        motor.configPeakOutputForward(maxSpeed.get(), timeout.get());
+        motor.configPeakOutputReverse(minSpeed.get(), timeout.get());
+
+        motor.config_kP(0, kP.get(), timeout.get());
+        motor.config_kI(0, kI.get(), timeout.get());
+        motor.config_kD(0, kD.get(), timeout.get());
+
+        motor.set(ControlMode.Position, setpoint);
+    }
+
+    @Override
+    public void finish() {
+        stop();
+    }
+
+    @Override
+    public boolean onTarget(double setpoint) {
+        setpoint = MathUtil.clamp(setpoint % 360, maxAngle.get(), minAngle.get());
+
+        setpoint *= DEGREES_TO_PULSES;
+
+        double tolerance = Turret.tolerance.get() * DEGREES_TO_PULSES;
+        int position = motor.getSelectedSensorPosition();
+
+        return !canMove(motor.getMotorOutputPercent()) || Math.abs(setpoint - position) < tolerance;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
 }
