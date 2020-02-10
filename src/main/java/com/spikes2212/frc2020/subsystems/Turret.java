@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.spikes2212.frc2020.Robot;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.frc2020.commands.MoveTurretToFieldRelativeAngle;
+import com.spikes2212.frc2020.statemachines.TurretStateMachine;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.TalonSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
@@ -13,6 +14,7 @@ import com.spikes2212.lib.control.PIDSettings;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpiutil.math.MathUtil;
 
 import java.util.function.Supplier;
@@ -104,6 +106,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     public void configureDashboard() {
         setAutomaticDefaultCommand();
         turretNamespace.putData("rotate", new MoveTalonSubsystem(this, setpoint, waitTime));
+        turretNamespace.putData("Image processing rotation", new InstantCommand(() ->TurretStateMachine.getInstance().getTransformationFor(TurretStateMachine.TurretState.AUTOMATIC)));
     }
 
     public void setManualDefaultCommand(){
