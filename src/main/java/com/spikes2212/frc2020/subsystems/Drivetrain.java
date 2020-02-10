@@ -75,7 +75,7 @@ public class Drivetrain extends OdometryDrivetrain {
     public void zeroSensors() {
         leftEncoder.reset();
         rightEncoder.reset();
-        //TODO reset the imu
+        imu.reset();
     }
 
     @Override
