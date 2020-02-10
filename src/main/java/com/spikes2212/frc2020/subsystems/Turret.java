@@ -106,14 +106,14 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     public void configureDashboard() {
         setAutomaticDefaultCommand();
         turretNamespace.putData("rotate", new MoveTalonSubsystem(this, setpoint, waitTime));
-        turretNamespace.putData("Image processing rotation", new InstantCommand(() ->TurretStateMachine.getInstance().getTransformationFor(TurretStateMachine.TurretState.AUTOMATIC)));
+        turretNamespace.putData("Image processing rotation", new InstantCommand(() -> TurretStateMachine.getInstance().getTransformationFor(TurretStateMachine.TurretState.AUTOMATIC)));
     }
 
-    public void setManualDefaultCommand(){
+    public void setManualDefaultCommand() {
         this.setDefaultCommand(new MoveTalonSubsystem(this, Robot.oi::getControllerRightAngle, () -> 0.0));
     }
 
-    public void setAutomaticDefaultCommand(){
+    public void setAutomaticDefaultCommand() {
         this.setDefaultCommand(new MoveTurretToFieldRelativeAngle());
     }
 
