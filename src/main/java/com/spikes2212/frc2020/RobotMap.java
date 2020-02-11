@@ -4,20 +4,20 @@ public class RobotMap {
 
     public interface CAN {
         int TURRET_TALON = 5;
-        int SHOOTER_MASTER = 1;
-        int SHOOTER_SLAVE = 2;
+        int SHOOTER_MASTER = 7;
+        int SHOOTER_SLAVE = 6;
 
-        int DRIVETRAIN_LEFT_TALON = 2;
-        int DRIVETRAIN_LEFT_VICTOR = 3;
-        int DRIVETRAIN_RIGHT_TALON = 4;
-        int DRIVETRAIN_RIGHT_VICTOR = 5;
+        int DRIVETRAIN_LEFT_TALON = 4;
+        int DRIVETRAIN_LEFT_VICTOR = 2;
+        int DRIVETRAIN_RIGHT_TALON = 3;
+        int DRIVETRAIN_RIGHT_VICTOR = 1;
 
         int PCM = 0;
     }
 
     public interface DIO {
-        int START_LIMIT = 0;
-        int END_LIMIT = 1;
+        int START_LIMIT = 5;
+        int END_LIMIT = 4;
 
         int DRIVETRAIN_LEFT_ENCODER_POS = 0;
         int DRIVETRAIN_LEFT_ENCODER_NEG = 1;
@@ -37,6 +37,6 @@ public class RobotMap {
 
     public interface PWM {
         int INTAKE_MOTOR = 0;
-        int FEEDER_MOTOR = 0;
+        int FEEDER_MOTOR = 1;
     }
 }

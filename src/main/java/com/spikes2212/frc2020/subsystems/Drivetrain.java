@@ -2,9 +2,11 @@ package com.spikes2212.frc2020.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.spikes2212.frc2020.OI;
+import com.spikes2212.frc2020.Robot;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.lib.command.drivetrains.OdometryDrivetrain;
-import com.spikes2212.lib.dashboard.Namespace;
+import com.spikes2212.lib.command.drivetrains.commands.DriveArcade;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import com.spikes2212.lib.path.OdometryHandler;
 import com.spikes2212.lib.util.PigeonWrapper;
@@ -77,7 +79,7 @@ public class Drivetrain extends OdometryDrivetrain {
     public void zeroSensors() {
         leftEncoder.reset();
         rightEncoder.reset();
-        //TODO reset the imu
+        resetIMU();
     }
 
     @Override
@@ -88,5 +90,33 @@ public class Drivetrain extends OdometryDrivetrain {
     @Override
     public double getRightRate() {
         return rightEncoder.getRate();
+    }
+
+    public double getImuX(){
+        return imu.getZ();
+    }
+
+    public double getImuY(){
+        return imu.getY();
+    }
+
+    public void resetIMU(){
+        imu.reset();
+    }
+
+    public double getImuZ(){
+        return imu.getZ();
+    }
+
+    public void setJoysticksDefaultCommand(){
+        setDefaultCommand(new DriveArcade(this, Robot.oi::getLeftY, Robot.oi::getLeftX));
+    }
+
+    public void configureDashboard(){
+
+        drivetrainNamespace.putNumber("imu yaw",imu::getYaw);
+        drivetrainNamespace.putNumber("imu x",this::getImuX);
+        drivetrainNamespace.putNumber("imu y",this::getImuY);
+        drivetrainNamespace.putNumber("imu z",this::getImuZ);
     }
 }

@@ -9,11 +9,13 @@ import com.spikes2212.frc2020.commands.MoveTurretToFieldRelativeAngle;
 import com.spikes2212.frc2020.statemachines.TurretStateMachine;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.TalonSubsystem;
+import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
 import com.spikes2212.lib.control.PIDSettings;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpiutil.math.MathUtil;
 
@@ -21,15 +23,17 @@ import java.util.function.Supplier;
 
 public class Turret extends GenericSubsystem implements TalonSubsystem {
 
-    private static final RootNamespace turretNamespace = new RootNamespace("Turret");
+    private static final RootNamespace turretNamespace = new RootNamespace("turret");
 
     private static final Namespace PID = turretNamespace.addChild("PID");
 
     private static final Supplier<Double> maxSpeed = turretNamespace.addConstantDouble("Max Speed", 0.6);
 
+    private static final Supplier<Double> turnSpeed = turretNamespace.addConstantDouble("turn speed", 0.3);
+
     private static final Supplier<Double> minSpeed = turretNamespace.addConstantDouble("Min Speed", -0.6);
-    private static final Supplier<Double> minAngle = turretNamespace.addConstantDouble("Min Angle", 30);
-    private static final Supplier<Double> maxAngle = turretNamespace.addConstantDouble("Max Angle", 330);
+    private static final Supplier<Integer> minAngle = turretNamespace.addConstantInt("Min Angle", 30);
+    private static final Supplier<Integer> maxAngle = turretNamespace.addConstantInt("Max Angle", 330);
     private static final Supplier<Double> kP = PID.addConstantDouble("kP", 0);
     private static final Supplier<Double> kI = PID.addConstantDouble("kI", 0);
 
@@ -41,14 +45,13 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
     private static final PIDSettings pidSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
 
-    private static final double DEGREES_TO_PULSES = 4096 * Math.PI / 180 * 11 / 9;
+    private static final double DEGREES_TO_PULSES = 4096 * Math.PI / 180 * 11 / 9 * 2 / 3;
 
     private static Turret instance;
 
     public static Turret getInstance() {
         if (instance == null) {
             WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.TURRET_TALON);
-            motor.setInverted(true);
             DigitalInput endLimit = new DigitalInput(RobotMap.DIO.END_LIMIT);
             DigitalInput startLimit = new DigitalInput(RobotMap.DIO.START_LIMIT);
             instance = new Turret(motor, endLimit, startLimit);
@@ -71,7 +74,6 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         this.endLimit = endLimit;
         this.startLimit = startLimit;
         enabled = true;
-
     }
 
     @Override
@@ -81,7 +83,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public boolean canMove(double speed) {
-        return (speed > 0 && !endLimit.get()) || (speed < 0 && !startLimit.get()) && enabled;
+        return ((speed > 0 && !endLimit.get()) || (speed < 0 && !startLimit.get())) && enabled;
     }
 
     @Override
@@ -100,21 +102,33 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     @Override
     public void periodic() {
         turretNamespace.update();
+        if (startLimit.get())
+            motor.setSelectedSensorPosition((int) (minAngle.get() * DEGREES_TO_PULSES));
+        if (endLimit.get())
+            motor.setSelectedSensorPosition((int) (maxAngle.get() * DEGREES_TO_PULSES));
     }
 
     @Override
     public void configureDashboard() {
         setAutomaticDefaultCommand();
-        turretNamespace.putData("rotate", new MoveTalonSubsystem(this, setpoint, waitTime));
-        turretNamespace.putData("Image processing rotation", new InstantCommand(() -> TurretStateMachine.getInstance().getTransformationFor(TurretStateMachine.TurretState.AUTOMATIC)));
-    }
-
-    public void setManualDefaultCommand() {
-        this.setDefaultCommand(new MoveTalonSubsystem(this, Robot.oi::getControllerRightAngle, () -> 0.0));
+//        turretNamespace.putBoolean("on target", () -> onTarget(setpoint.get()));
+        turretNamespace.putNumber("turret angle", () -> motor.getSelectedSensorPosition() / DEGREES_TO_PULSES);
+        turretNamespace.putNumber("speed controller values", motor::getMotorOutputPercent);
+        turretNamespace.putData("rotate with pid", new MoveTalonSubsystem(this, setpoint, waitTime));
+        turretNamespace.putData("rotate with speed", new MoveGenericSubsystem(this, turnSpeed));
+        turretNamespace.putData("rotate with image processing", new InstantCommand(() -> TurretStateMachine.getInstance().getTransformationFor(TurretStateMachine.TurretState.AUTOMATIC)));
     }
 
     public void setAutomaticDefaultCommand() {
-        this.setDefaultCommand(new MoveTurretToFieldRelativeAngle());
+        setDefaultCommand(new MoveTurretToFieldRelativeAngle().perpetually());
+    }
+
+    public void setSpeedDefaultCommand() {
+        setDefaultCommand(new MoveGenericSubsystem(this, turnSpeed));
+    }
+
+    public void setManualDefaultCommand() {
+        setDefaultCommand(new MoveTalonSubsystem(this, Robot.oi::getControllerRightAngle, () -> 0.0).perpetually());
     }
 
     @Override
@@ -138,7 +152,6 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         setpoint = MathUtil.clamp(setpoint % 360, minAngle.get(), maxAngle.get());
 
         setpoint *= DEGREES_TO_PULSES;
-
         motor.configPeakOutputForward(maxSpeed.get(), timeout.get());
         motor.configPeakOutputReverse(minSpeed.get(), timeout.get());
 
@@ -156,14 +169,15 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public boolean onTarget(double setpoint) {
-        setpoint = MathUtil.clamp(setpoint % 360, maxAngle.get(), minAngle.get());
+
+        setpoint = MathUtil.clamp(setpoint % 360, minAngle.get(), maxAngle.get());
 
         setpoint *= DEGREES_TO_PULSES;
 
         double tolerance = Turret.tolerance.get() * DEGREES_TO_PULSES;
         int position = motor.getSelectedSensorPosition();
 
-        return !canMove(motor.getMotorOutputPercent()) || Math.abs(setpoint - position) < tolerance;
+        return !canMove(motor.getMotorOutputPercent()) || Math.abs(setpoint - position) <= tolerance;
     }
 
     public boolean isEnabled() {
