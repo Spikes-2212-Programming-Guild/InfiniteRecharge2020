@@ -19,6 +19,9 @@ public class RobotMap {
         int DRIVETRAIN_RIGHT_VICTOR = 1;
 
         int ELEVATOR_TALON = 8;
+
+        int CLIMBER_TALON_LEFT = 6;
+        int CLIMBER_TALON_RIGHT = 7;
     }
 
     public interface DIO {
@@ -35,6 +38,11 @@ public class RobotMap {
         int ELEVATOR_BOTTOM_SWITCH = 6;
         int ELEVATOR_TOP_SWITCH = 7;
         int ELEVATOR_HALL_EFFECT=10;
+
+        int CLIMBER_ENCODER_LEFT_POS = 11;
+        int CLIMBER_ENCODER_LEFT_NEG = 12;
+        int CLIMBER_ENCODER_RIGHT_POS = 13;
+        int CLIMBER_ENCODER_RIGHT_NEG = 14;
     }
 
     public interface PCM {
