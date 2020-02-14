@@ -12,8 +12,9 @@ import java.util.function.Supplier;
 
 public class Climber extends SubsystemBase {
 
-    private static final Namespace climbingNamespace = new RootNamespace("Climber");
+    private static final Namespace climbingNamespace = new RootNamespace("climber");
     private static final Namespace pidNamespace = climbingNamespace.addChild("PID");
+
     private static final Supplier<Double> kP = pidNamespace.addConstantDouble("kP", 0);
     private static final Supplier<Double> kI = pidNamespace.addConstantDouble("kI", 0);
     private static final Supplier<Double> kD = pidNamespace.addConstantDouble("kD", 0);
