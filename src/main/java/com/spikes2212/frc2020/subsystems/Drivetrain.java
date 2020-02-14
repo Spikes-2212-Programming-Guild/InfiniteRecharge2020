@@ -60,6 +60,7 @@ public class Drivetrain extends OdometryDrivetrain {
         this.imu = imu;
         this.odometry = new OdometryHandler(leftEncoder::getDistance, rightEncoder::getDistance, imu::getY,
                 0, 0);
+        this.inverted = false;
     }
 
     @Override
