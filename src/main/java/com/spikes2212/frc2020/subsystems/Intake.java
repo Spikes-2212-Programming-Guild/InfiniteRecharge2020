@@ -6,8 +6,6 @@ import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import java.util.function.Supplier;
@@ -16,9 +14,10 @@ public class Intake extends GenericSubsystem {
 
     public static RootNamespace intakeNamespace = new RootNamespace("intake");
 
-    public static Supplier<Double> minSpeed = intakeNamespace.addConstantDouble("min speed", -1);
-    public static Supplier<Double> maxSpeed = intakeNamespace.addConstantDouble("max speed", 1);
-    public static Supplier<Double> gripSpeed = intakeNamespace.addConstantDouble("grip speed", 0.5);
+    private static Supplier<Double> minSpeed = intakeNamespace.addConstantDouble("min speed", -1);
+    private static Supplier<Double> maxSpeed = intakeNamespace.addConstantDouble("max speed", 1);
+    private static Supplier<Double> gripSpeed = intakeNamespace.addConstantDouble("grip speed", 0.5);
+    private static Supplier<Double> intakeCurrent = intakeNamespace.addConstantDouble("intake Current", 0);
 
     private static Intake instance;
 
@@ -97,12 +96,19 @@ public class Intake extends GenericSubsystem {
     }
 
 
-    public double getAppliedVoltage(){
-        return motor.getBusVoltage();
+    public double getSuppliedCurrent(){
+        return motor.getSupplyCurrent();
     }
 
-    public double getActualVoltage(){
-        return motor.getMotorOutputVoltage();
+    public double getStatorCurrent(){
+        return motor.getStatorCurrent();
     }
 
+    public double getCurrentLimit() {
+        return intakeCurrent.get();
+    }
+
+    public double getGripSpeed() {
+        return gripSpeed.get();
+    }
 }

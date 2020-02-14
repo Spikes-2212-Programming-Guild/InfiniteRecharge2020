@@ -1,24 +1,28 @@
 package com.spikes2212.frc2020.commands;
 
+import com.spikes2212.frc2020.statemachines.IntakeFeederStateMachine;
 import com.spikes2212.frc2020.subsystems.Feeder;
 import com.spikes2212.frc2020.subsystems.Intake;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-import java.util.function.Supplier;
+import static com.spikes2212.frc2020.statemachines.IntakeFeederStateMachine.IntakeFeederState;
 
 public class Grip extends SequentialCommandGroup {
 
     private Intake intake = Intake.getInstance();
     private Feeder feeder = Feeder.getInstance();
-    private Supplier<Double> appliedVoltage = intake::getAppliedVoltage;
-    private Supplier<Double> actualVoltage = intake::getActualVoltage;
+    private IntakeFeederStateMachine intakeFeederFSM = IntakeFeederStateMachine.getInstance();
 
     public Grip() {
-        addCommands(new MoveGenericSubsystem(intake, intake.gripSpeed).withInterrupt
-                (() -> appliedVoltage.get() > actualVoltage.get()),
-                new MoveGenericSubsystem(feeder, feeder::getProvidedSpeed).withTimeout(feeder.getFeedTime()));
+        addCommands(
+                intakeFeederFSM.getTransformationFor(IntakeFeederState.OPEN_INTAKE_CLOSE_FEEDER),
+                new MoveGenericSubsystem(intake, intake.getGripSpeed()).withInterrupt
+                        (() -> intake.getSuppliedCurrent() - intake.getStatorCurrent() >= intake.getCurrentLimit()),
+                intakeFeederFSM.getTransformationFor(IntakeFeederState.OPEN_INTAKE_OPEN_FEEDER),
+                ((new MoveGenericSubsystem(feeder, feeder::getProvidedSpeed)).deadlineWith
+                        (new MoveGenericSubsystem(intake, intake.getGripSpeed()))).withTimeout(feeder.getFeedTime()),
+                intakeFeederFSM.getTransformationFor(IntakeFeederState.CLOSE_INTAKE_CLOSE_FEEDER));
     }
 
 }
