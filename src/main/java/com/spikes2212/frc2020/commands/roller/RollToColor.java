@@ -1,7 +1,6 @@
 package com.spikes2212.frc2020.commands.roller;
 
 import com.spikes2212.frc2020.subsystems.Roller;
-import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
