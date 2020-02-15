@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 public class Feeder extends GenericSubsystem {
 
-  public static final Namespace feederNamespace = new RootNamespace("feederNamespace");
+  public static final Namespace feederNamespace = new RootNamespace("feeder");
 
   private static final Supplier<Double> minSpeed = feederNamespace.addConstantDouble("min speed",
       -1);
