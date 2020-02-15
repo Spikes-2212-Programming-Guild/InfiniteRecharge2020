@@ -15,11 +15,12 @@ public class Feeder extends GenericSubsystem {
 
   public static final Namespace feederNamespace = new RootNamespace("feeder");
 
-  private static final Supplier<Double> minSpeed = feederNamespace.addConstantDouble("min speed",
-      -1);
-  private static final Supplier<Double> maxSpeed = feederNamespace.addConstantDouble("max speed",
-      1);
-  private static final Supplier<Double> speed = feederNamespace.addConstantDouble("speed", 0.5);
+  private static final Supplier<Double> minSpeed = feederNamespace
+      .addConstantDouble("min speed", -1);
+  private static final Supplier<Double> maxSpeed = feederNamespace
+      .addConstantDouble("max speed", 1);
+  private static final Supplier<Double> speed = feederNamespace
+      .addConstantDouble("speed", 0.5);
 
   private static Feeder instance;
 
@@ -30,6 +31,7 @@ public class Feeder extends GenericSubsystem {
           RobotMap.PCM.FEEDER_BACKWARD);
       instance = new Feeder(motor, solenoid);
     }
+
     return instance;
   }
 

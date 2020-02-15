@@ -8,7 +8,6 @@ import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.TalonSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
-import com.spikes2212.lib.control.PIDSettings;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -22,17 +21,17 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
   public static final Namespace PID = turretNamespace.addChild("PID");
 
-  public static final Supplier<Double> maxSpeed = turretNamespace.addConstantDouble("Max Speed",
-      0.6);
-  public static final Supplier<Double> testSpeed = turretNamespace.addConstantDouble("Test Speed",
-      0.3);
+  public static final Supplier<Double> maxSpeed = turretNamespace
+      .addConstantDouble("Max Speed", 0.6);
+  public static final Supplier<Double> testSpeed = turretNamespace
+      .addConstantDouble("Test Speed", 0.3);
 
-  public static final Supplier<Double> minSpeed = turretNamespace.addConstantDouble("Min Speed",
-      -0.6);
-  public static final Supplier<Double> minAngle = turretNamespace.addConstantDouble("Min Angle",
-      30);
-  public static final Supplier<Double> maxAngle = turretNamespace.addConstantDouble("Max Angle",
-      330);
+  public static final Supplier<Double> minSpeed = turretNamespace
+      .addConstantDouble("Min Speed", -0.6);
+  public static final Supplier<Double> minAngle = turretNamespace
+      .addConstantDouble("Min Angle", 30);
+  public static final Supplier<Double> maxAngle = turretNamespace
+      .addConstantDouble("Max Angle", 330);
   public static final Supplier<Double> kP = PID.addConstantDouble("kP", 0);
   public static final Supplier<Double> kI = PID.addConstantDouble("kI", 0);
 
@@ -41,8 +40,6 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
   public static final Supplier<Double> waitTime = PID.addConstantDouble("Wait Time", 0);
   public static final Supplier<Double> setpoint = PID.addConstantDouble("setpoint", 90);
   public static final Supplier<Integer> timeout = PID.addConstantInt("timeout", 30);
-
-  public static final PIDSettings pidSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
 
   private static final double DEGREES_TO_PULSES = 4096 * Math.PI / 180 * 11 / 9;
 
@@ -56,6 +53,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
       DigitalInput startLimit = new DigitalInput(RobotMap.DIO.START_LIMIT);
       instance = new Turret(motor, endLimit, startLimit);
     }
+
     return instance;
   }
 
@@ -110,7 +108,8 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
   @Override
   public void configureLoop() {
     motor.configFactoryDefault();
-    motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, timeout.get());
+    motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0,
+        timeout.get());
 
     motor.configNominalOutputForward(0, timeout.get());
     motor.configNominalOutputReverse(0, timeout.get());

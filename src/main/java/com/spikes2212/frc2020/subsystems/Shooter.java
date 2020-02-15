@@ -19,12 +19,12 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
 
   public static final double distancePerPulse = 2 * 0.0254 * Math.PI / 2048;
 
-  public static final Supplier<Double> maxSpeed = shooterNamespace.addConstantDouble("Max Speed",
-      0.6);
-  public static final Supplier<Double> minSpeed = shooterNamespace.addConstantDouble("Min Speed",
-      0);
-  public static final Supplier<Double> shootSpeed =
-      shooterNamespace.addConstantDouble("Shooting Speed", 0.6);
+  public static final Supplier<Double> maxSpeed = shooterNamespace
+      .addConstantDouble("Max Speed", 0.6);
+  public static final Supplier<Double> minSpeed = shooterNamespace
+      .addConstantDouble("Min Speed", 0);
+  public static final Supplier<Double> shootSpeed = shooterNamespace
+      .addConstantDouble("Shooting Speed", 0.6);
 
   public static final Supplier<Double> kP = PID.addConstantDouble("kP", 0);
   public static final Supplier<Double> kI = PID.addConstantDouble("kI", 0);
@@ -49,7 +49,6 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
   private PIDSettings pidSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
 
   private WPI_TalonSRX master;
-
 
   private Shooter(WPI_TalonSRX master) {
     super(minSpeed, maxSpeed);
@@ -114,8 +113,8 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
 
   @Override
   public boolean onTarget(double setpoint) {
-    return Math.abs(setpoint - master.getSelectedSensorPosition(loop.get())) < pidSettings.getTolerance()
-        || !canMove(master.getMotorOutputPercent());
+    return Math.abs(setpoint - master.getSelectedSensorPosition(loop.get())) <
+        pidSettings.getTolerance() || !canMove(master.getMotorOutputPercent());
   }
 
   @Override

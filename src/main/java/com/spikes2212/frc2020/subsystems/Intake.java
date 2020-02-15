@@ -15,17 +15,19 @@ public class Intake extends GenericSubsystem {
 
   public static Namespace intakeNamespace = new RootNamespace("intake");
 
-  public static final Supplier<Double> minSpeed = intakeNamespace.addConstantDouble("min speed",
-      -1);
-  public static final Supplier<Double> maxSpeed = intakeNamespace.addConstantDouble("max speed", 1);
-  public static final Supplier<Double> gripSpeed = intakeNamespace.addConstantDouble("grip speed"
-      , 0.5);
+  public static final Supplier<Double> minSpeed = intakeNamespace
+      .addConstantDouble("min speed", -1);
+  public static final Supplier<Double> maxSpeed = intakeNamespace
+      .addConstantDouble("max speed", 1);
+  public static final Supplier<Double> gripSpeed = intakeNamespace
+      .addConstantDouble("grip speed", 0.5);
 
   public enum IntakeState {
     UP, DOWN
   }
 
-  private DoubleSolenoid leftSolenoid, rightSolenoid;
+  private DoubleSolenoid leftSolenoid;
+  private DoubleSolenoid rightSolenoid;
   private WPI_TalonSRX motor;
   private IntakeState state;
 
@@ -33,13 +35,14 @@ public class Intake extends GenericSubsystem {
 
   public static Intake getInstance() {
     if (instance == null) {
-      DoubleSolenoid left = new DoubleSolenoid(RobotMap.PCM.LEFT_INTAKE_FORWARD
-          , RobotMap.PCM.LEFT_INTAKE_BACKWARD);
+      DoubleSolenoid left = new DoubleSolenoid(RobotMap.PCM.LEFT_INTAKE_FORWARD,
+          RobotMap.PCM.LEFT_INTAKE_BACKWARD);
       DoubleSolenoid right = new DoubleSolenoid(RobotMap.PCM.RIGHT_INTAKE_FORWARD,
           RobotMap.PCM.RIGHT_INTAKE_BACKWARD);
       WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.INTAKE_MOTOR);
       instance = new Intake(left, right, motor);
     }
+
     return instance;
   }
 
