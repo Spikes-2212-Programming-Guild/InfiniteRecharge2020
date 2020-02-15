@@ -6,7 +6,7 @@ public class RobotMap {
     int TURRET_TALON = 6;
 
     int SHOOTER_MASTER = 8;
-    int SHOOTER_SLAVE = 2;
+    int SHOOTER_SLAVE = 9;
 
     int INTAKE_MOTOR = 4;
     int FEEDER_MOTOR = 3;
@@ -44,9 +44,9 @@ public class RobotMap {
     int FEEDER_FORWARD = 0;
     int FEEDER_BACKWARD = 1;
 
-    int LEFT_INTAKE_FORWARD = 4;
-    int LEFT_INTAKE_BACKWARD = 5;
-    int RIGHT_INTAKE_FORWARD = 2;
-    int RIGHT_INTAKE_BACKWARD = 3;
+    int SHOOTER_FORWARD = 4;
+    int SHOOTER_BACKWARD = 5;
+    int INTAKE_FORWARD = 2;
+    int INTAKE_BACKWARD = 3;
   }
 }

@@ -26,7 +26,6 @@ public class Intake extends GenericSubsystem {
     UP, DOWN
   }
 
-  private DoubleSolenoid leftSolenoid;
   private DoubleSolenoid rightSolenoid;
   private WPI_TalonSRX motor;
   private IntakeState state;
@@ -35,20 +34,17 @@ public class Intake extends GenericSubsystem {
 
   public static Intake getInstance() {
     if (instance == null) {
-      DoubleSolenoid left = new DoubleSolenoid(RobotMap.PCM.LEFT_INTAKE_FORWARD,
-          RobotMap.PCM.LEFT_INTAKE_BACKWARD);
-      DoubleSolenoid right = new DoubleSolenoid(RobotMap.PCM.RIGHT_INTAKE_FORWARD,
-          RobotMap.PCM.RIGHT_INTAKE_BACKWARD);
+      DoubleSolenoid right = new DoubleSolenoid(RobotMap.PCM.INTAKE_FORWARD,
+          RobotMap.PCM.INTAKE_BACKWARD);
       WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.INTAKE_MOTOR);
-      instance = new Intake(left, right, motor);
+      instance = new Intake(right, motor);
     }
 
     return instance;
   }
 
-  private Intake(DoubleSolenoid left, DoubleSolenoid right, WPI_TalonSRX motor) {
+  private Intake(DoubleSolenoid right, WPI_TalonSRX motor) {
     super(minSpeed, maxSpeed);
-    this.leftSolenoid = left;
     this.rightSolenoid = right;
     this.motor = motor;
     this.state = IntakeState.UP;
@@ -79,13 +75,11 @@ public class Intake extends GenericSubsystem {
 
   public void open() {
     setState(IntakeState.DOWN);
-    leftSolenoid.set(DoubleSolenoid.Value.kForward);
     rightSolenoid.set(DoubleSolenoid.Value.kForward);
   }
 
   public void close() {
     setState(IntakeState.UP);
-    leftSolenoid.set(DoubleSolenoid.Value.kReverse);
     rightSolenoid.set(DoubleSolenoid.Value.kReverse);
   }
 
