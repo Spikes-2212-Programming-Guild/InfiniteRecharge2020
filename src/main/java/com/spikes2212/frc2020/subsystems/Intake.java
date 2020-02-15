@@ -13,82 +13,84 @@ import java.util.function.Supplier;
 
 public class Intake extends GenericSubsystem {
 
-    public static Namespace intakeNamespace = new RootNamespace("intake");
+  public static Namespace intakeNamespace = new RootNamespace("intake");
 
-    public static final Supplier<Double> minSpeed = intakeNamespace.addConstantDouble("min speed", -1);
-    public static final Supplier<Double> maxSpeed = intakeNamespace.addConstantDouble("max speed", 1);
-    public static final Supplier<Double> gripSpeed = intakeNamespace.addConstantDouble("grip speed", 0.5);
+  public static final Supplier<Double> minSpeed = intakeNamespace.addConstantDouble("min speed",
+      -1);
+  public static final Supplier<Double> maxSpeed = intakeNamespace.addConstantDouble("max speed", 1);
+  public static final Supplier<Double> gripSpeed = intakeNamespace.addConstantDouble("grip speed"
+      , 0.5);
 
-    public enum IntakeState {
-        UP, DOWN;
+  public enum IntakeState {
+    UP, DOWN
+  }
+
+  private DoubleSolenoid leftSolenoid, rightSolenoid;
+  private VictorSP motor;
+  private IntakeState state;
+
+  private static Intake instance;
+
+  public static Intake getInstance() {
+    if (instance == null) {
+      DoubleSolenoid left = new DoubleSolenoid(RobotMap.PCM.LEFT_INTAKE_FORWARD
+          , RobotMap.PCM.LEFT_INTAKE_BACKWARD);
+      DoubleSolenoid right = new DoubleSolenoid(RobotMap.PCM.RIGHT_INTAKE_FORWARD,
+          RobotMap.PCM.RIGHT_INTAKE_BACKWARD);
+      VictorSP motor = new VictorSP(RobotMap.PWM.INTAKE_MOTOR);
+      instance = new Intake(left, right, motor);
     }
+    return instance;
+  }
 
-    private DoubleSolenoid leftSolenoid, rightSolenoid;
-    private VictorSP motor;
-    private IntakeState state;
+  private Intake(DoubleSolenoid left, DoubleSolenoid right, VictorSP motor) {
+    super(minSpeed, maxSpeed);
+    this.leftSolenoid = left;
+    this.rightSolenoid = right;
+    this.motor = motor;
+    this.state = IntakeState.UP;
+  }
 
-    private static Intake instance;
+  public IntakeState getState() {
+    return state;
+  }
 
-    public static Intake getInstance() {
-        if (instance == null) {
-            DoubleSolenoid left = new DoubleSolenoid(RobotMap.PCM.LEFT_INTAKE_FORWARD
-                    , RobotMap.PCM.LEFT_INTAKE_BACKWARD);
-            DoubleSolenoid right = new DoubleSolenoid(RobotMap.PCM.RIGHT_INTAKE_FORWARD,
-                    RobotMap.PCM.RIGHT_INTAKE_BACKWARD);
-            VictorSP motor = new VictorSP(RobotMap.PWM.INTAKE_MOTOR);
-            instance = new Intake(left, right, motor);
-        }
-        return instance;
-    }
+  public void setState(IntakeState state) {
+    this.state = state;
+  }
 
-    private Intake(DoubleSolenoid left, DoubleSolenoid right, VictorSP motor) {
-        super(minSpeed, maxSpeed);
-        this.leftSolenoid = left;
-        this.rightSolenoid = right;
-        this.motor = motor;
-        this.state = IntakeState.UP;
-    }
+  @Override
+  public void apply(double speed) {
+    motor.set(speed);
+  }
 
-    public IntakeState getState() {
-        return state;
-    }
+  @Override
+  public boolean canMove(double speed) {
+    return speed >= 0 && state == IntakeState.DOWN;
+  }
 
-    public void setState(IntakeState state) {
-        this.state = state;
-    }
+  @Override
+  public void stop() {
+    motor.stopMotor();
+  }
 
-    @Override
-    public void apply(double speed) {
-        motor.set(speed);
-    }
+  public void open() {
+    setState(IntakeState.DOWN);
+    leftSolenoid.set(DoubleSolenoid.Value.kForward);
+    rightSolenoid.set(DoubleSolenoid.Value.kForward);
+  }
 
-    @Override
-    public boolean canMove(double speed) {
-        return speed >= 0 && state == IntakeState.DOWN;
-    }
+  public void close() {
+    setState(IntakeState.UP);
+    leftSolenoid.set(DoubleSolenoid.Value.kReverse);
+    rightSolenoid.set(DoubleSolenoid.Value.kReverse);
+  }
 
-    @Override
-    public void stop() {
-        motor.stopMotor();
-    }
-
-    public void open() {
-        setState(IntakeState.DOWN);
-        leftSolenoid.set(DoubleSolenoid.Value.kForward);
-        rightSolenoid.set(DoubleSolenoid.Value.kForward);
-    }
-
-    public void close() {
-        setState(IntakeState.UP);
-        leftSolenoid.set(DoubleSolenoid.Value.kReverse);
-        rightSolenoid.set(DoubleSolenoid.Value.kReverse);
-    }
-
-    @Override
-    public void configureDashboard() {
-        intakeNamespace.putData("open", new InstantCommand(this::open, this));
-        intakeNamespace.putData("close", new InstantCommand(this::close, this));
-        intakeNamespace.putData("grip", new MoveGenericSubsystem(this, gripSpeed));
-        intakeNamespace.putString("state", state::name);
-    }
+  @Override
+  public void configureDashboard() {
+    intakeNamespace.putData("open", new InstantCommand(this::open, this));
+    intakeNamespace.putData("close", new InstantCommand(this::close, this));
+    intakeNamespace.putData("grip", new MoveGenericSubsystem(this, gripSpeed));
+    intakeNamespace.putString("state", state::name);
+  }
 }
