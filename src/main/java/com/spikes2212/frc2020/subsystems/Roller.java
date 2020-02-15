@@ -52,6 +52,7 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
             DigitalInput limit = new DigitalInput(RobotMap.DIO.ROLLER_LIMIT);
             instance = new Roller(MIN_SPEED, MAX_SPEED, motor, colorDetector, limit);
         }
+
         return instance;
     }
 
