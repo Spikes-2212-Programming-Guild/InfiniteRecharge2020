@@ -103,13 +103,17 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
                 new MoveTalonSubsystem(this, getSetpoint(ColorDetector.greenTarget), () -> 0.0));
     }
 
-    public double getSetpoint(Color color) {
+    private double getSetpoint(Color color) {
         int targetIndex = COLOR_ORDER.indexOf(inFrontOf(color));
         int currentIndex = COLOR_ORDER.indexOf(detector.getDetectedColor());
         if(targetIndex == -1 || currentIndex == -1) return 0;
         double offset = targetIndex - currentIndex;
         if (Math.abs(offset) == 3) offset *= -(1/3.0);
         return offset;
+    }
+
+    public boolean isPressed() {
+        return limit.get();
     }
 
     @Override

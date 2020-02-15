@@ -30,6 +30,6 @@ public class DriveToTrench extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return roller.canMove(1);
+        return roller.isPressed();
     }
 }
