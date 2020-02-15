@@ -3,13 +3,17 @@ package com.spikes2212.frc2020;
 public class RobotMap {
 
   public interface CAN {
-    int TURRET_TALON = 5;
+    int TURRET_TALON = 6;
+
     int SHOOTER_MASTER = 8;
     int SHOOTER_SLAVE = 2;
 
-    int DRIVETRAIN_LEFT_TALON = 2;
-    int DRIVETRAIN_LEFT_VICTOR = 3;
-    int DRIVETRAIN_RIGHT_TALON = 4;
+    int INTAKE_MOTOR = 4;
+    int FEEDER_MOTOR = 3;
+
+    int DRIVETRAIN_LEFT_TALON = 17;
+    int DRIVETRAIN_LEFT_VICTOR = 18;
+    int DRIVETRAIN_RIGHT_TALON = 19;
     int DRIVETRAIN_RIGHT_VICTOR = 1;
 
     int PCM = 0;
@@ -33,10 +37,5 @@ public class RobotMap {
     int LEFT_INTAKE_BACKWARD = 5;
     int RIGHT_INTAKE_FORWARD = 2;
     int RIGHT_INTAKE_BACKWARD = 3;
-  }
-
-  public interface PWM {
-    int INTAKE_MOTOR = 0;
-    int FEEDER_MOTOR = 2;
   }
 }

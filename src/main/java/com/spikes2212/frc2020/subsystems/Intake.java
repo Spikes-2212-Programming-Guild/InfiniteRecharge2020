@@ -1,12 +1,12 @@
 package com.spikes2212.frc2020.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import java.util.function.Supplier;
@@ -26,7 +26,7 @@ public class Intake extends GenericSubsystem {
   }
 
   private DoubleSolenoid leftSolenoid, rightSolenoid;
-  private VictorSP motor;
+  private WPI_TalonSRX motor;
   private IntakeState state;
 
   private static Intake instance;
@@ -37,13 +37,13 @@ public class Intake extends GenericSubsystem {
           , RobotMap.PCM.LEFT_INTAKE_BACKWARD);
       DoubleSolenoid right = new DoubleSolenoid(RobotMap.PCM.RIGHT_INTAKE_FORWARD,
           RobotMap.PCM.RIGHT_INTAKE_BACKWARD);
-      VictorSP motor = new VictorSP(RobotMap.PWM.INTAKE_MOTOR);
+      WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.INTAKE_MOTOR);
       instance = new Intake(left, right, motor);
     }
     return instance;
   }
 
-  private Intake(DoubleSolenoid left, DoubleSolenoid right, VictorSP motor) {
+  private Intake(DoubleSolenoid left, DoubleSolenoid right, WPI_TalonSRX motor) {
     super(minSpeed, maxSpeed);
     this.leftSolenoid = left;
     this.rightSolenoid = right;
