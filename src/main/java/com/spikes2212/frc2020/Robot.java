@@ -1,7 +1,7 @@
 package com.spikes2212.frc2020;
 
-import com.spikes2212.frc2020.commands.Climb;
 import com.spikes2212.frc2020.subsystems.*;
+import com.spikes2212.lib.command.drivetrains.commands.DriveArcade;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -14,9 +14,11 @@ public class Robot extends TimedRobot {
     private static Feeder feeder = Feeder.getInstance();
     private static Intake intake = Intake.getInstance();
     private static Climber climber = Climber.getInstance();
+    private static Roller roller = Roller.getInstance();
 
     @Override
     public void robotInit() {
+        roller.configureDashboard();
         shooter.configureDashboard();
         turret.configureDashboard();
         feeder.configureDashboard();
