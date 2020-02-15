@@ -42,6 +42,8 @@ public class RobotMap {
         int CLIMBER_ENCODER_LEFT_NEG = 12;
         int CLIMBER_ENCODER_RIGHT_POS = 13;
         int CLIMBER_ENCODER_RIGHT_NEG = 14;
+
+        int ROLLER_LIMIT = 15;
     }
 
     public interface PCM {

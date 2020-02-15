@@ -10,6 +10,7 @@ import com.spikes2212.lib.command.genericsubsystem.TalonSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 
@@ -38,24 +39,32 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
         return COLOR_ORDER.get((COLOR_ORDER.indexOf(color) + 2) % 4);
     }
 
+    public static Color getColorFromFMS() {
+        return null;
+    }
+
     private static Roller instance;
 
     public static Roller getInstance() {
         if (instance == null) {
             WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.ROLLER_MOTOR);
             ColorDetector colorDetector = new ColorDetector(I2C.Port.kOnboard);
-            instance = new Roller(MIN_SPEED, MAX_SPEED, motor, colorDetector);
+            DigitalInput limit = new DigitalInput(RobotMap.DIO.ROLLER_LIMIT);
+            instance = new Roller(MIN_SPEED, MAX_SPEED, motor, colorDetector, limit);
         }
         return instance;
     }
 
     private WPI_TalonSRX motor;
     private ColorDetector detector;
+    private DigitalInput limit;
 
-    private Roller(Supplier<Double> minSpeed, Supplier<Double> maxSpeed, WPI_TalonSRX motor, ColorDetector detector) {
+    private Roller(Supplier<Double> minSpeed, Supplier<Double> maxSpeed, WPI_TalonSRX motor, ColorDetector detector,
+                   DigitalInput limit) {
         super(minSpeed, maxSpeed);
         this.motor = motor;
         this.detector = detector;
+        this.limit = limit;
         COLOR_ORDER.add(ColorDetector.blueTarget);
         COLOR_ORDER.add(ColorDetector.redTarget);
         COLOR_ORDER.add(ColorDetector.greenTarget);
@@ -69,7 +78,7 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public boolean canMove(double speed) {
-        return true;
+        return limit.get() || speed == 0;
     }
 
     @Override
@@ -94,7 +103,7 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
                 new MoveTalonSubsystem(this, getSetpoint(ColorDetector.greenTarget), () -> 0.0));
     }
 
-    private double getSetpoint(Color color) {
+    public double getSetpoint(Color color) {
         int targetIndex = COLOR_ORDER.indexOf(inFrontOf(color));
         int currentIndex = COLOR_ORDER.indexOf(detector.getDetectedColor());
         if(targetIndex == -1 || currentIndex == -1) return 0;
