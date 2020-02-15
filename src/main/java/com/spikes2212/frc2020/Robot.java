@@ -1,5 +1,7 @@
 package com.spikes2212.frc2020;
 
+import com.spikes2212.frc2020.subsystems.Climber;
+import com.spikes2212.frc2020.subsystems.Elevator;
 import com.spikes2212.frc2020.subsystems.Feeder;
 import com.spikes2212.frc2020.subsystems.Intake;
 import com.spikes2212.frc2020.subsystems.Shooter;
@@ -17,6 +19,8 @@ public class Robot extends TimedRobot {
     Turret.getInstance().configureDashboard();
     Feeder.getInstance().configureDashboard();
     Intake.getInstance().configureDashboard();
+    Climber.getInstance().configureDashboard();
+    Elevator.getInstance().configureDashboard();
 
     oi = new OI();
   }
