@@ -3,6 +3,7 @@ package com.spikes2212.frc2020;
 import edu.wpi.first.wpilibj.Joystick;
 
 public class OI /* GEVALD */ {
+
     private Joystick left = new Joystick(0);
     private Joystick right = new Joystick(1);
 

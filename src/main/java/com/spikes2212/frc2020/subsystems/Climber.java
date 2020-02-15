@@ -14,10 +14,10 @@ public class Climber extends SubsystemBase {
 
     private static final Namespace climbingNamespace = new RootNamespace("climber");
     private static final Namespace pidNamespace = climbingNamespace.addChild("PID");
-
     private static final Supplier<Double> kP = pidNamespace.addConstantDouble("kP", 0);
     private static final Supplier<Double> kI = pidNamespace.addConstantDouble("kI", 0);
     private static final Supplier<Double> kD = pidNamespace.addConstantDouble("kD", 0);
+
     public static final PIDSettings PID_SETTINGS = new PIDSettings(kP, kI, kD);
 
     private static Climber instance;
@@ -34,7 +34,6 @@ public class Climber extends SubsystemBase {
     }
 
     private WPI_TalonSRX leftMotor;
-
     private WPI_TalonSRX rightMotor;
     private Encoder leftEncoder;
     private Encoder rightEncoder;
@@ -74,7 +73,6 @@ public class Climber extends SubsystemBase {
         stopLeft();
         stopRight();
     }
-
 
     public void configureDashboard() {
         climbingNamespace.putNumber("left encoder", leftEncoder::get);

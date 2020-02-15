@@ -8,7 +8,6 @@ import com.spikes2212.lib.dashboard.RootNamespace;
 import com.spikes2212.lib.path.OdometryHandler;
 import com.spikes2212.lib.util.PigeonWrapper;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.SpeedController;
 
 import java.util.function.Supplier;
 
@@ -48,6 +47,7 @@ public class Drivetrain extends OdometryDrivetrain {
     private Encoder rightEncoder;
     private PigeonWrapper imu;
     private OdometryHandler odometry;
+
     private boolean inverted;
 
     private Drivetrain(WPI_TalonSRX left, WPI_TalonSRX right, WPI_VictorSPX leftVictor, WPI_VictorSPX rightVictor,

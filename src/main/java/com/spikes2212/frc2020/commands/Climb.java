@@ -9,12 +9,12 @@ import java.util.function.Supplier;
 
 public class Climb extends CommandBase {
 
+    private Climber climber = Climber.getInstance();;
     private Supplier<Double> targetSetpoint;
     private int numberOfSetpoints;
     private double currentSetpoint;
-    private Climber climber = Climber.getInstance();;
-
-    private PIDController leftController, rightController;
+    private PIDController leftController;
+    private PIDController rightController;
 
     public Climb(Supplier<Double> targetSetpoint, int numberOfSetpoints, PIDSettings pidSettings) {
         addRequirements(climber);

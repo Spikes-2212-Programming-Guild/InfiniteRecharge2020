@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 
 public class TurretStateMachine extends StateMachine<TurretStateMachine.TurretState> {
 
+    private Turret turret = Turret.getInstance();
+
     enum TurretState {
         OFF, VISION, MANUAL, ABSOLUTE,
     }
@@ -20,8 +22,6 @@ public class TurretStateMachine extends StateMachine<TurretStateMachine.TurretSt
 
         return instance;
     }
-
-    private static Turret turret = Turret.getInstance();
 
     private TurretStateMachine() {
         super(TurretState.OFF);

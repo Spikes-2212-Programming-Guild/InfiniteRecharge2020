@@ -12,11 +12,10 @@ import java.util.function.Supplier;
 
 public class Intake extends GenericSubsystem {
 
-    public static RootNamespace intakeNamespace = new RootNamespace("intake");
-
-    public static Supplier<Double> minSpeed = intakeNamespace.addConstantDouble("min speed", -1);
-    public static Supplier<Double> maxSpeed = intakeNamespace.addConstantDouble("max speed", 1);
-    public static Supplier<Double> gripSpeed = intakeNamespace.addConstantDouble("grip speed", 0.5);
+    private static RootNamespace intakeNamespace = new RootNamespace("intake");
+    private static Supplier<Double> minSpeed = intakeNamespace.addConstantDouble("min speed", -1);
+    private static Supplier<Double> maxSpeed = intakeNamespace.addConstantDouble("max speed", 1);
+    private static Supplier<Double> gripSpeed = intakeNamespace.addConstantDouble("grip speed", 0.5);
 
     private static Intake instance;
 
@@ -44,7 +43,7 @@ public class Intake extends GenericSubsystem {
         this.leftSolenoid = left;
         this.rightSolenoid = right;
         this.motor = motor;
-        enabled=false;
+        enabled = false;
     }
 
     @Override

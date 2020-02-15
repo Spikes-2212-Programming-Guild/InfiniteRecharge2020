@@ -16,16 +16,15 @@ import java.util.function.Supplier;
 public class Elevator extends GenericSubsystem {
 
     private static final RootNamespace elevatorNamspace = new RootNamespace("elevator");
-
     private static final Namespace pidNamespace = elevatorNamspace.addChild("PID");
     private static final Supplier<Double> kP = pidNamespace.addConstantDouble("kP", 0);
     private static final Supplier<Double> kI = pidNamespace.addConstantDouble("kI", 0);
     private static final Supplier<Double> kD = pidNamespace.addConstantDouble("kD", 0);
+    private static final Supplier<Double> kS = pidNamespace.addConstantDouble("kS", 0);
+    private static final Supplier<Double> kG = pidNamespace.addConstantDouble("kG", 0);
+
     public static final PIDSettings PID_SETTINGS = new PIDSettings(kP, kI, kD);
 
-    private static final Namespace feedForwardNamespace = elevatorNamspace.addChild("feed forward");
-    private static final Supplier<Double> kS = feedForwardNamespace.addConstantDouble("kS", 0);
-    private static final Supplier<Double> kG = feedForwardNamespace.addConstantDouble("kG", 0);
     public static final FeedForwardSettings FEED_FORWARD_SETTINGS = new FeedForwardSettings(kS, () -> 0.0, () -> 0.0, kG);
 
     public static final Supplier<Double> distancePerPulse = elevatorNamspace.addConstantDouble("distance per pulse", 0);
@@ -48,7 +47,6 @@ public class Elevator extends GenericSubsystem {
     private WPI_TalonSRX motor;
     private Encoder encoder;
     private DigitalInput bottomHallEffect;
-
     private HallEffectCounter hallEffectCounter;
 
     private Elevator(WPI_TalonSRX motor, Encoder encoder, DigitalInput bottomHallEffect, DigitalInput hallEffectCounter) {
@@ -57,7 +55,6 @@ public class Elevator extends GenericSubsystem {
         this.bottomHallEffect = bottomHallEffect;
         this.hallEffectCounter = new HallEffectCounter(hallEffectCounter);
     }
-
 
     @Override
     public void periodic() {
@@ -77,8 +74,7 @@ public class Elevator extends GenericSubsystem {
     @Override
     public boolean canMove(double speed) {
         return !((bottomHallEffect.get() && speed < 0) &&
-                !(hallEffectCounter.atTop(NUM_OF_MAGNETS.get()) &&
-                        speed > 0));
+                !(hallEffectCounter.atTop(NUM_OF_MAGNETS.get()) && speed > 0));
     }
 
     public Supplier<Integer> getCurrentMagnet() {

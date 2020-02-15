@@ -17,24 +17,22 @@ import java.util.function.Supplier;
 
 public class Shooter extends GenericSubsystem implements TalonSubsystem {
 
-    public static RootNamespace shooterNamespace = new RootNamespace("shooter");
-    public static Namespace PID = shooterNamespace.addChild("PID");
-
     public static final double distancePerPulse = 2 * 0.0254 * Math.PI / 2048;
 
-    public static Supplier<Double> maxSpeed = shooterNamespace.addConstantDouble("Max Speed", 0.6);
-    public static Supplier<Double> minSpeed = shooterNamespace.addConstantDouble("Min Speed", 0);
-    public static Supplier<Double> shootSpeed =
-            shooterNamespace.addConstantDouble("Shooting Speed", 0.6);
-
-    public static Supplier<Double> kP = PID.addConstantDouble("kP", 0);
-    public static Supplier<Double> kI = PID.addConstantDouble("kI", 0);
-    public static Supplier<Double> kD = PID.addConstantDouble("kD", 0);
-    public static Supplier<Double> kF = PID.addConstantDouble("kF", 0);
-    public static Supplier<Double> tolerance = PID.addConstantDouble("Tolerance", 0);
-    public static Supplier<Double> waitTime = PID.addConstantDouble("Wait Time", 0);
-    public static Supplier<Integer> loop = PID.addConstantInt("Loop", 0);
-    public static Supplier<Integer> timeout = PID.addConstantInt("Timeout", 30);
+    private static RootNamespace shooterNamespace = new RootNamespace("shooter");
+    private static Namespace PID = shooterNamespace.addChild("PID");
+    private static Supplier<Double> maxSpeed = shooterNamespace.addConstantDouble("Max Speed", 0.6);
+    private static Supplier<Double> minSpeed = shooterNamespace.addConstantDouble("Min Speed", 0);
+    private static Supplier<Double> shootSpeed =
+      shooterNamespace.addConstantDouble("Shooting Speed", 0.6);
+    private static Supplier<Double> kP = PID.addConstantDouble("kP", 0);
+    private static Supplier<Double> kI = PID.addConstantDouble("kI", 0);
+    private static Supplier<Double> kD = PID.addConstantDouble("kD", 0);
+    private static Supplier<Double> kF = PID.addConstantDouble("kF", 0);
+    private static Supplier<Double> tolerance = PID.addConstantDouble("Tolerance", 0);
+    private static Supplier<Double> waitTime = PID.addConstantDouble("Wait Time", 0);
+    private static Supplier<Integer> loop = PID.addConstantInt("Loop", 0);
+    private static Supplier<Integer> timeout = PID.addConstantInt("Timeout", 30);
 
     private static Shooter instance;
 
@@ -50,14 +48,15 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
 
     private PIDSettings pidSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
     private WPI_TalonSRX master;
-    private boolean enabled;
     private DoubleSolenoid solenoid;
+
+    private boolean enabled;
 
     private Shooter(WPI_TalonSRX master, DoubleSolenoid solenoid) {
         super(minSpeed, maxSpeed);
         this.master = master;
         this.solenoid = solenoid;
-        enabled=true;
+        enabled = true;
     }
 
     @Override

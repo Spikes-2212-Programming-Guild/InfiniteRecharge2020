@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class ShooterStateMachine extends StateMachine<ShooterStateMachine.ShooterState> {
 
+    private Shooter shooter = Shooter.getInstance();
+
     enum ShooterState {
         OFF, FAR, CLOSE
     }
@@ -23,8 +25,6 @@ public class ShooterStateMachine extends StateMachine<ShooterStateMachine.Shoote
     private ShooterStateMachine() {
         super(ShooterState.OFF);
     }
-
-    private Shooter shooter = Shooter.getInstance();
 
     @Override
     protected void generateTransformations() {

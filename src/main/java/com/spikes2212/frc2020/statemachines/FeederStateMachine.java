@@ -6,8 +6,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class FeederStateMachine extends StateMachine<FeederStateMachine.FeederState> {
 
+    private Feeder feeder = Feeder.getInstance();
+
     public enum FeederState {
         FEED_TO_SHOOTER, FEED_TO_LVL_1, OFF,
+
     }
 
     private static FeederStateMachine instance;
@@ -19,8 +22,6 @@ public class FeederStateMachine extends StateMachine<FeederStateMachine.FeederSt
 
         return instance;
     }
-
-    private Feeder feeder = Feeder.getInstance();
 
     private FeederStateMachine() {
         super(FeederState.FEED_TO_SHOOTER);
