@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.TalonSubsystem;
+import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
 import com.spikes2212.lib.control.PIDSettings;
 import com.spikes2212.lib.dashboard.Namespace;
@@ -23,6 +24,8 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
   public static final Supplier<Double> maxSpeed = turretNamespace.addConstantDouble("Max Speed",
       0.6);
+  public static final Supplier<Double> testSpeed = turretNamespace.addConstantDouble("Test Speed",
+      0.3);
 
   public static final Supplier<Double> minSpeed = turretNamespace.addConstantDouble("Min Speed",
       -0.6);
@@ -101,6 +104,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
   @Override
   public void configureDashboard() {
     turretNamespace.putData("rotate", new MoveTalonSubsystem(this, setpoint, waitTime));
+    turretNamespace.putData("turn", new MoveGenericSubsystem(this, testSpeed));
   }
 
   @Override
