@@ -13,81 +13,81 @@ import java.util.function.Supplier;
 
 public class Intake extends GenericSubsystem {
 
-  public static Namespace intakeNamespace = new RootNamespace("intake");
+    public static Namespace intakeNamespace = new RootNamespace("intake");
 
-  public static final Supplier<Double> minSpeed = intakeNamespace
-      .addConstantDouble("min speed", -1);
-  public static final Supplier<Double> maxSpeed = intakeNamespace
-      .addConstantDouble("max speed", 1);
-  public static final Supplier<Double> gripSpeed = intakeNamespace
-      .addConstantDouble("grip speed", 0.5);
+    public static final Supplier<Double> minSpeed = intakeNamespace
+            .addConstantDouble("min speed", -1);
+    public static final Supplier<Double> maxSpeed = intakeNamespace
+            .addConstantDouble("max speed", 1);
+    public static final Supplier<Double> gripSpeed = intakeNamespace
+            .addConstantDouble("grip speed", 0.5);
 
-  public enum IntakeState {
-    UP, DOWN
-  }
-
-  private DoubleSolenoid rightSolenoid;
-  private WPI_TalonSRX motor;
-  private IntakeState state;
-
-  private static Intake instance;
-
-  public static Intake getInstance() {
-    if (instance == null) {
-      DoubleSolenoid right = new DoubleSolenoid(RobotMap.PCM.INTAKE_FORWARD,
-          RobotMap.PCM.INTAKE_BACKWARD);
-      WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.INTAKE_MOTOR);
-      instance = new Intake(right, motor);
+    public enum IntakeState {
+        UP, DOWN
     }
 
-    return instance;
-  }
+    private DoubleSolenoid rightSolenoid;
+    private WPI_TalonSRX motor;
+    private IntakeState state;
 
-  private Intake(DoubleSolenoid right, WPI_TalonSRX motor) {
-    super(minSpeed, maxSpeed);
-    this.rightSolenoid = right;
-    this.motor = motor;
-    this.state = IntakeState.UP;
-  }
+    private static Intake instance;
 
-  public IntakeState getState() {
-    return state;
-  }
+    public static Intake getInstance() {
+        if(instance == null) {
+            DoubleSolenoid right = new DoubleSolenoid(RobotMap.PCM.INTAKE_FORWARD,
+                    RobotMap.PCM.INTAKE_BACKWARD);
+            WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.INTAKE_MOTOR);
+            instance = new Intake(right, motor);
+        }
 
-  public void setState(IntakeState state) {
-    this.state = state;
-  }
+        return instance;
+    }
 
-  @Override
-  public void apply(double speed) {
-    motor.set(speed);
-  }
+    private Intake(DoubleSolenoid right, WPI_TalonSRX motor) {
+        super(minSpeed, maxSpeed);
+        this.rightSolenoid = right;
+        this.motor = motor;
+        this.state = IntakeState.UP;
+    }
 
-  @Override
-  public boolean canMove(double speed) {
-    return speed >= 0 && state == IntakeState.DOWN;
-  }
+    public IntakeState getState() {
+        return state;
+    }
 
-  @Override
-  public void stop() {
-    motor.stopMotor();
-  }
+    public void setState(IntakeState state) {
+        this.state = state;
+    }
 
-  public void open() {
-    setState(IntakeState.DOWN);
-    rightSolenoid.set(DoubleSolenoid.Value.kForward);
-  }
+    @Override
+    public void apply(double speed) {
+        motor.set(speed);
+    }
 
-  public void close() {
-    setState(IntakeState.UP);
-    rightSolenoid.set(DoubleSolenoid.Value.kReverse);
-  }
+    @Override
+    public boolean canMove(double speed) {
+        return speed >= 0 && state == IntakeState.DOWN;
+    }
 
-  @Override
-  public void configureDashboard() {
-    intakeNamespace.putData("open", new InstantCommand(this::open, this));
-    intakeNamespace.putData("close", new InstantCommand(this::close, this));
-    intakeNamespace.putData("grip", new MoveGenericSubsystem(this, gripSpeed));
-    intakeNamespace.putString("state", state::name);
-  }
+    @Override
+    public void stop() {
+        motor.stopMotor();
+    }
+
+    public void open() {
+        setState(IntakeState.DOWN);
+        rightSolenoid.set(DoubleSolenoid.Value.kForward);
+    }
+
+    public void close() {
+        setState(IntakeState.UP);
+        rightSolenoid.set(DoubleSolenoid.Value.kReverse);
+    }
+
+    @Override
+    public void configureDashboard() {
+        intakeNamespace.putData("open", new InstantCommand(this::open, this));
+        intakeNamespace.putData("close", new InstantCommand(this::close, this));
+        intakeNamespace.putData("grip", new MoveGenericSubsystem(this, gripSpeed));
+        intakeNamespace.putString("state", state::name);
+    }
 }
