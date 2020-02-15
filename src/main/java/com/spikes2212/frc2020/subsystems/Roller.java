@@ -22,7 +22,6 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
 
     public static RootNamespace rollerNamespace = new RootNamespace("roller");
     public static Namespace PID = rollerNamespace.addChild("PID");
-
     public static Supplier<Double> MIN_SPEED = rollerNamespace.addConstantDouble("min speed", -1);
     public static Supplier<Double> MAX_SPEED = rollerNamespace.addConstantDouble("max speed", 1);
     public static Supplier<Double> kP = PID.addConstantDouble("kP", 0.5);
