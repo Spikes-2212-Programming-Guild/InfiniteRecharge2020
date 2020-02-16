@@ -43,14 +43,16 @@ public class RobotMap {
         int CLIMBER_ENCODER_LEFT_NEG = 12;
         int CLIMBER_ENCODER_RIGHT_POS = 13;
         int CLIMBER_ENCODER_RIGHT_NEG = 14;
+
+        int INTAKE_LIMIT = 15;
     }
 
     public interface PCM {
         int FEEDER_FORWARD = 0;
         int FEEDER_BACKWARD = 1;
 
-        int LEFT_INTAKE_FORWARD = 4;
-        int LEFT_INTAKE_BACKWARD = 5;
+        int INTAKE_FORWARD = 4;
+        int INTAKE_BACKWARD = 5;
         int RIGHT_INTAKE_FORWARD = 2;
         int RIGHT_INTAKE_BACKWARD = 3;
 
