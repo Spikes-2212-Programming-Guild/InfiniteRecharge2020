@@ -17,7 +17,7 @@ public class Robot extends TimedRobot {
     private static Intake intake = Intake.getInstance();
     private static Climber climber = Climber.getInstance();
 
-    private static OI oi;
+    public static OI oi;
 
     @Override
     public void robotInit() {
@@ -33,7 +33,6 @@ public class Robot extends TimedRobot {
                 oi::getLeftY, oi::getRightX));
         SmartDashboard.putData("start compressor", new InstantCommand(new Compressor()::start));
         SmartDashboard.putData("stop compressor", new InstantCommand(new Compressor()::stop));
-        SmartDashboard.putData("synchronized grip", new Grip());
     }
 
     @Override
