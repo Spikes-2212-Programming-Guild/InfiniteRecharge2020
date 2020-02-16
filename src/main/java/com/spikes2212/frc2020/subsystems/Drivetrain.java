@@ -52,9 +52,10 @@ public class Drivetrain extends OdometryDrivetrain {
 
     private boolean inverted;
 
-    private Drivetrain(SpeedController left, SpeedController right, Encoder leftEncoder,
-                       Encoder rightEncoder, PigeonWrapper imu) {
-        super(left, right);
+    private Drivetrain(WPI_TalonSRX leftTalon, WPI_TalonSRX rightTalon, WPI_VictorSPX leftVictor,
+                       WPI_VictorSPX rightVictor, Encoder leftEncoder, Encoder rightEncoder,
+                       PigeonWrapper imu) {
+        super(leftTalon, rightTalon);
         this.leftVictor = leftVictor;
         this.rightVictor = rightVictor;
         this.leftEncoder = leftEncoder;

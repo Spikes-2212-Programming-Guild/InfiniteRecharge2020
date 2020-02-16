@@ -25,6 +25,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     private static Supplier<Double> minSpeed = turretNamespace.addConstantDouble("Min Speed", -0.6);
     private static Supplier<Double> minAngle = turretNamespace.addConstantDouble("Min Angle", 30);
     private static Supplier<Double> maxAngle = turretNamespace.addConstantDouble("Max Angle", 330);
+    private static Supplier<Double> testSpeed = turretNamespace.addConstantDouble("test speed", 0.5);
     private static Supplier<Double> kP = PID.addConstantDouble("kP", 0);
     private static Supplier<Double> kI = PID.addConstantDouble("kI", 0);
     private static Supplier<Double> kD = PID.addConstantDouble("kD", 0);

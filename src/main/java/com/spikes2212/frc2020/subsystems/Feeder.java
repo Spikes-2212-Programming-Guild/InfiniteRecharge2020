@@ -38,6 +38,8 @@ public class Feeder extends GenericSubsystem {
     private WPI_VictorSPX motor;
     private DoubleSolenoid solenoid;
 
+    private boolean enabled;
+
     public Feeder(WPI_VictorSPX motor, DoubleSolenoid solenoid) {
         super(minSpeed, maxSpeed);
         this.motor = motor;

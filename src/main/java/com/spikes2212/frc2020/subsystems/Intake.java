@@ -25,6 +25,8 @@ public class Intake extends GenericSubsystem {
     private DoubleSolenoid rightSolenoid;
     private WPI_TalonSRX motor;
 
+    private boolean enabled;
+
     private static Intake instance;
 
     public static Intake getInstance() {
