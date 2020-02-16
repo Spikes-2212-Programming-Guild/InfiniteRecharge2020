@@ -8,15 +8,13 @@ import static com.spikes2212.frc2020.statemachines.IntakeStateMachine.IntakeStat
 
 public class IntakeFeederStateMachine extends StateMachine<IntakeFeederStateMachine.IntakeFeederState> {
 
-    private static IntakeStateMachine intakeFSM = IntakeStateMachine.getInstance();
-    private static FeederStateMachine feederFSM = FeederStateMachine.getInstance();
+
 
     public enum IntakeFeederState {
-        OFF, FEED_TO_LEVEL_1, COLLECT, FEED_TO_SHOOTER
+        OFF, FEED_TO_LEVEL_1, COLLECT, FEED_TO_SHOOTER;
     }
 
     private static IntakeFeederStateMachine instance;
-
     public static IntakeFeederStateMachine getInstance() {
         if (instance == null) {
             instance = new IntakeFeederStateMachine();
@@ -24,6 +22,9 @@ public class IntakeFeederStateMachine extends StateMachine<IntakeFeederStateMach
 
         return instance;
     }
+
+    private IntakeStateMachine intakeFSM = IntakeStateMachine.getInstance();
+    private FeederStateMachine feederFSM = FeederStateMachine.getInstance();
 
     private IntakeFeederStateMachine() {
         super(IntakeFeederState.OFF);
