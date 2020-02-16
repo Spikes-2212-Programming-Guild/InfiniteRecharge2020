@@ -9,20 +9,22 @@ import java.util.function.Supplier;
 
 public class Climb extends CommandBase {
 
+    private Climber climber = Climber.getInstance();;
     private Supplier<Double> targetSetpoint;
     private int numberOfSetpoints;
     private double currentSetpoint;
-    private Climber climber = Climber.getInstance();;
-
-    private PIDController leftController, rightController;
+    private PIDController leftController;
+    private PIDController rightController;
 
     public Climb(Supplier<Double> targetSetpoint, int numberOfSetpoints, PIDSettings pidSettings) {
         addRequirements(climber);
         this.targetSetpoint = targetSetpoint;
         this.numberOfSetpoints = numberOfSetpoints;
         currentSetpoint = targetSetpoint.get() / numberOfSetpoints;
-        leftController = new PIDController(pidSettings.getkP(), pidSettings.getkI(), pidSettings.getkD());
-        rightController = new PIDController(pidSettings.getkP(), pidSettings.getkI(), pidSettings.getkD());
+        leftController = new PIDController(pidSettings.getkP(), pidSettings.getkI(),
+                pidSettings.getkD());
+        rightController = new PIDController(pidSettings.getkP(), pidSettings.getkI(),
+                pidSettings.getkD());
     }
 
     @Override
@@ -37,7 +39,8 @@ public class Climb extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return (leftController.atSetpoint() && rightController.atSetpoint() && currentSetpoint == targetSetpoint.get());
+        return leftController.atSetpoint() && rightController.atSetpoint() &&
+                currentSetpoint == targetSetpoint.get();
     }
 
     @Override

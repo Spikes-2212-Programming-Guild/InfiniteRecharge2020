@@ -25,8 +25,8 @@ public class RobotMap {
     }
 
     public interface DIO {
-        int START_LIMIT = 0;
-        int END_LIMIT = 1;
+        int TURRET_START_LIMIT = 0;
+        int TURRET_END_LIMIT = 1;
 
         int DRIVETRAIN_LEFT_ENCODER_POS = 6;
         int DRIVETRAIN_LEFT_ENCODER_NEG = 7;

@@ -7,7 +7,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 public class FeederStateMachine extends StateMachine<FeederStateMachine.FeederState> {
 
     public enum FeederState {
-        FEED_TO_SHOOTER, FEED_TO_LVL_1, OFF,
+        FEED_TO_SHOOTER, FEED_TO_LVL_1, OFF
+
     }
 
     private static FeederStateMachine instance;

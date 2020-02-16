@@ -6,12 +6,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class IntakeStateMachine extends StateMachine<IntakeStateMachine.IntakeState> {
 
-    enum IntakeState {
-        CLOSE, OPEN,
+    public enum IntakeState {
+        CLOSE, OPEN
     }
 
     private static IntakeStateMachine instance;
-
     public static IntakeStateMachine getInstance() {
         if(instance == null) {
             instance = new IntakeStateMachine();
@@ -20,11 +19,11 @@ public class IntakeStateMachine extends StateMachine<IntakeStateMachine.IntakeSt
         return instance;
     }
 
+    private Intake intake = Intake.getInstance();
+
     private IntakeStateMachine() {
         super(IntakeState.CLOSE);
     }
-
-    private Intake intake = Intake.getInstance();
 
     @Override
     protected void generateTransformations() {

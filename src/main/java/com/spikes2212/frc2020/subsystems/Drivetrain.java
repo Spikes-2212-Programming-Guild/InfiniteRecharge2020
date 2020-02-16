@@ -8,7 +8,6 @@ import com.spikes2212.lib.dashboard.RootNamespace;
 import com.spikes2212.lib.path.OdometryHandler;
 import com.spikes2212.lib.util.PigeonWrapper;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.SpeedController;
 
 import java.util.function.Supplier;
 
@@ -16,7 +15,8 @@ public class Drivetrain extends OdometryDrivetrain {
 
     public static RootNamespace drivetrainNamespace = new RootNamespace("drivetrain");
 
-    public static Supplier<Double> width = drivetrainNamespace.addConstantDouble("width", 0.7);
+    public static Supplier<Double> width = drivetrainNamespace
+            .addConstantDouble("width", 0.7);
     public static Supplier<Double> wheelDiameter = drivetrainNamespace
             .addConstantDouble("wheel diameter (inches)", 6);
 
@@ -37,6 +37,7 @@ public class Drivetrain extends OdometryDrivetrain {
             leftEncoder.setDistancePerPulse(wheelDiameter.get() * 0.0254 * Math.PI / 360);
             rightEncoder.setDistancePerPulse(wheelDiameter.get() * 0.0254 * Math.PI / 360);
             PigeonWrapper imu = new PigeonWrapper(leftTalon);
+            imu.reset();
             instance = new Drivetrain(leftTalon, rightTalon, leftVictor, rightVictor, leftEncoder, rightEncoder, imu);
         }
 
@@ -48,19 +49,20 @@ public class Drivetrain extends OdometryDrivetrain {
     private Encoder rightEncoder;
     private PigeonWrapper imu;
     private OdometryHandler odometry;
+
     private boolean inverted;
 
-    private Drivetrain(WPI_TalonSRX left, WPI_TalonSRX right, WPI_VictorSPX leftVictor, WPI_VictorSPX rightVictor,
-                       Encoder leftEncoder, Encoder rightEncoder, PigeonWrapper imu) {
-        super(left, right);
+    private Drivetrain(WPI_TalonSRX leftTalon, WPI_TalonSRX rightTalon, WPI_VictorSPX leftVictor,
+                       WPI_VictorSPX rightVictor, Encoder leftEncoder, Encoder rightEncoder,
+                       PigeonWrapper imu) {
+        super(leftTalon, rightTalon);
         this.leftVictor = leftVictor;
         this.rightVictor = rightVictor;
         this.leftEncoder = leftEncoder;
         this.rightEncoder = rightEncoder;
         this.imu = imu;
-        this.odometry = new OdometryHandler(leftEncoder::getDistance, rightEncoder::getDistance, imu::getY,
-                0, 0);
-        this.inverted = false;
+        this.odometry = new OdometryHandler(leftEncoder::getDistance, rightEncoder::getDistance,
+                imu::getYaw, 0, 0);
     }
 
     @Override

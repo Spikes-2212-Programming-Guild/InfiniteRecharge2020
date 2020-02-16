@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.TalonSubsystem;
+import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
@@ -16,23 +17,22 @@ import java.util.function.Supplier;
 
 public class Turret extends GenericSubsystem implements TalonSubsystem {
 
-    public static RootNamespace turretNamespace = new RootNamespace("turret");
-    public static Namespace PID = turretNamespace.addChild("PID");
-
-    public static Supplier<Double> maxSpeed = turretNamespace.addConstantDouble("Max Speed", 0.6);
-    public static Supplier<Double> minSpeed = turretNamespace.addConstantDouble("Min Speed", -0.6);
-    public static Supplier<Double> minAngle = turretNamespace.addConstantDouble("Min Angle", 30);
-    public static Supplier<Double> maxAngle = turretNamespace.addConstantDouble("Max Angle", 330);
-
-    public static Supplier<Double> kP = PID.addConstantDouble("kP", 0);
-    public static Supplier<Double> kI = PID.addConstantDouble("kI", 0);
-    public static Supplier<Double> kD = PID.addConstantDouble("kD", 0);
-    public static Supplier<Double> tolerance = PID.addConstantDouble("Tolerance", 0);
-    public static Supplier<Double> waitTime = PID.addConstantDouble("Wait Time", 0);
-    public static Supplier<Double> setpoint = PID.addConstantDouble("setpoint", 90);
-    public static Supplier<Integer> timeout = PID.addConstantInt("timeout", 30);
-
     private static final double DEGREES_TO_PULSES = 4096 * Math.PI / 180 * 11 / 9;
+
+    private static RootNamespace turretNamespace = new RootNamespace("turret");
+    private static Namespace PID = turretNamespace.addChild("PID");
+    private static Supplier<Double> maxSpeed = turretNamespace.addConstantDouble("Max Speed", 0.6);
+    private static Supplier<Double> minSpeed = turretNamespace.addConstantDouble("Min Speed", -0.6);
+    private static Supplier<Double> minAngle = turretNamespace.addConstantDouble("Min Angle", 30);
+    private static Supplier<Double> maxAngle = turretNamespace.addConstantDouble("Max Angle", 330);
+    private static Supplier<Double> testSpeed = turretNamespace.addConstantDouble("test speed", 0.5);
+    private static Supplier<Double> kP = PID.addConstantDouble("kP", 0);
+    private static Supplier<Double> kI = PID.addConstantDouble("kI", 0);
+    private static Supplier<Double> kD = PID.addConstantDouble("kD", 0);
+    private static Supplier<Double> tolerance = PID.addConstantDouble("Tolerance", 0);
+    private static Supplier<Double> waitTime = PID.addConstantDouble("Wait Time", 0);
+    private static Supplier<Double> setpoint = PID.addConstantDouble("setpoint", 90);
+    private static Supplier<Integer> timeout = PID.addConstantInt("timeout", 30);
 
     private static Turret instance;
 
@@ -99,9 +99,16 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     }
 
     @Override
+    public void configureDashboard() {
+        turretNamespace.putData("rotate", new MoveTalonSubsystem(this, setpoint, waitTime));
+        turretNamespace.putData("turn", new MoveGenericSubsystem(this, testSpeed));
+    }
+
+    @Override
     public void configureLoop() {
         motor.configFactoryDefault();
-        motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, timeout.get());
+        motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0,
+                timeout.get());
 
         motor.configNominalOutputForward(0, timeout.get());
         motor.configNominalOutputReverse(0, timeout.get());
@@ -145,10 +152,5 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         int position = motor.getSelectedSensorPosition();
 
         return !canMove(motor.getMotorOutputPercent()) || Math.abs(setpoint - position) < tolerance;
-    }
-
-    @Override
-    public void configureDashboard() {
-        turretNamespace.putData("rotate", new MoveTalonSubsystem(this, setpoint, waitTime));
     }
 }

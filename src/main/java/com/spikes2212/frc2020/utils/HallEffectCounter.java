@@ -13,17 +13,21 @@ public class HallEffectCounter {
 
     public void update(double speed) {
         boolean isOn = hallEffect.get();
-        if (isOn && !lastOn) {
-            if (speed > 0)
+        if(isOn && !lastOn) {
+            if(speed > 0)
                 counter++;
             else
                 counter--;
         }
+
         lastOn = isOn;
     }
 
     public int getCurrentMagnet() {
         return counter;
     }
-    public boolean atTop(int numOfMagnets){return numOfMagnets-1==getCurrentMagnet();}
+
+    public boolean atTop(int numOfMagnets) {
+        return numOfMagnets - 1 == getCurrentMagnet();
+    }
 }
