@@ -37,6 +37,7 @@ public class Drivetrain extends OdometryDrivetrain {
             leftEncoder.setDistancePerPulse(wheelDiameter.get() * 0.0254 * Math.PI / 360);
             rightEncoder.setDistancePerPulse(wheelDiameter.get() * 0.0254 * Math.PI / 360);
             PigeonWrapper imu = new PigeonWrapper(left);
+            imu.reset();
             instance = new Drivetrain(left, right, leftEncoder, rightEncoder, imu);
         }
 
@@ -55,12 +56,13 @@ public class Drivetrain extends OdometryDrivetrain {
         this.rightEncoder = rightEncoder;
         this.imu = imu;
         this.odometry = new OdometryHandler(leftEncoder::getDistance, rightEncoder::getDistance,
-                imu::getY, 0, 0);
+                imu::getYaw, 0, 0);
     }
 
     @Override
     public void periodic() {
         odometry.calculate();
+        ((RootNamespace)drivetrainNamespace).update();
     }
 
     @Override
@@ -77,7 +79,7 @@ public class Drivetrain extends OdometryDrivetrain {
     public void zeroSensors() {
         leftEncoder.reset();
         rightEncoder.reset();
-        //TODO reset the imu
+        imu.reset();
     }
 
     @Override

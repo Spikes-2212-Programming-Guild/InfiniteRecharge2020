@@ -22,13 +22,8 @@ public class Intake extends GenericSubsystem {
     public static final Supplier<Double> gripSpeed = intakeNamespace
             .addConstantDouble("grip speed", 0.5);
 
-    public enum IntakeState {
-        UP, DOWN
-    }
-
     private DoubleSolenoid rightSolenoid;
     private WPI_TalonSRX motor;
-    private IntakeState state;
 
     private static Intake instance;
 
@@ -37,6 +32,7 @@ public class Intake extends GenericSubsystem {
             DoubleSolenoid right = new DoubleSolenoid(RobotMap.PCM.INTAKE_FORWARD,
                     RobotMap.PCM.INTAKE_BACKWARD);
             WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.INTAKE_MOTOR);
+            motor.setInverted(true);
             instance = new Intake(right, motor);
         }
 
@@ -47,15 +43,6 @@ public class Intake extends GenericSubsystem {
         super(minSpeed, maxSpeed);
         this.rightSolenoid = right;
         this.motor = motor;
-        this.state = IntakeState.UP;
-    }
-
-    public IntakeState getState() {
-        return state;
-    }
-
-    public void setState(IntakeState state) {
-        this.state = state;
     }
 
     @Override
@@ -65,7 +52,7 @@ public class Intake extends GenericSubsystem {
 
     @Override
     public boolean canMove(double speed) {
-        return speed >= 0 && state == IntakeState.DOWN;
+        return speed >= 0;
     }
 
     @Override
@@ -74,12 +61,10 @@ public class Intake extends GenericSubsystem {
     }
 
     public void open() {
-        setState(IntakeState.DOWN);
         rightSolenoid.set(DoubleSolenoid.Value.kForward);
     }
 
     public void close() {
-        setState(IntakeState.UP);
         rightSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
@@ -88,6 +73,5 @@ public class Intake extends GenericSubsystem {
         intakeNamespace.putData("open", new InstantCommand(this::open, this));
         intakeNamespace.putData("close", new InstantCommand(this::close, this));
         intakeNamespace.putData("grip", new MoveGenericSubsystem(this, gripSpeed));
-        intakeNamespace.putString("state", state::name);
     }
 }
