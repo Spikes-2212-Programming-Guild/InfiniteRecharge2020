@@ -20,7 +20,6 @@ public class Robot extends TimedRobot {
         Intake.getInstance().configureDashboard();
         Climber.getInstance().configureDashboard();
         Elevator.getInstance().configureDashboard();
-        Drivetrain.getInstance().configureDashboard();
 
         oi = new OI();
         Drivetrain.getInstance().setDefaultCommand(new DriveArcade(Drivetrain.getInstance(),

@@ -70,6 +70,7 @@ public class Intake extends GenericSubsystem {
 
     @Override
     public void configureDashboard() {
+        intakeNamespace.putNumber("current current", motor.getStatorCurrent());
         intakeNamespace.putData("open", new InstantCommand(this::open, this));
         intakeNamespace.putData("close", new InstantCommand(this::close, this));
         intakeNamespace.putData("grip", new MoveGenericSubsystem(this, gripSpeed));
