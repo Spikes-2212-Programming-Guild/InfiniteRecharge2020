@@ -6,9 +6,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class IntakeStateMachine extends StateMachine<IntakeStateMachine.IntakeState> {
 
-    private Intake intake = Intake.getInstance();
+    private static Intake intake = Intake.getInstance();
 
-    enum IntakeState {
+    public enum IntakeState {
         CLOSE, OPEN,
     }
 

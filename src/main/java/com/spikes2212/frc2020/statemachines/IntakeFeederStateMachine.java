@@ -1,6 +1,5 @@
 package com.spikes2212.frc2020.statemachines;
 
-import com.spikes2212.lib.dashboard.RootNamespace;
 import com.spikes2212.lib.state.StateMachine;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 
@@ -9,8 +8,8 @@ import static com.spikes2212.frc2020.statemachines.IntakeStateMachine.IntakeStat
 
 public class IntakeFeederStateMachine extends StateMachine<IntakeFeederStateMachine.IntakeFeederState> {
 
-    private IntakeStateMachine intakeFSM = IntakeStateMachine.getInstance();
-    private FeederStateMachine feederFSM = FeederStateMachine.getInstance();
+    private static IntakeStateMachine intakeFSM = IntakeStateMachine.getInstance();
+    private static FeederStateMachine feederFSM = FeederStateMachine.getInstance();
 
     public enum IntakeFeederState {
         OFF, FEED_TO_LEVEL_1, COLLECT, FEED_TO_SHOOTER

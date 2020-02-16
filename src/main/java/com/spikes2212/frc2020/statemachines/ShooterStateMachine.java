@@ -6,9 +6,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class ShooterStateMachine extends StateMachine<ShooterStateMachine.ShooterState> {
 
-    private Shooter shooter = Shooter.getInstance();
+    private static Shooter shooter = Shooter.getInstance();
 
-    enum ShooterState {
+    public enum ShooterState {
         OFF, FAR, CLOSE
     }
 

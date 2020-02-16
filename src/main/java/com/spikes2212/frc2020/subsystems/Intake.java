@@ -20,7 +20,7 @@ public class Intake extends GenericSubsystem {
     private static final Supplier<Double> gripSpeed = intakeNamespace
             .addConstantDouble("grip speed", 0.5);
     public static final Supplier<Double> intakeCurrent = intakeNamespace
-            .addConstantDouble("current when gripped", 19);
+            .addConstantDouble("current when gripped", 10);
 
     private DoubleSolenoid rightSolenoid;
     private WPI_TalonSRX motor;
@@ -88,7 +88,7 @@ public class Intake extends GenericSubsystem {
 
     @Override
     public void configureDashboard() {
-        intakeNamespace.putNumber("current current", motor::getStatorCurrent);
+        intakeNamespace.putNumber("current drop", () -> getStatorCurrent() - getSuppliedCurrent());
         intakeNamespace.putData("open", new InstantCommand(this::open, this));
         intakeNamespace.putData("close", new InstantCommand(this::close, this));
         intakeNamespace.putData("grip", new MoveGenericSubsystem(this, gripSpeed));
