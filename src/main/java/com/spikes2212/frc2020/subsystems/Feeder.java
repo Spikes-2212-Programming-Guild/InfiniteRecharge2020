@@ -4,7 +4,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
-import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -13,7 +12,7 @@ import java.util.function.Supplier;
 
 public class Feeder extends GenericSubsystem {
 
-    public static final Namespace feederNamespace = new RootNamespace("feeder");
+    public static RootNamespace feederNamespace = new RootNamespace("feeder");
 
     private static final Supplier<Double> minSpeed = feederNamespace
             .addConstantDouble("min speed", -1);
@@ -21,6 +20,8 @@ public class Feeder extends GenericSubsystem {
             .addConstantDouble("max speed", 1);
     private static final Supplier<Double> speed = feederNamespace
             .addConstantDouble("speed", 0.5);
+    private static Supplier<Double> feedTime = feederNamespace
+            .addConstantDouble("feeding time", 0.5);
 
     private static Feeder instance;
 
@@ -59,6 +60,11 @@ public class Feeder extends GenericSubsystem {
         motor.stopMotor();
     }
 
+    @Override
+    public void periodic() {
+        feederNamespace.update();
+    }
+
     public void open() {
         solenoid.set(DoubleSolenoid.Value.kForward);
     }
@@ -72,5 +78,13 @@ public class Feeder extends GenericSubsystem {
         feederNamespace.putData("feed", new MoveGenericSubsystem(this, speed));
         feederNamespace.putData("open level 1", new InstantCommand(this::open, this));
         feederNamespace.putData("close level 1", new InstantCommand(this::close, this));
+    }
+
+    public double getProvidedSpeed(){
+        return speed.get();
+    }
+
+    public double getFeedTime(){
+        return feedTime.get();
     }
 }

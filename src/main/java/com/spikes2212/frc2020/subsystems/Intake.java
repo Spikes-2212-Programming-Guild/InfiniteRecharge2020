@@ -4,7 +4,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
-import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -13,7 +12,7 @@ import java.util.function.Supplier;
 
 public class Intake extends GenericSubsystem {
 
-    public static Namespace intakeNamespace = new RootNamespace("intake");
+    public static RootNamespace intakeNamespace = new RootNamespace("intake");
 
     public static final Supplier<Double> minSpeed = intakeNamespace
             .addConstantDouble("min speed", -1);
@@ -21,7 +20,7 @@ public class Intake extends GenericSubsystem {
             .addConstantDouble("max speed", 1);
     public static final Supplier<Double> gripSpeed = intakeNamespace
             .addConstantDouble("grip speed", 0.5);
-    public static final Supplier<Double> gripCurrent = intakeNamespace
+    public static final Supplier<Double> intakeCurrent = intakeNamespace
             .addConstantDouble("current when gripped", 19);
 
     private DoubleSolenoid rightSolenoid;
@@ -64,7 +63,7 @@ public class Intake extends GenericSubsystem {
 
     @Override
     public void periodic() {
-        ((RootNamespace)intakeNamespace).update();
+        intakeNamespace.update();
     }
 
     public void open() {
@@ -81,5 +80,22 @@ public class Intake extends GenericSubsystem {
         intakeNamespace.putData("open", new InstantCommand(this::open, this));
         intakeNamespace.putData("close", new InstantCommand(this::close, this));
         intakeNamespace.putData("grip", new MoveGenericSubsystem(this, gripSpeed));
+    }
+
+
+    public double getSuppliedCurrent(){
+        return motor.getSupplyCurrent();
+    }
+
+    public double getStatorCurrent(){
+        return motor.getStatorCurrent();
+    }
+
+    public double getCurrentLimit() {
+        return intakeCurrent.get();
+    }
+
+    public double getGripSpeed() {
+        return gripSpeed.get();
     }
 }
