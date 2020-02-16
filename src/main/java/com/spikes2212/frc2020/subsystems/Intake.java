@@ -1,11 +1,12 @@
 package com.spikes2212.frc2020.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.dashboard.RootNamespace;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import java.util.function.Supplier;
@@ -14,36 +15,36 @@ public class Intake extends GenericSubsystem {
 
     public static RootNamespace intakeNamespace = new RootNamespace("intake");
 
-    public static Supplier<Double> minSpeed = intakeNamespace.addConstantDouble("min speed", -1);
-    public static Supplier<Double> maxSpeed = intakeNamespace.addConstantDouble("max speed", 1);
-    public static Supplier<Double> gripSpeed = intakeNamespace.addConstantDouble("grip speed", 0.5);
+    private static Supplier<Double> minSpeed = intakeNamespace.addConstantDouble("min speed", -1);
+    private static Supplier<Double> maxSpeed = intakeNamespace.addConstantDouble("max speed", 1);
+    public static Supplier<Double> intakeVoltage = intakeNamespace.addConstantDouble("grip speed", 0.5);
+    public static Supplier<Double> intakeCurrentLimit = intakeNamespace.addConstantDouble("intake Current", 0);
 
     private static Intake instance;
 
     public static Intake getInstance() {
         if (instance == null) {
-            DoubleSolenoid left = new DoubleSolenoid(RobotMap.PCM.LEFT_INTAKE_FORWARD,
-                    RobotMap.PCM.LEFT_INTAKE_BACKWARD);
-            DoubleSolenoid right = new DoubleSolenoid(RobotMap.PCM.RIGHT_INTAKE_FORWARD,
-                    RobotMap.PCM.RIGHT_INTAKE_BACKWARD);
-            VictorSP motor = new VictorSP(RobotMap.PWM.INTAKE_MOTOR);
-            instance = new Intake(left, right, motor);
+            DigitalInput limit = new DigitalInput(RobotMap.DIO.INTAKE_LIMIT);
+            DoubleSolenoid solenoid = new DoubleSolenoid(RobotMap.PCM.INTAKE_FORWARD,
+                    RobotMap.PCM.INTAKE_BACKWARD);
+            WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.INTAKE_MOTOR);
+            instance = new Intake(motor, limit, solenoid);
         }
 
         return instance;
     }
 
-    private DoubleSolenoid leftSolenoid;
-    private DoubleSolenoid rightSolenoid;
-    private VictorSP motor;
+    private WPI_TalonSRX motor;
+    private DigitalInput limit;
+    private DoubleSolenoid solenoid;
 
     private boolean enabled;
 
-    private Intake(DoubleSolenoid left, DoubleSolenoid right, VictorSP motor) {
+    private Intake(WPI_TalonSRX motor, DigitalInput limit, DoubleSolenoid solenoid) {
         super(minSpeed, maxSpeed);
-        this.leftSolenoid = left;
-        this.rightSolenoid = right;
         this.motor = motor;
+        this.limit = limit;
+        this.solenoid = solenoid;
         enabled=false;
     }
 
@@ -67,15 +68,20 @@ public class Intake extends GenericSubsystem {
         intakeNamespace.update();
     }
 
+    @Override
+    public void configureDashboard() {
+        intakeNamespace.putData("grip", new MoveGenericSubsystem(this, intakeVoltage));
+        intakeNamespace.putData("open", new InstantCommand(this::open, this));
+        intakeNamespace.putData("close", new InstantCommand(this::close, this));
+    }
+
     public void open() {
-        leftSolenoid.set(DoubleSolenoid.Value.kForward);
-        rightSolenoid.set(DoubleSolenoid.Value.kForward);
+        solenoid.set(DoubleSolenoid.Value.kForward);
         setEnabled(true);
     }
 
     public void close() {
-        leftSolenoid.set(DoubleSolenoid.Value.kReverse);
-        rightSolenoid.set(DoubleSolenoid.Value.kReverse);
+        solenoid.set(DoubleSolenoid.Value.kReverse);
         setEnabled(false);
     }
 
@@ -87,10 +93,15 @@ public class Intake extends GenericSubsystem {
         this.enabled = enabled;
     }
 
-    @Override
-    public void configureDashboard() {
-        intakeNamespace.putData("grip", new MoveGenericSubsystem(this, gripSpeed));
-        intakeNamespace.putData("open", new InstantCommand(this::open, this));
-        intakeNamespace.putData("close", new InstantCommand(this::close, this));
+    public boolean limitPressed() {
+        return limit.get();
+    }
+
+    public double getSuppliedCurrent(){
+        return motor.getSupplyCurrent();
+    }
+
+    public double getStatorCurrent(){
+        return motor.getStatorCurrent();
     }
 }
