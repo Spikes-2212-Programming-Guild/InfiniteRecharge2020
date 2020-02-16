@@ -40,7 +40,6 @@ public class Drivetrain extends OdometryDrivetrain {
             imu.reset();
             instance = new Drivetrain(leftTalon, rightTalon, leftVictor, rightVictor, leftEncoder, rightEncoder, imu);
         }
-
         return instance;
     }
 
@@ -76,6 +75,10 @@ public class Drivetrain extends OdometryDrivetrain {
         return odometry;
     }
 
+    public double getYaw(){
+        return odometry.getYaw();
+    }
+
     @Override
     public double getWidth() {
         return width.get();
@@ -104,5 +107,10 @@ public class Drivetrain extends OdometryDrivetrain {
         rightController.setInverted(!inverted);
         leftVictor.setInverted(inverted);
         rightVictor.setInverted(!inverted);
+    }
+
+    public void configureDashboard(){
+
+        drivetrainNamespace.putNumber("imu yaw",imu::getYaw);
     }
 }
