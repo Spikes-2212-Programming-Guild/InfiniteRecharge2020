@@ -21,6 +21,8 @@ public class Intake extends GenericSubsystem {
             .addConstantDouble("max speed", 1);
     public static final Supplier<Double> gripSpeed = intakeNamespace
             .addConstantDouble("grip speed", 0.5);
+    public static final Supplier<Double> gripCurrent = intakeNamespace
+            .addConstantDouble("current when gripped", 19);
 
     private DoubleSolenoid rightSolenoid;
     private WPI_TalonSRX motor;
@@ -60,6 +62,11 @@ public class Intake extends GenericSubsystem {
         motor.stopMotor();
     }
 
+    @Override
+    public void periodic() {
+        ((RootNamespace)intakeNamespace).update();
+    }
+
     public void open() {
         rightSolenoid.set(DoubleSolenoid.Value.kForward);
     }
@@ -70,7 +77,7 @@ public class Intake extends GenericSubsystem {
 
     @Override
     public void configureDashboard() {
-        intakeNamespace.putNumber("current current", motor.getStatorCurrent());
+        intakeNamespace.putNumber("current current", motor::getStatorCurrent);
         intakeNamespace.putData("open", new InstantCommand(this::open, this));
         intakeNamespace.putData("close", new InstantCommand(this::close, this));
         intakeNamespace.putData("grip", new MoveGenericSubsystem(this, gripSpeed));
