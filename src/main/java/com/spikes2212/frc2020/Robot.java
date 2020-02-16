@@ -10,6 +10,12 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class Robot extends TimedRobot {
 
+    private static Shooter shooter = Shooter.getInstance();
+    private static Turret turret = Turret.getInstance();
+    private static Feeder feeder = Feeder.getInstance();
+    private static Intake intake = Intake.getInstance();
+    private static Climber climber = Climber.getInstance();
+
     private static OI oi;
 
     @Override

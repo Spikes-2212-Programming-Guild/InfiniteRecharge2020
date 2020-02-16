@@ -12,13 +12,12 @@ import java.util.function.Supplier;
 
 public class Intake extends GenericSubsystem {
 
-    public static RootNamespace intakeNamespace = new RootNamespace("intake");
-
-    public static final Supplier<Double> minSpeed = intakeNamespace
+    private static RootNamespace intakeNamespace = new RootNamespace("intake");
+    private static final Supplier<Double> minSpeed = intakeNamespace
             .addConstantDouble("min speed", -1);
-    public static final Supplier<Double> maxSpeed = intakeNamespace
+    private static final Supplier<Double> maxSpeed = intakeNamespace
             .addConstantDouble("max speed", 1);
-    public static final Supplier<Double> gripSpeed = intakeNamespace
+    private static final Supplier<Double> gripSpeed = intakeNamespace
             .addConstantDouble("grip speed", 0.5);
     public static final Supplier<Double> intakeCurrent = intakeNamespace
             .addConstantDouble("current when gripped", 19);
@@ -44,6 +43,7 @@ public class Intake extends GenericSubsystem {
         super(minSpeed, maxSpeed);
         this.rightSolenoid = right;
         this.motor = motor;
+        enabled = false;
     }
 
     @Override
@@ -53,7 +53,7 @@ public class Intake extends GenericSubsystem {
 
     @Override
     public boolean canMove(double speed) {
-        return speed >= 0;
+        return speed >= 0 && enabled;
     }
 
     @Override
@@ -68,10 +68,20 @@ public class Intake extends GenericSubsystem {
 
     public void open() {
         rightSolenoid.set(DoubleSolenoid.Value.kForward);
+        setEnabled(true);
     }
 
     public void close() {
         rightSolenoid.set(DoubleSolenoid.Value.kReverse);
+        setEnabled(false);
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     @Override

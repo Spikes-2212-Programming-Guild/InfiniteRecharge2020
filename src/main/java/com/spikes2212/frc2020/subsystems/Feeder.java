@@ -12,8 +12,7 @@ import java.util.function.Supplier;
 
 public class Feeder extends GenericSubsystem {
 
-    public static RootNamespace feederNamespace = new RootNamespace("feeder");
-
+    private static RootNamespace feederNamespace = new RootNamespace("feeder");
     private static final Supplier<Double> minSpeed = feederNamespace
             .addConstantDouble("min speed", -1);
     private static final Supplier<Double> maxSpeed = feederNamespace
@@ -43,6 +42,7 @@ public class Feeder extends GenericSubsystem {
         super(minSpeed, maxSpeed);
         this.motor = motor;
         this.solenoid = solenoid;
+        enabled = true;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class Feeder extends GenericSubsystem {
 
     @Override
     public boolean canMove(double speed) {
-        return true;
+        return enabled;
     }
 
     @Override
@@ -67,10 +67,20 @@ public class Feeder extends GenericSubsystem {
 
     public void open() {
         solenoid.set(DoubleSolenoid.Value.kForward);
+        setEnabled(true);
     }
 
     public void close() {
         solenoid.set(DoubleSolenoid.Value.kReverse);
+        setEnabled(true);
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     @Override

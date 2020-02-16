@@ -9,11 +9,10 @@ import java.util.function.Supplier;
 
 public class Climb extends CommandBase {
 
+    private Climber climber = Climber.getInstance();;
     private Supplier<Double> targetSetpoint;
     private int numberOfSetpoints;
     private double currentSetpoint;
-    private Climber climber = Climber.getInstance();
-
     private PIDController leftController;
     private PIDController rightController;
 
@@ -30,10 +29,8 @@ public class Climb extends CommandBase {
 
     @Override
     public void execute() {
-        if(leftController.atSetpoint() && rightController.atSetpoint()) {
+        if (leftController.atSetpoint() && rightController.atSetpoint())
             currentSetpoint += targetSetpoint.get() / numberOfSetpoints;
-        }
-
         leftController.setSetpoint(currentSetpoint);
         rightController.setSetpoint(currentSetpoint);
         climber.setLeft(leftController.calculate(climber.getLeftDistance()));
