@@ -1,25 +1,23 @@
 package com.spikes2212.frc2020.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
-import com.spikes2212.lib.command.genericsubsystem.TalonSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
-import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
 import com.spikes2212.lib.control.PIDSettings;
+import com.spikes2212.lib.control.noise.NoiseReducer;
+import com.spikes2212.lib.control.noise.RunningAverageFilter;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import java.util.function.Supplier;
 
-public class Shooter extends GenericSubsystem implements TalonSubsystem {
+public class Shooter extends GenericSubsystem {
 
     public static final double distancePerPulse = 2 * 0.0254 * Math.PI / 2048;
 
@@ -62,6 +60,8 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
     private WPI_VictorSPX slave;
     private DoubleSolenoid solenoid;
 
+    private NoiseReducer noiseReducer;
+
     private boolean enabled;
 
     private Shooter(WPI_TalonSRX master, WPI_VictorSPX slave, DoubleSolenoid solenoid) {
@@ -69,6 +69,8 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
         this.master = master;
         this.slave = slave;
         this.solenoid = solenoid;
+        this.noiseReducer = new NoiseReducer(() -> master.getSelectedSensorVelocity() * distancePerPulse,
+                new RunningAverageFilter());
         enabled = true;
     }
 
@@ -102,48 +104,6 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
         solenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
-    @Override
-    public void configureLoop() {
-        master.configFactoryDefault();
-        master.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, loop.get(),
-                timeout.get());
-
-        master.configNominalOutputForward(0, timeout.get());
-        master.configNominalOutputReverse(0, timeout.get());
-        master.configPeakOutputForward(maxSpeed.get(), timeout.get());
-        master.configPeakOutputReverse(minSpeed.get(), timeout.get());
-
-        master.configAllowableClosedloopError(loop.get(), 0, timeout.get());
-        master.config_kI(loop.get(), pidSettings.getkI(), timeout.get());
-        master.config_kP(loop.get(), pidSettings.getkP(), timeout.get());
-        master.config_kD(loop.get(), pidSettings.getkD(), timeout.get());
-        master.config_kF(loop.get(), kF.get(), timeout.get());
-    }
-
-    @Override
-    public void pidSet(double setpoint) {
-        master.configPeakOutputForward(maxSpeed.get(), timeout.get());
-        master.configPeakOutputReverse(minSpeed.get(), timeout.get());
-
-        master.config_kI(loop.get(), pidSettings.getkI(), timeout.get());
-        master.config_kP(loop.get(), pidSettings.getkP(), timeout.get());
-        master.config_kD(loop.get(), pidSettings.getkD(), timeout.get());
-        master.config_kF(loop.get(), kF.get(), timeout.get());
-
-        master.set(ControlMode.Velocity, setpoint / distancePerPulse);
-    }
-
-    @Override
-    public void finish() {
-        stop();
-    }
-
-    @Override
-    public boolean onTarget(double setpoint) {
-        return Math.abs(setpoint - master.getSelectedSensorPosition(loop.get())) < pidSettings.getTolerance()
-                || !canMove(master.getMotorOutputPercent());
-    }
-
     public void openHood() {
         solenoid.set(DoubleSolenoid.Value.kForward);
     }
@@ -160,14 +120,9 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
         this.enabled = enabled;
     }
 
-    private double lastPosition = 0;
     @Override
     public void configureDashboard() {
-        shooterNamespace.putNumber("shooter velocity", () -> {
-            double velocity = (master.getSelectedSensorPosition() - lastPosition) / 0.02;
-            lastPosition = master.getSelectedSensorPosition();
-            return velocity;
-        });
+        shooterNamespace.putNumber("shooter velocity", noiseReducer);
         shooterNamespace.putNumber("shooter position", master::getSelectedSensorPosition);
         shooterNamespace.putData("open", new InstantCommand(this::open));
         shooterNamespace.putData("close", new InstantCommand(this::close));
