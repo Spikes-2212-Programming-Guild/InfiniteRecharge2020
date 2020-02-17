@@ -46,6 +46,7 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
             WPI_VictorSPX slave = new WPI_VictorSPX(RobotMap.CAN.SHOOTER_SLAVE);
             master.setNeutralMode(NeutralMode.Brake);
             slave.setNeutralMode(NeutralMode.Brake);
+            master.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
             master.setInverted(true);
             DoubleSolenoid solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.SHOOTER_FORWARD,
                     RobotMap.PCM.SHOOTER_BACKWARD);
@@ -74,6 +75,7 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
     @Override
     public void apply(double speed) {
         master.set(speed);
+        slave.set(speed);
     }
 
     @Override
@@ -84,6 +86,7 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
     @Override
     public void stop() {
         master.stopMotor();
+        slave.stopMotor();
     }
 
     @Override
@@ -157,9 +160,14 @@ public class Shooter extends GenericSubsystem implements TalonSubsystem {
         this.enabled = enabled;
     }
 
+    private double lastPosition = 0;
     @Override
     public void configureDashboard() {
-        shooterNamespace.putNumber("shooter velocity", master::getSelectedSensorVelocity);
+        shooterNamespace.putNumber("shooter velocity", () -> {
+            double velocity = (master.getSelectedSensorPosition() - lastPosition) / 0.02;
+            lastPosition = master.getSelectedSensorPosition();
+            return velocity;
+        });
         shooterNamespace.putNumber("shooter position", master::getSelectedSensorPosition);
         shooterNamespace.putData("open", new InstantCommand(this::open));
         shooterNamespace.putData("close", new InstantCommand(this::close));

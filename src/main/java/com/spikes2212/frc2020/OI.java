@@ -27,7 +27,7 @@ public class OI /* GEVALD */ {
     }
 
     public double getRightY() {
-        return right.getY();
+        return -right.getY();
     }
 
     public double getControllerRightAngle() {
