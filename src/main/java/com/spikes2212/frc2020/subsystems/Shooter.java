@@ -7,6 +7,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
+import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystemWithPID;
+import com.spikes2212.lib.control.FeedForwardSettings;
 import com.spikes2212.lib.control.PIDSettings;
 import com.spikes2212.lib.control.noise.ExponentialFilter;
 import com.spikes2212.lib.control.noise.NoiseReducer;
@@ -31,11 +33,14 @@ public class Shooter extends GenericSubsystem {
     private static Supplier<Double> kP = PID.addConstantDouble("kP", 0);
     private static Supplier<Double> kI = PID.addConstantDouble("kI", 0);
     private static Supplier<Double> kD = PID.addConstantDouble("kD", 0);
+    private static Supplier<Double> kS = PID.addConstantDouble("kS", 0);
     private static Supplier<Double> kF = PID.addConstantDouble("kF", 0);
     private static Supplier<Double> tolerance = PID.addConstantDouble("Tolerance", 0);
     private static Supplier<Double> waitTime = PID.addConstantDouble("Wait Time", 0);
-    private static Supplier<Integer> loop = PID.addConstantInt("Loop", 0);
-    private static Supplier<Integer> timeout = PID.addConstantInt("Timeout", 30);
+
+    private static Supplier<Double> targetSpeed = PID.addConstantDouble("target speed", 0);
+    private static PIDSettings velocityPIDSettings = new PIDSettings(kP, kI, kD);
+    private static FeedForwardSettings velocityFFSettings = new FeedForwardSettings(kS, kF, () -> 0.0);
 
     private static Shooter instance;
 
@@ -128,5 +133,8 @@ public class Shooter extends GenericSubsystem {
         shooterNamespace.putData("open", new InstantCommand(this::open));
         shooterNamespace.putData("close", new InstantCommand(this::close));
         shooterNamespace.putData("shoot", new MoveGenericSubsystem(this, shootSpeed));
+
+        shooterNamespace.putData("shoot with pid",
+                new MoveGenericSubsystemWithPID(this, velocityPIDSettings, targetSpeed, noiseReducer, velocityFFSettings));
     }
 }
