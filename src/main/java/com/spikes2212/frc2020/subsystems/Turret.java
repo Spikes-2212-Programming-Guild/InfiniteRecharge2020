@@ -2,6 +2,7 @@ package com.spikes2212.frc2020.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.spikes2212.frc2020.Robot;
 import com.spikes2212.frc2020.RobotMap;
@@ -54,6 +55,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
             WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.TURRET_TALON);
             DigitalInput endLimit = new DigitalInput(RobotMap.DIO.TURRET_END_LIMIT);
             DigitalInput startLimit = new DigitalInput(RobotMap.DIO.TURRET_START_LIMIT);
+            motor.setNeutralMode(NeutralMode.Brake);
             instance = new Turret(motor, endLimit, startLimit);
         }
         return instance;
@@ -112,6 +114,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     public void configureDashboard() {
         setAutomaticDefaultCommand();
 //        turretNamespace.putBoolean("on target", () -> onTarget(setpoint.get()));
+        turretNamespace.putBoolean("turret limit", startLimit::get);
         turretNamespace.putNumber("turret angle", () -> motor.getSelectedSensorPosition() / DEGREES_TO_PULSES);
         turretNamespace.putNumber("speed controller values", motor::getMotorOutputPercent);
         turretNamespace.putData("rotate with pid", new MoveTalonSubsystem(this, setpoint, waitTime));
