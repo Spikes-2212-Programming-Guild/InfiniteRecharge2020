@@ -8,6 +8,7 @@ import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.control.PIDSettings;
+import com.spikes2212.lib.control.noise.ExponentialFilter;
 import com.spikes2212.lib.control.noise.NoiseReducer;
 import com.spikes2212.lib.control.noise.RunningAverageFilter;
 import com.spikes2212.lib.dashboard.Namespace;
@@ -70,7 +71,7 @@ public class Shooter extends GenericSubsystem {
         this.slave = slave;
         this.solenoid = solenoid;
         this.noiseReducer = new NoiseReducer(() -> master.getSelectedSensorVelocity() * distancePerPulse,
-                new RunningAverageFilter());
+                new ExponentialFilter(0.7));
         enabled = true;
     }
 
