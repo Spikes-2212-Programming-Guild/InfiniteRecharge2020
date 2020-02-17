@@ -27,7 +27,7 @@ public abstract class StateMachine<T extends Enum<T>> {
     protected abstract void generateTransformations();
 
     protected void addTransformation(T state, Command command) {
-        transformations.put(state, command.andThen(() -> setState(state)));
+        transformations.put(state, new InstantCommand(() -> setState(state)).andThen(command));
     }
 
     public CommandBase getTransformationFor(T state) {
