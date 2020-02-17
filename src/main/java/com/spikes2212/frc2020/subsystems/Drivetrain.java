@@ -1,5 +1,6 @@
 package com.spikes2212.frc2020.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.spikes2212.frc2020.RobotMap;
@@ -8,6 +9,7 @@ import com.spikes2212.lib.dashboard.RootNamespace;
 import com.spikes2212.lib.path.OdometryHandler;
 import com.spikes2212.lib.util.PigeonWrapper;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 
 import java.util.function.Supplier;
 
@@ -30,8 +32,6 @@ public class Drivetrain extends OdometryDrivetrain {
             WPI_VictorSPX rightVictor = new WPI_VictorSPX(RobotMap.CAN.DRIVETRAIN_RIGHT_VICTOR);
             leftVictor.follow(leftTalon);
             rightVictor.follow(rightTalon);
-            rightTalon.setInverted(true);
-            rightVictor.setInverted(true);
             Encoder leftEncoder = new Encoder(RobotMap.DIO.DRIVETRAIN_LEFT_ENCODER_POS, RobotMap.DIO.DRIVETRAIN_LEFT_ENCODER_NEG);
             Encoder rightEncoder = new Encoder(RobotMap.DIO.DRIVETRAIN_RIGHT_ENCODER_POS, RobotMap.DIO.DRIVETRAIN_RIGHT_ENCODER_NEG);
             leftEncoder.setDistancePerPulse(wheelDiameter.get() * 0.0254 * Math.PI / 360);
@@ -107,6 +107,11 @@ public class Drivetrain extends OdometryDrivetrain {
         rightController.setInverted(!inverted);
         leftVictor.setInverted(inverted);
         rightVictor.setInverted(!inverted);
+    }
+
+    @Override
+    public void arcadeDrive(double moveValue, double rotateValue) {
+        super.curvatureDrive(moveValue, rotateValue);
     }
 
     public void configureDashboard(){

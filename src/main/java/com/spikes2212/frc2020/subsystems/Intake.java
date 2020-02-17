@@ -35,15 +35,15 @@ public class Intake extends GenericSubsystem {
     }
 
     private WPI_TalonSRX motor;
-    private DigitalInput limit;
+    private DigitalInput lightSensor;
     private DoubleSolenoid solenoid;
 
     private boolean enabled;
 
-    private Intake(WPI_TalonSRX motor, DigitalInput limit, DoubleSolenoid solenoid) {
+    private Intake(WPI_TalonSRX motor, DigitalInput lightSensor, DoubleSolenoid solenoid) {
         super(minSpeed, maxSpeed);
         this.motor = motor;
-        this.limit = limit;
+        this.lightSensor = lightSensor;
         this.solenoid = solenoid;
         enabled=false;
     }
@@ -73,6 +73,7 @@ public class Intake extends GenericSubsystem {
         intakeNamespace.putData("grip", new MoveGenericSubsystem(this, intakeVoltage));
         intakeNamespace.putData("open", new InstantCommand(this::open, this));
         intakeNamespace.putData("close", new InstantCommand(this::close, this));
+        intakeNamespace.putData("grip without states", new InstantCommand(() -> apply(intakeVoltage.get())));
     }
 
     public void open() {
@@ -94,7 +95,7 @@ public class Intake extends GenericSubsystem {
     }
 
     public boolean limitPressed() {
-        return limit.get();
+        return lightSensor.get();
     }
 
     public double getSuppliedCurrent(){

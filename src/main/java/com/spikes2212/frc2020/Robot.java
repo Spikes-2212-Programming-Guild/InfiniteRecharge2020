@@ -25,12 +25,12 @@ public class Robot extends TimedRobot {
         Turret.getInstance().configureDashboard();
         Feeder.getInstance().configureDashboard();
         Intake.getInstance().configureDashboard();
-        Climber.getInstance().configureDashboard();
-        Elevator.getInstance().configureDashboard();
+//        Climber.getInstance().configureDashboard();
+//        Elevator.getInstance().configureDashboard();
 
         oi = new OI();
         Drivetrain.getInstance().setDefaultCommand(new DriveArcade(Drivetrain.getInstance(),
-                oi::getLeftY, oi::getRightX));
+                oi::getRightY, oi::getLeftX));
         SmartDashboard.putData("start compressor", new InstantCommand(new Compressor()::start));
         SmartDashboard.putData("stop compressor", new InstantCommand(new Compressor()::stop));
     }
