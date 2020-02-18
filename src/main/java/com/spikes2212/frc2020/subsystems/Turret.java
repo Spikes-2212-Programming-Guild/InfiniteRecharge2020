@@ -33,8 +33,8 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     private static final Supplier<Double> turnSpeed = turretNamespace.addConstantDouble("turn speed", 0.3);
 
     private static final Supplier<Double> minSpeed = turretNamespace.addConstantDouble("Min Speed", -0.6);
-    private static final Supplier<Integer> minAngle = turretNamespace.addConstantInt("Min Angle", 30);
-    private static final Supplier<Integer> maxAngle = turretNamespace.addConstantInt("Max Angle", 330);
+    private static final Supplier<Integer> minAngle = turretNamespace.addConstantInt("Min Angle", 20);
+    private static final Supplier<Integer> maxAngle = turretNamespace.addConstantInt("Max Angle", 270);
     private static final Supplier<Double> kP = PID.addConstantDouble("kP", 0);
     private static final Supplier<Double> kI = PID.addConstantDouble("kI", 0);
 
@@ -46,7 +46,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
     private static final PIDSettings pidSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
 
-    private static final double DEGREES_TO_PULSES = 4096 * 8.5 / 28 * 1 / 3;
+    private static final double DEGREES_TO_PULSES = 4096 * 28 / 8.5 / 360;
 
     private static Turret instance;
 
@@ -115,7 +115,8 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 //        setAutomaticDefaultCommand();
 //        turretNamespace.putBoolean("on target", () -> onTarget(setpoint.get()));
         turretNamespace.putBoolean("turret limit", startLimit::get);
-        turretNamespace.putNumber("turret angle", () -> motor.getSelectedSensorPosition());
+        turretNamespace.putNumber("turret angle", () -> motor.getSelectedSensorPosition() / DEGREES_TO_PULSES);
+        turretNamespace.putNumber("encoder values", motor::getSelectedSensorPosition);
         turretNamespace.putNumber("speed controller values", motor::getMotorOutputPercent);
         turretNamespace.putData("rotate with pid", new MoveTalonSubsystem(this, setpoint, waitTime));
         turretNamespace.putData("rotate with speed", new MoveGenericSubsystem(this, turnSpeed));

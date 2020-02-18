@@ -1,13 +1,14 @@
 package com.spikes2212.frc2020.statemachines;
 
 import com.spikes2212.frc2020.subsystems.Intake;
+import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.state.StateMachine;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class IntakeStateMachine extends StateMachine<IntakeStateMachine.IntakeState> {
 
     public enum IntakeState {
-        CLOSE, OPEN
+        DISABLED, ENABLED
     }
 
     private static IntakeStateMachine instance;
@@ -22,12 +23,12 @@ public class IntakeStateMachine extends StateMachine<IntakeStateMachine.IntakeSt
     private Intake intake = Intake.getInstance();
 
     private IntakeStateMachine() {
-        super(IntakeState.CLOSE);
+        super(IntakeState.DISABLED);
     }
 
     @Override
     protected void generateTransformations() {
-        addTransformation(IntakeState.CLOSE, new InstantCommand(intake::close, intake));
-        addTransformation(IntakeState.OPEN, new InstantCommand(intake::open, intake));
+        addTransformation(IntakeState.ENABLED, new MoveGenericSubsystem(intake, intake.intakeVoltage.get()));
+        addTransformation(IntakeState.DISABLED, new MoveGenericSubsystem(intake, 0));
     }
 }
