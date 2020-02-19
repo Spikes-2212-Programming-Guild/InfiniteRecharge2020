@@ -6,19 +6,24 @@ import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-public class MoveTurretToFieldRelativeAngle extends ParallelCommandGroup {
+public class MoveTurretToFieldRelativeAngle extends SequentialCommandGroup {
+
+    private Drivetrain drivetrain = Drivetrain.getInstance();
+    private Turret turret = Turret.getInstance();
 
     private double targetAngle = 0;
-    private Drivetrain drivetrain = Drivetrain.getInstance();
 
     public MoveTurretToFieldRelativeAngle() {
         addCommands(
-                new InstantCommand(() -> {
-                    targetAngle = drivetrain.getYaw();
-                    SmartDashboard.putNumber("field relative target", drivetrain.getYaw() - targetAngle);
-                }).andThen(new MoveTalonSubsystem(Turret.getInstance(), () ->
-                        drivetrain.getYaw() - targetAngle, () -> 0.0)));
+                new InstantCommand(() -> targetAngle = findTargetAngle()),
+                new MoveTalonSubsystem(turret, this::findTargetAngle, () -> 0.0).perpetually()
+        );
+    }
+
+    private double findTargetAngle() {
+        return (turret.getYaw() - drivetrain.getYaw()) % 360;
     }
 }

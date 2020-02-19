@@ -33,17 +33,17 @@ public class IntakeFeederStateMachine extends StateMachine<IntakeFeederStateMach
     @Override
     protected void generateTransformations() {
         addTransformation(IntakeFeederState.OFF,
-                new ParallelCommandGroup(intakeFSM.getTransformationFor(IntakeState.CLOSE),
+                new ParallelCommandGroup(intakeFSM.getTransformationFor(IntakeState.DISABLED),
                         feederFSM.getTransformationFor(FeederState.OFF)
                 ));
         addTransformation(IntakeFeederState.FEED_TO_LEVEL_1,
-                new ParallelCommandGroup(intakeFSM.getTransformationFor(IntakeState.CLOSE),
+                new ParallelCommandGroup(intakeFSM.getTransformationFor(IntakeState.ENABLED),
                         feederFSM.getTransformationFor(FeederState.FEED_TO_LVL_1)));
         addTransformation(IntakeFeederState.FEED_TO_SHOOTER,
-                new ParallelCommandGroup(intakeFSM.getTransformationFor(IntakeState.CLOSE),
+                new ParallelCommandGroup(intakeFSM.getTransformationFor(IntakeState.ENABLED),
                         feederFSM.getTransformationFor(FeederState.FEED_TO_SHOOTER)));
         addTransformation(IntakeFeederState.COLLECT,
-                new ParallelCommandGroup(intakeFSM.getTransformationFor(IntakeState.OPEN),
+                new ParallelCommandGroup(intakeFSM.getTransformationFor(IntakeState.ENABLED),
                         feederFSM.getTransformationFor(FeederState.FEED_TO_SHOOTER)));
     }
 }

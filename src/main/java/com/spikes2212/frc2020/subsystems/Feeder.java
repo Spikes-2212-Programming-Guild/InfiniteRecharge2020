@@ -88,7 +88,6 @@ public class Feeder extends GenericSubsystem {
         feederNamespace.putData("feed", new MoveGenericSubsystem(this, speed));
         feederNamespace.putData("open level 1", new InstantCommand(this::open, this));
         feederNamespace.putData("close level 1", new InstantCommand(this::close, this));
-        feederNamespace.putData("feed without states", new MoveGenericSubsystem(this, speed));
     }
 
 }
