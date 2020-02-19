@@ -24,9 +24,9 @@ public class OI /* GEVALD */ {
     public OI() {
         JoystickButton shoot = new JoystickButton(left, 1);
         shoot.whenHeld(new SequentialCommandGroup(
-                new MoveTalonSubsystem(turret, () -> turret.getYaw() - vision.getYawToRetroReflective(), Shooter.waitTime),
+                new MoveTalonSubsystem(turret, () -> turret.getYaw() - vision.getYaw(), Shooter.waitTime),
                 new MoveGenericSubsystem(shooter, Shooter.shootSpeed).alongWith(
-                        new MoveTalonSubsystem(turret, () -> turret.getYaw() - vision.getYawToRetroReflective(), Shooter.waitTime)
+                        new MoveTalonSubsystem(turret, () -> turret.getYaw() - vision.getYaw(), Shooter.waitTime)
                 ).perpetually()
         ));
     }

@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.spikes2212.frc2020.RobotMap;
+import com.spikes2212.frc2020.services.VisionService;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystemWithPID;
@@ -21,7 +22,7 @@ import java.util.function.Supplier;
 
 public class Shooter extends GenericSubsystem {
 
-    public static final double distancePerPulse = 360 / 4096;
+    public static final double distancePerPulse = 2 * Math.PI / 4096.0;
 
     private static RootNamespace shooterNamespace = new RootNamespace("shooter");
     private static Namespace PID = shooterNamespace.addChild("PID");
@@ -53,6 +54,7 @@ public class Shooter extends GenericSubsystem {
             slave.setNeutralMode(NeutralMode.Brake);
             slave.follow(master);
             master.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+            master.setSelectedSensorPosition(0);
             master.setInverted(true);
             DoubleSolenoid solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.SHOOTER_FORWARD,
                     RobotMap.PCM.SHOOTER_BACKWARD);
@@ -71,14 +73,15 @@ public class Shooter extends GenericSubsystem {
     private NoiseReducer noiseReducer;
 
     private boolean enabled;
-
+    private double last = 0;
     private Shooter(WPI_TalonSRX master, WPI_VictorSPX slave, DoubleSolenoid solenoid) {
         super(minSpeed, maxSpeed);
         this.master = master;
         this.slave = slave;
         this.solenoid = solenoid;
-        this.noiseReducer = new NoiseReducer(() -> master.getSelectedSensorVelocity() * distancePerPulse,
-                new ExponentialFilter(0.1));
+
+        this.noiseReducer = new NoiseReducer(() -> master.getSelectedSensorVelocity() * distancePerPulse
+        , new ExponentialFilter(0.1));
         enabled = true;
     }
 
@@ -121,13 +124,14 @@ public class Shooter extends GenericSubsystem {
 
     @Override
     public void configureDashboard() {
+        VisionService vision = VisionService.getInstance();
         shooterNamespace.putNumber("shooter velocity - filtered", noiseReducer);
-        shooterNamespace.putNumber("shooter velocity", () -> master.getSelectedSensorVelocity() * distancePerPulse);
+        shooterNamespace.putNumber("shooter velocity", () -> (double) master.getSelectedSensorVelocity() * distancePerPulse);
         shooterNamespace.putNumber("shooter position", master::getSelectedSensorPosition);
+        shooterNamespace.putNumber("distance to target", vision::getDistanceFromTarget);
         shooterNamespace.putData("open", new InstantCommand(this::open));
         shooterNamespace.putData("close", new InstantCommand(this::close));
         shooterNamespace.putData("shoot", new MoveGenericSubsystem(this, shootSpeed));
-
         shooterNamespace.putData("pid shoot",
                 new MoveGenericSubsystemWithPID(this, velocityPIDSettings, targetSpeed, noiseReducer, velocityFFSettings));
     }
