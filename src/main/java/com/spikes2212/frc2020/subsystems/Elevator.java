@@ -41,9 +41,9 @@ public class Elevator extends GenericSubsystem {
             WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.ELEVATOR_TALON);
             Encoder encoder = new Encoder(RobotMap.DIO.ELEVATOR_ENCODER_POS,
                     RobotMap.DIO.ELEVATOR_ENCODER_NEG);
-            //DigitalInput bottomHallEffect = new DigitalInput(RobotMap.DIO.ELEVATOR_BOTTOM_SWITCH);
-           // DigitalInput topHallEffect = new DigitalInput(RobotMap.DIO.ELEVATOR_TOP_SWITCH);
-            //instance = new Elevator(motor, encoder, bottomHallEffect, topHallEffect);
+            DigitalInput bottomHallEffect = new DigitalInput(RobotMap.DIO.ELEVATOR_BOTTOM_SWITCH);
+            DigitalInput topHallEffect = new DigitalInput(RobotMap.DIO.ELEVATOR_TOP_SWITCH);
+            instance = new Elevator(motor, encoder, bottomHallEffect, topHallEffect);
         }
 
         return instance;
