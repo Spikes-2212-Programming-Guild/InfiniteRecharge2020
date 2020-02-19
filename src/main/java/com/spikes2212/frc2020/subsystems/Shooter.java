@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 
 public class Shooter extends GenericSubsystem {
 
-    public static final double distancePerPulse = 2 * 0.0254 * Math.PI / 2048;
+    public static final double distancePerPulse = 360 / 4096;
 
     private static RootNamespace shooterNamespace = new RootNamespace("shooter");
     private static Namespace PID = shooterNamespace.addChild("PID");
@@ -30,6 +30,7 @@ public class Shooter extends GenericSubsystem {
     private static Supplier<Double> minSpeed = shooterNamespace.addConstantDouble("Min Speed", 0);
     private static Supplier<Double> shootSpeed =
       shooterNamespace.addConstantDouble("Shooting Speed", 0.6);
+
     private static Supplier<Double> kP = PID.addConstantDouble("kP", 0);
     private static Supplier<Double> kI = PID.addConstantDouble("kI", 0);
     private static Supplier<Double> kD = PID.addConstantDouble("kD", 0);
@@ -39,7 +40,8 @@ public class Shooter extends GenericSubsystem {
     private static Supplier<Double> waitTime = PID.addConstantDouble("Wait Time", 0);
 
     private static Supplier<Double> targetSpeed = PID.addConstantDouble("target speed", 0);
-    private static PIDSettings velocityPIDSettings = new PIDSettings(kP, kI, kD);
+
+    private static PIDSettings velocityPIDSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
     private static FeedForwardSettings velocityFFSettings = new FeedForwardSettings(kS, kF, () -> 0.0);
 
     private static Shooter instance;
@@ -50,6 +52,7 @@ public class Shooter extends GenericSubsystem {
             WPI_VictorSPX slave = new WPI_VictorSPX(RobotMap.CAN.SHOOTER_SLAVE);
             master.setNeutralMode(NeutralMode.Brake);
             slave.setNeutralMode(NeutralMode.Brake);
+            slave.follow(master);
             master.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
             master.setInverted(true);
             DoubleSolenoid solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.SHOOTER_FORWARD,
@@ -76,25 +79,23 @@ public class Shooter extends GenericSubsystem {
         this.slave = slave;
         this.solenoid = solenoid;
         this.noiseReducer = new NoiseReducer(() -> master.getSelectedSensorVelocity() * distancePerPulse,
-                new ExponentialFilter(0.7));
+                new ExponentialFilter(0.1));
         enabled = true;
     }
 
     @Override
     public void apply(double speed) {
         master.set(speed);
-        slave.set(speed);
     }
 
     @Override
     public boolean canMove(double speed) {
-        return speed >= 0 && enabled;
+        return true;
     }
 
     @Override
     public void stop() {
         master.stopMotor();
-        slave.stopMotor();
     }
 
     @Override
@@ -110,13 +111,6 @@ public class Shooter extends GenericSubsystem {
         solenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
-    public void openHood() {
-        solenoid.set(DoubleSolenoid.Value.kForward);
-    }
-
-    public void closeHood() {
-        solenoid.set(DoubleSolenoid.Value.kReverse);
-    }
 
     public boolean isEnabled() {
         return enabled;
@@ -128,13 +122,14 @@ public class Shooter extends GenericSubsystem {
 
     @Override
     public void configureDashboard() {
-        shooterNamespace.putNumber("shooter velocity", noiseReducer);
+        shooterNamespace.putNumber("shooter velocity - filtered", noiseReducer);
+        shooterNamespace.putNumber("shooter velocity", () -> master.getSelectedSensorVelocity() * distancePerPulse);
         shooterNamespace.putNumber("shooter position", master::getSelectedSensorPosition);
         shooterNamespace.putData("open", new InstantCommand(this::open));
         shooterNamespace.putData("close", new InstantCommand(this::close));
         shooterNamespace.putData("shoot", new MoveGenericSubsystem(this, shootSpeed));
 
-        shooterNamespace.putData("shoot with pid",
+        shooterNamespace.putData("pid shoot",
                 new MoveGenericSubsystemWithPID(this, velocityPIDSettings, targetSpeed, noiseReducer, velocityFFSettings));
     }
 }
