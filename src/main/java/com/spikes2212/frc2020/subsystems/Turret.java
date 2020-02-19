@@ -79,6 +79,26 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         enabled = true;
     }
 
+    public boolean atStart() {
+        return startLimit.get();
+    }
+
+    public boolean atEnd() {
+        return endLimit.get();
+    }
+
+    public void setAutomaticDefaultCommand() {
+        setDefaultCommand(new MoveTurretToFieldRelativeAngle().perpetually());
+    }
+
+    public void setManualDefaultCommand() {
+        setDefaultCommand(new MoveTalonSubsystem(this, Robot.oi::getControllerRightAngle, () -> 0.0).perpetually());
+    }
+
+    public double getYaw() {
+        return motor.getSelectedSensorPosition() / DEGREES_TO_PULSES;
+    }
+
     @Override
     public void apply(double speed) {
         motor.set(speed);
@@ -86,20 +106,12 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public boolean canMove(double speed) {
-        return ((speed > 0 && !endLimit.get()) || (speed < 0 && !startLimit.get())) && enabled;
+        return ((speed > 0 && !atEnd()) || (speed < 0 && !atStart())) && enabled;
     }
 
     @Override
     public void stop() {
         motor.stopMotor();
-    }
-
-    public boolean atStart() {
-        return startLimit.get();
-    }
-
-    public boolean atEnd() {
-        return endLimit.get();
     }
 
     @Override
@@ -120,18 +132,6 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         turretNamespace.putNumber("speed controller values", motor::getMotorOutputPercent);
         turretNamespace.putData("rotate with pid", new MoveTalonSubsystem(this, setpoint, waitTime));
         turretNamespace.putData("rotate with speed", new MoveGenericSubsystem(this, turnSpeed));
-    }
-
-    public void setAutomaticDefaultCommand() {
-        setDefaultCommand(new MoveTurretToFieldRelativeAngle().perpetually());
-    }
-
-    public void setSpeedDefaultCommand() {
-        setDefaultCommand(new MoveGenericSubsystem(this, turnSpeed));
-    }
-
-    public void setManualDefaultCommand() {
-        setDefaultCommand(new MoveTalonSubsystem(this, Robot.oi::getControllerRightAngle, () -> 0.0).perpetually());
     }
 
     @Override
