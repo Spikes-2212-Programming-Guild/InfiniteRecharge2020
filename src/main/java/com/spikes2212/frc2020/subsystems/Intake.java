@@ -2,6 +2,7 @@ package com.spikes2212.frc2020.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.spikes2212.frc2020.RobotMap;
+import com.spikes2212.frc2020.statemachines.IntakeStateMachine;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.dashboard.RootNamespace;
@@ -25,10 +26,8 @@ public class Intake extends GenericSubsystem {
     public static Intake getInstance() {
         if (instance == null) {
             DigitalInput limit = new DigitalInput(RobotMap.DIO.INTAKE_LIMIT);
-            DoubleSolenoid solenoid = new DoubleSolenoid(RobotMap.PCM.INTAKE_FORWARD,
-                    RobotMap.PCM.INTAKE_BACKWARD);
             WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.INTAKE_MOTOR);
-            instance = new Intake(motor, limit, solenoid);
+            instance = new Intake(motor, limit);
         }
 
         return instance;
@@ -36,15 +35,13 @@ public class Intake extends GenericSubsystem {
 
     private WPI_TalonSRX motor;
     private DigitalInput lightSensor;
-    private DoubleSolenoid solenoid;
 
     private boolean enabled;
 
-    private Intake(WPI_TalonSRX motor, DigitalInput lightSensor, DoubleSolenoid solenoid) {
+    private Intake(WPI_TalonSRX motor, DigitalInput lightSensor) {
         super(minSpeed, maxSpeed);
         this.motor = motor;
         this.lightSensor = lightSensor;
-        this.solenoid = solenoid;
         enabled=false;
     }
 
@@ -71,19 +68,7 @@ public class Intake extends GenericSubsystem {
     @Override
     public void configureDashboard() {
         intakeNamespace.putData("grip", new MoveGenericSubsystem(this, intakeVoltage));
-        intakeNamespace.putData("open", new InstantCommand(this::open, this));
-        intakeNamespace.putData("close", new InstantCommand(this::close, this));
         intakeNamespace.putData("grip without states", new InstantCommand(() -> apply(intakeVoltage.get())));
-    }
-
-    public void open() {
-        solenoid.set(DoubleSolenoid.Value.kForward);
-        setEnabled(true);
-    }
-
-    public void close() {
-        solenoid.set(DoubleSolenoid.Value.kReverse);
-        setEnabled(false);
     }
 
     public boolean isEnabled() {

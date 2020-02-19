@@ -38,6 +38,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     private static final Supplier<Double> kP = PID.addConstantDouble("kP", 0);
     private static final Supplier<Double> kI = PID.addConstantDouble("kI", 0);
     private static final Supplier<Double> kD = PID.addConstantDouble("kD", 0);
+
     private static final Supplier<Double> kS = PID.addConstantDouble("kS", 0);
 
     private static final Supplier<Double> tolerance = PID.addConstantDouble("Tolerance", 0);
@@ -57,8 +58,6 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
             DigitalInput endLimit = new DigitalInput(RobotMap.DIO.TURRET_END_LIMIT);
             DigitalInput startLimit = new DigitalInput(RobotMap.DIO.TURRET_START_LIMIT);
             motor.setNeutralMode(NeutralMode.Brake);
-            motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-            motor.setSelectedSensorPosition(0);
             instance = new Turret(motor, endLimit, startLimit);
         }
         return instance;
@@ -115,13 +114,14 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public void configureDashboard() {
+//        setAutomaticDefaultCommand();
+//        turretNamespace.putBoolean("on target", () -> onTarget(setpoint.get()));
         turretNamespace.putBoolean("turret limit", startLimit::get);
-        turretNamespace.putNumber("turret angle", () -> motor.getSelectedSensorPosition() / DEGREES_TO_PULSES);
-        turretNamespace.putNumber("turret position", () -> motor.getSelectedSensorPosition());
+        turretNamespace.putNumber("turret angle", () -> motor.getSelectedSensorPosition());
         turretNamespace.putNumber("speed controller values", motor::getMotorOutputPercent);
         turretNamespace.putData("rotate with pid", new MoveTalonSubsystem(this, setpoint, waitTime));
         turretNamespace.putData("rotate with speed", new MoveGenericSubsystem(this, turnSpeed));
-        turretNamespace.putData("field relative turret", new MoveTurretToFieldRelativeAngle());
+        turretNamespace.putData("rotate with image processing", new InstantCommand(() -> TurretStateMachine.getInstance().getTransformationFor(TurretStateMachine.TurretState.AUTOMATIC)));
     }
 
     public void setAutomaticDefaultCommand() {
@@ -134,10 +134,6 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
     public void setManualDefaultCommand() {
         setDefaultCommand(new MoveTalonSubsystem(this, Robot.oi::getControllerRightAngle, () -> 0.0).perpetually());
-    }
-
-    public double getYaw() {
-        return motor.getSelectedSensorPosition() / DEGREES_TO_PULSES;
     }
 
     @Override
@@ -187,7 +183,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         double tolerance = Turret.tolerance.get() * DEGREES_TO_PULSES;
         int position = motor.getSelectedSensorPosition();
 
-        return Math.abs(setpoint - position) <= tolerance;
+        return !canMove(motor.getMotorOutputPercent()) || Math.abs(setpoint - position) <= tolerance;
     }
 
     public boolean isEnabled() {
