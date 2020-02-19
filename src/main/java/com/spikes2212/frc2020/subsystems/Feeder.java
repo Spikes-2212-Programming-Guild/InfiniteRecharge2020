@@ -1,11 +1,11 @@
 package com.spikes2212.frc2020.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import java.util.function.Supplier;
@@ -16,14 +16,14 @@ public class Feeder extends GenericSubsystem {
 
     private static final Supplier<Double> minSpeed = feederNamespace.addConstantDouble("min speed", -1);
     private static final Supplier<Double> maxSpeed = feederNamespace.addConstantDouble("max speed", 1);
-    public static final Supplier<Double> speed = feederNamespace.addConstantDouble("speed", 0.5);
-    public static final Supplier<Double> feedTimeLimit = feederNamespace.addConstantDouble("feeding time", 0.5);
+    public static final Supplier<Double> speed = feederNamespace.addConstantDouble("speed", 0.7);
+    public static final Supplier<Double> feedTimeLimit = feederNamespace.addConstantDouble("feeding time", 2);
 
     private static Feeder instance;
 
     public static Feeder getInstance() {
         if(instance == null) {
-            VictorSP motor = new VictorSP(RobotMap.PWM.FEEDER_MOTOR);
+            WPI_VictorSPX motor = new WPI_VictorSPX(RobotMap.CAN.FEEDER_VICTOR);
             DoubleSolenoid solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.FEEDER_FORWARD,
                     RobotMap.PCM.FEEDER_BACKWARD);
             instance = new Feeder(motor, solenoid);
@@ -32,12 +32,12 @@ public class Feeder extends GenericSubsystem {
         return instance;
     }
 
-    private VictorSP motor;
+    private WPI_VictorSPX motor;
     private DoubleSolenoid solenoid;
 
     private boolean enabled;
 
-    public Feeder(VictorSP motor, DoubleSolenoid solenoid) {
+    public Feeder(WPI_VictorSPX motor, DoubleSolenoid solenoid) {
         super(minSpeed, maxSpeed);
         this.motor = motor;
         this.solenoid = solenoid;

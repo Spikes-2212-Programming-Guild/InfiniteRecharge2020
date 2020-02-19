@@ -1,13 +1,9 @@
 package com.spikes2212.frc2020.statemachines;
 
-import com.spikes2212.frc2020.Robot;
 import com.spikes2212.frc2020.subsystems.Drivetrain;
 import com.spikes2212.frc2020.subsystems.Turret;
-import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
-import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
 import com.spikes2212.lib.state.StateMachine;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 
 public class TurretStateMachine extends StateMachine<TurretStateMachine.TurretState> {
 

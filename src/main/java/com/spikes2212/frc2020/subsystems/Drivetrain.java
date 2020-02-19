@@ -30,8 +30,6 @@ public class Drivetrain extends OdometryDrivetrain {
             WPI_VictorSPX rightVictor = new WPI_VictorSPX(RobotMap.CAN.DRIVETRAIN_RIGHT_VICTOR);
             leftVictor.follow(leftTalon);
             rightVictor.follow(rightTalon);
-            rightTalon.setInverted(true);
-            rightVictor.setInverted(true);
             Encoder leftEncoder = new Encoder(RobotMap.DIO.DRIVETRAIN_LEFT_ENCODER_POS, RobotMap.DIO.DRIVETRAIN_LEFT_ENCODER_NEG);
             Encoder rightEncoder = new Encoder(RobotMap.DIO.DRIVETRAIN_RIGHT_ENCODER_POS, RobotMap.DIO.DRIVETRAIN_RIGHT_ENCODER_NEG);
             leftEncoder.setDistancePerPulse(wheelDiameter.get() * 0.0254 * Math.PI / 360);

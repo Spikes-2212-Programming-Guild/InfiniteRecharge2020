@@ -6,7 +6,6 @@ import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import java.util.function.Supplier;
@@ -25,26 +24,22 @@ public class Intake extends GenericSubsystem {
     public static Intake getInstance() {
         if (instance == null) {
             DigitalInput limit = new DigitalInput(RobotMap.DIO.INTAKE_LIMIT);
-            DoubleSolenoid solenoid = new DoubleSolenoid(RobotMap.PCM.INTAKE_FORWARD,
-                    RobotMap.PCM.INTAKE_BACKWARD);
             WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.INTAKE_MOTOR);
-            instance = new Intake(motor, limit, solenoid);
+            instance = new Intake(motor, limit);
         }
 
         return instance;
     }
 
     private WPI_TalonSRX motor;
-    private DigitalInput limit;
-    private DoubleSolenoid solenoid;
+    private DigitalInput lightSensor;
 
     private boolean enabled;
 
-    private Intake(WPI_TalonSRX motor, DigitalInput limit, DoubleSolenoid solenoid) {
+    private Intake(WPI_TalonSRX motor, DigitalInput lightSensor) {
         super(minSpeed, maxSpeed);
         this.motor = motor;
-        this.limit = limit;
-        this.solenoid = solenoid;
+        this.lightSensor = lightSensor;
         enabled=false;
     }
 
@@ -71,18 +66,7 @@ public class Intake extends GenericSubsystem {
     @Override
     public void configureDashboard() {
         intakeNamespace.putData("grip", new MoveGenericSubsystem(this, intakeVoltage));
-        intakeNamespace.putData("open", new InstantCommand(this::open, this));
-        intakeNamespace.putData("close", new InstantCommand(this::close, this));
-    }
-
-    public void open() {
-        solenoid.set(DoubleSolenoid.Value.kForward);
-        setEnabled(true);
-    }
-
-    public void close() {
-        solenoid.set(DoubleSolenoid.Value.kReverse);
-        setEnabled(false);
+        intakeNamespace.putData("grip without states", new InstantCommand(() -> apply(intakeVoltage.get())));
     }
 
     public boolean isEnabled() {
@@ -94,7 +78,7 @@ public class Intake extends GenericSubsystem {
     }
 
     public boolean limitPressed() {
-        return limit.get();
+        return lightSensor.get();
     }
 
     public double getSuppliedCurrent(){
