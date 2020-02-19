@@ -1,6 +1,5 @@
 package com.spikes2212.frc2020.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.spikes2212.frc2020.RobotMap;
@@ -9,7 +8,6 @@ import com.spikes2212.lib.dashboard.RootNamespace;
 import com.spikes2212.lib.path.OdometryHandler;
 import com.spikes2212.lib.util.PigeonWrapper;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 
 import java.util.function.Supplier;
 

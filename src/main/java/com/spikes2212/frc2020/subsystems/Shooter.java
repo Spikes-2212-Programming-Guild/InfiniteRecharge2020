@@ -12,7 +12,6 @@ import com.spikes2212.lib.control.FeedForwardSettings;
 import com.spikes2212.lib.control.PIDSettings;
 import com.spikes2212.lib.control.noise.ExponentialFilter;
 import com.spikes2212.lib.control.noise.NoiseReducer;
-import com.spikes2212.lib.control.noise.RunningAverageFilter;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DoubleSolenoid;

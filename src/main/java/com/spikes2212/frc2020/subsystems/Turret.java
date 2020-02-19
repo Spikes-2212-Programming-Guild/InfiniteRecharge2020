@@ -8,7 +8,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.spikes2212.frc2020.Robot;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.frc2020.commands.MoveTurretToFieldRelativeAngle;
-import com.spikes2212.frc2020.services.VisionService;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.TalonSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;

@@ -1,6 +1,5 @@
 package com.spikes2212.frc2020;
 
-import com.spikes2212.frc2020.commands.Grip;
 import com.spikes2212.frc2020.subsystems.*;
 import com.spikes2212.lib.command.drivetrains.commands.DriveArcade;
 import edu.wpi.first.wpilibj.Compressor;

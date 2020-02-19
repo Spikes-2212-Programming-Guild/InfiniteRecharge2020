@@ -3,7 +3,6 @@ package com.spikes2212.frc2020.statemachines;
 import com.spikes2212.frc2020.subsystems.Intake;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.state.StateMachine;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class IntakeStateMachine extends StateMachine<IntakeStateMachine.IntakeState> {
 
