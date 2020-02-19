@@ -109,11 +109,6 @@ public class Drivetrain extends OdometryDrivetrain {
         rightVictor.setInverted(!inverted);
     }
 
-    @Override
-    public void arcadeDrive(double moveValue, double rotateValue) {
-        super.curvatureDrive(moveValue, rotateValue);
-    }
-
     public void configureDashboard(){
 
         drivetrainNamespace.putNumber("imu yaw",imu::getYaw);
