@@ -49,16 +49,16 @@ public class RobotMap {
     }
 
     public interface PCM {
-        int FEEDER_FORWARD = 0;
-        int FEEDER_BACKWARD = 1;
+        int FEEDER_FORWARD = 1;
+        int FEEDER_BACKWARD = 0;
 
-        int INTAKE_FORWARD = 4;
-        int INTAKE_BACKWARD = 5;
-        int RIGHT_INTAKE_FORWARD = 2;
-        int RIGHT_INTAKE_BACKWARD = 3;
+ //       int INTAKE_FORWARD = 4;
+ //       int INTAKE_BACKWARD = 5;
+ //       int RIGHT_INTAKE_FORWARD = 2;
+ //       int RIGHT_INTAKE_BACKWARD = 3;
 
-        int SHOOTER_FORWARD = 6;
-        int SHOOTER_BACKWARD = 7;
+        int SHOOTER_FORWARD = 2;
+        int SHOOTER_BACKWARD = 3;
     }
 
     public interface PWM {

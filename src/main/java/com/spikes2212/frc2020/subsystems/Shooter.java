@@ -27,7 +27,7 @@ public class Shooter extends GenericSubsystem {
     private static Namespace PID = shooterNamespace.addChild("PID");
     private static Supplier<Double> maxSpeed = shooterNamespace.addConstantDouble("Max Speed", 0.6);
     private static Supplier<Double> minSpeed = shooterNamespace.addConstantDouble("Min Speed", 0);
-    private static Supplier<Double> shootSpeed =
+    public static Supplier<Double> shootSpeed =
       shooterNamespace.addConstantDouble("Shooting Speed", 0.6);
 
     private static Supplier<Double> kP = PID.addConstantDouble("kP", 0);
@@ -36,7 +36,7 @@ public class Shooter extends GenericSubsystem {
     private static Supplier<Double> kS = PID.addConstantDouble("kS", 0);
     private static Supplier<Double> kF = PID.addConstantDouble("kF", 0);
     private static Supplier<Double> tolerance = PID.addConstantDouble("Tolerance", 0);
-    private static Supplier<Double> waitTime = PID.addConstantDouble("Wait Time", 0);
+    public static Supplier<Double> waitTime = PID.addConstantDouble("Wait Time", 0);
 
     private static Supplier<Double> targetSpeed = PID.addConstantDouble("target speed", 0);
 
