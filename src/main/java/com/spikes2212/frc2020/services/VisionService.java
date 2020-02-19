@@ -26,7 +26,6 @@ public class VisionService {
 
     private NetworkTableEntry yaw;
     private NetworkTableEntry pitch;
-    private NetworkTableEntry height;
     private NetworkTableEntry area;
 
     public static VisionService visionService;
