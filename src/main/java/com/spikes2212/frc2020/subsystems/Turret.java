@@ -121,7 +121,6 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         turretNamespace.putNumber("speed controller values", motor::getMotorOutputPercent);
         turretNamespace.putData("rotate with pid", new MoveTalonSubsystem(this, setpoint, waitTime));
         turretNamespace.putData("rotate with speed", new MoveGenericSubsystem(this, turnSpeed));
-        turretNamespace.putData("rotate with image processing", new InstantCommand(() -> TurretStateMachine.getInstance().getTransformationFor(TurretStateMachine.TurretState.AUTOMATIC)));
     }
 
     public void setAutomaticDefaultCommand() {
