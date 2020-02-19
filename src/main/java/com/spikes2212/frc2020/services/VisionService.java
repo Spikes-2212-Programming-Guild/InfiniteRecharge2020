@@ -27,6 +27,7 @@ public class VisionService {
     private NetworkTableEntry yaw;
     private NetworkTableEntry pitch;
     private NetworkTableEntry height;
+    private NetworkTableEntry area;
 
     public static VisionService visionService;
 
@@ -34,7 +35,7 @@ public class VisionService {
         turretCam = NetworkTableInstance.getDefault().getTable("chameleon-vision").getSubTable(cameraName.get());
         yaw = turretCam.getEntry("yaw");
         pitch = turretCam.getEntry("pitch");
-        height = turretCam.getEntry("height");
+        area = turretCam.getEntry("area");
     }
 
     public double getYaw() {
@@ -45,9 +46,7 @@ public class VisionService {
         return pitch.getDouble(0);
     }
 
-    public double getHeight() {
-        return height.getDouble(0);
+    public double getDistanceFromTarget() {
+        return 5.5937 * Math.pow(Math.E, -9.394 * area.getDouble(0));
     }
-
-
 }

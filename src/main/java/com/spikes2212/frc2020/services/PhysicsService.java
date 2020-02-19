@@ -9,11 +9,6 @@ public class PhysicsService {
         return instance;
     }
 
-
-    public double calculateDistanceByHeight(double height) {
-        return 0;
-    }
-
     public double calculateSpeedForDistance(double distance) {
         return 0;
     }
