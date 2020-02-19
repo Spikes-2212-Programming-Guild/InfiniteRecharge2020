@@ -11,25 +11,24 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class Robot extends TimedRobot {
 
-    private static Shooter shooter = Shooter.getInstance();
-    private static Turret turret = Turret.getInstance();
-    private static Feeder feeder = Feeder.getInstance();
-    private static Intake intake = Intake.getInstance();
-    private static Climber climber = Climber.getInstance();
+    private Shooter shooter = Shooter.getInstance();
+    private Turret turret = Turret.getInstance();
+    private Feeder feeder = Feeder.getInstance();
+    private Intake intake = Intake.getInstance();
+    private Drivetrain drivetrain = Drivetrain.getInstance();
 
     public static OI oi;
 
     @Override
     public void robotInit() {
-        Shooter.getInstance().configureDashboard();
-        Turret.getInstance().configureDashboard();
-        Feeder.getInstance().configureDashboard();
-        Intake.getInstance().configureDashboard();
-//        Climber.getInstance().configureDashboard();
-//        Elevator.getInstance().configureDashboard();
+        shooter.configureDashboard();
+        turret.configureDashboard();
+        feeder.configureDashboard();
+        intake.configureDashboard();
+        drivetrain.configureDashboard();
 
         oi = new OI();
-        Drivetrain.getInstance().setDefaultCommand(new DriveArcade(Drivetrain.getInstance(),
+        drivetrain.setDefaultCommand(new DriveArcade(drivetrain,
                 oi::getRightY, oi::getLeftX));
         SmartDashboard.putData("start compressor", new InstantCommand(new Compressor()::start));
         SmartDashboard.putData("stop compressor", new InstantCommand(new Compressor()::stop));
