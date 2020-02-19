@@ -114,8 +114,6 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public void configureDashboard() {
-//        setAutomaticDefaultCommand();
-//        turretNamespace.putBoolean("on target", () -> onTarget(setpoint.get()));
         turretNamespace.putBoolean("turret limit", startLimit::get);
         turretNamespace.putNumber("turret angle", () -> motor.getSelectedSensorPosition());
         turretNamespace.putNumber("speed controller values", motor::getMotorOutputPercent);
