@@ -45,6 +45,10 @@ public class VisionService {
         return pitch.getDouble(0);
     }
 
+    public double getArea() {
+        return area.getDouble(0);
+    }
+
     public double getDistanceFromTarget() {
         return 5.5937 * Math.pow(Math.E, -9.394 * area.getDouble(0));
     }
