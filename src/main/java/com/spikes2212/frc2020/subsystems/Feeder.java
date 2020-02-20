@@ -19,9 +19,9 @@ public class Feeder extends GenericSubsystem {
     public static final Supplier<Double> speed = feederNamespace.addConstantDouble("speed", 0.7);
     public static final Supplier<Double> feedTimeLimit = feederNamespace.addConstantDouble("feeding time", 2);
 
-    private static Feeder instance = new Feeder();
+    private static final Feeder instance = new Feeder();
 
-    public static final Feeder getInstance() {
+    public static Feeder getInstance() {
         return instance;
     }
 

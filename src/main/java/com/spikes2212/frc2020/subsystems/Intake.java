@@ -18,9 +18,9 @@ public class Intake extends GenericSubsystem {
     public static Supplier<Double> intakeVoltage = intakeNamespace.addConstantDouble("grip speed", 0.5);
     public static Supplier<Double> intakeCurrentLimit = intakeNamespace.addConstantDouble("intake Current", 0);
 
-    private static Intake instance = new Intake();
+    private static final Intake instance = new Intake();
 
-    public static final Intake getInstance() {
+    public static Intake getInstance() {
         return instance;
     }
 

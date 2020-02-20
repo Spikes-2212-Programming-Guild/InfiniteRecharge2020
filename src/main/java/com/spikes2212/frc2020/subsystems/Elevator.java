@@ -34,9 +34,9 @@ public class Elevator extends GenericSubsystem {
     public static final Supplier<Integer> NUM_OF_MAGNETS = elevatorNamspace
             .addConstantInt("num of magnets", 0);
 
-    private static Elevator instance = new Elevator();
+    private static final Elevator instance = new Elevator();
 
-    public static final Elevator getInstance() {
+    public static Elevator getInstance() {
         return instance;
     }
 
