@@ -19,28 +19,20 @@ public class Intake extends GenericSubsystem {
     public static Supplier<Double> intakeVoltage = intakeNamespace.addConstantDouble("grip speed", 0.5);
     public static Supplier<Double> intakeCurrentLimit = intakeNamespace.addConstantDouble("intake Current", 0);
 
-    private static Intake instance;
+    private static Intake instance = new Intake();
 
     public static Intake getInstance() {
-        if (instance == null) {
-            DigitalInput limit = new DigitalInput(RobotMap.DIO.INTAKE_LIMIT);
-            WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.INTAKE_MOTOR);
-            instance = new Intake(motor, limit);
-        }
-
         return instance;
     }
 
     private WPI_TalonSRX motor;
-    private DigitalInput lightSensor;
 
     private boolean enabled;
 
-    private Intake(WPI_TalonSRX motor, DigitalInput lightSensor) {
+    private Intake() {
         super(minSpeed, maxSpeed);
-        this.motor = motor;
-        this.lightSensor = lightSensor;
-        enabled=false;
+        this.motor = new WPI_TalonSRX(RobotMap.CAN.INTAKE_MOTOR);
+        enabled = true;
     }
 
     @Override
@@ -50,7 +42,7 @@ public class Intake extends GenericSubsystem {
 
     @Override
     public boolean canMove(double speed) {
-        return speed >= 0 && enabled;
+        return enabled;
     }
 
     @Override
@@ -75,10 +67,6 @@ public class Intake extends GenericSubsystem {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    public boolean limitPressed() {
-        return lightSensor.get();
     }
 
     public double getSuppliedCurrent(){
