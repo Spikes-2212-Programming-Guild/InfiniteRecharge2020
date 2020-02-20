@@ -73,8 +73,8 @@ public class Elevator extends GenericSubsystem {
                 && !(hallEffectCounter.atTop(NUM_OF_MAGNETS.get()) && speed > 0));
     }
 
-    public Supplier<Integer> getCurrentMagnet() {
-        return hallEffectCounter::getCurrentMagnet;
+    public int getCurrentMagnet() {
+        return hallEffectCounter.getCurrentMagnet();
     }
 
     @Override
