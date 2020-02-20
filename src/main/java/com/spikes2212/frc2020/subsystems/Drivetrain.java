@@ -22,6 +22,10 @@ public class Drivetrain extends OdometryDrivetrain {
 
     private static Drivetrain instance = new Drivetrain();
 
+    public static Drivetrain getInstance() {
+        return instance;
+    }
+
     private WPI_VictorSPX leftVictor, rightVictor;
     private Encoder leftEncoder;
     private Encoder rightEncoder;
