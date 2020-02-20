@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.spikes2212.frc2020.Robot;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.frc2020.commands.MoveTurretToFieldRelativeAngle;
+import com.spikes2212.frc2020.services.VisionService;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.TalonSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
@@ -117,11 +118,19 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public void configureDashboard() {
+        VisionService vision = VisionService.getInstance();
         turretNamespace.putBoolean("turret limit", startLimit::get);
-        turretNamespace.putNumber("turret angle", () -> motor.getSelectedSensorPosition());
+        turretNamespace.putNumber("turret angle", this::getYaw);
         turretNamespace.putNumber("speed controller values", motor::getMotorOutputPercent);
         turretNamespace.putData("rotate with pid", new MoveTalonSubsystem(this, setpoint, waitTime));
         turretNamespace.putData("rotate with speed", new MoveGenericSubsystem(this, turnSpeed));
+        turretNamespace.putData("orient with vision", new MoveTalonSubsystem(
+                this,
+                () -> getYaw() - vision.getYaw(),
+                waitTime)
+        );
+        turretNamespace.putData("field relative turret", new MoveTurretToFieldRelativeAngle());
+
     }
 
     @Override
@@ -171,7 +180,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         double tolerance = Turret.tolerance.get() * DEGREES_TO_PULSES;
         int position = motor.getSelectedSensorPosition();
 
-        return !canMove(motor.getMotorOutputPercent()) || Math.abs(setpoint - position) <= tolerance;
+        return Math.abs(setpoint - position) <= tolerance;
     }
 
     public boolean isEnabled() {

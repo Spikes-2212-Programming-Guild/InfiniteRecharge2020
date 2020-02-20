@@ -2,6 +2,7 @@ package com.spikes2212.frc2020.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.spikes2212.frc2020.RobotMap;
+import com.spikes2212.frc2020.commands.IntakePowerCell;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.dashboard.RootNamespace;
@@ -11,12 +12,12 @@ import java.util.function.Supplier;
 
 public class Intake extends GenericSubsystem {
 
-    public static RootNamespace intakeNamespace = new RootNamespace("intake");
+    public static final RootNamespace intakeNamespace = new RootNamespace("intake");
 
     private static Supplier<Double> minSpeed = intakeNamespace.addConstantDouble("min speed", -1);
     private static Supplier<Double> maxSpeed = intakeNamespace.addConstantDouble("max speed", 1);
     public static Supplier<Double> intakeVoltage = intakeNamespace.addConstantDouble("grip speed", 0.5);
-    public static Supplier<Double> intakeCurrentLimit = intakeNamespace.addConstantDouble("intake Current", 0);
+    public static Supplier<Double> intakeCurrentLimit = intakeNamespace.addConstantDouble("intake current limit", 17);
 
     private static final Intake instance = new Intake();
 
@@ -36,7 +37,7 @@ public class Intake extends GenericSubsystem {
 
     @Override
     public void apply(double speed) {
-        motor.set(speed);
+        motor.setVoltage(speed);
     }
 
     @Override
@@ -56,8 +57,8 @@ public class Intake extends GenericSubsystem {
 
     @Override
     public void configureDashboard() {
-        intakeNamespace.putData("grip", new MoveGenericSubsystem(this, intakeVoltage));
-        intakeNamespace.putData("grip without states", new InstantCommand(() -> apply(intakeVoltage.get())));
+        intakeNamespace.putData("intake", new MoveGenericSubsystem(this, intakeVoltage));
+        intakeNamespace.putData("intake power cell", new IntakePowerCell());
     }
 
     public boolean isEnabled() {

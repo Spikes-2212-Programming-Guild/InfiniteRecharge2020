@@ -21,6 +21,6 @@ public class MoveTurretToFieldRelativeAngle extends SequentialCommandGroup {
     }
 
     private double findTargetAngle() {
-        return (turret.getYaw() - drivetrain.getYaw()) % 360;
+        return (turret.getYaw() - drivetrain.getYaw() % 360) % 360;
     }
 }
