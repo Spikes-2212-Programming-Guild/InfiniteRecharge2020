@@ -14,14 +14,11 @@ public class FeederStateMachine extends StateMachine<FeederStateMachine.FeederSt
     private static FeederStateMachine instance;
 
     public static FeederStateMachine getInstance() {
-        if(instance == null) {
-            instance = new FeederStateMachine();
-        }
-
+        if (instance == null) instance = new FeederStateMachine();
         return instance;
-    }
+}
 
-    private Feeder feeder = Feeder.getInstance();
+    private static Feeder feeder = Feeder.getInstance();
 
     private FeederStateMachine() {
         super(FeederState.FEED_TO_SHOOTER);
