@@ -1,6 +1,8 @@
 package com.spikes2212.frc2020;
 
+import com.spikes2212.frc2020.commands.IntakePowerCell;
 import com.spikes2212.frc2020.services.VisionService;
+import com.spikes2212.frc2020.subsystems.Intake;
 import com.spikes2212.frc2020.subsystems.Shooter;
 import com.spikes2212.frc2020.subsystems.Turret;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
@@ -22,13 +24,10 @@ public class OI /* GEVALD */ {
     private VisionService vision = VisionService.getInstance();
 
     public OI() {
-        JoystickButton shoot = new JoystickButton(left, 1);
-        shoot.whenHeld(new SequentialCommandGroup(
-                new MoveTalonSubsystem(turret, () -> turret.getYaw() - vision.getYaw(), Shooter.waitTime),
-                new MoveGenericSubsystem(shooter, Shooter.shootSpeed).alongWith(
-                        new MoveTalonSubsystem(turret, () -> turret.getYaw() - vision.getYaw(), Shooter.waitTime)
-                ).perpetually()
-        ));
+        JoystickButton intake = new JoystickButton(left, 1);
+        intake.whileHeld(
+                new IntakePowerCell()
+        );
     }
 
     public double getLeftX() {

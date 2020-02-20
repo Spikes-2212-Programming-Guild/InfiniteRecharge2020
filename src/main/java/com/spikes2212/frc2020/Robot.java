@@ -1,5 +1,9 @@
 package com.spikes2212.frc2020;
 
+import com.spikes2212.frc2020.commands.IntakePowerCell;
+import com.spikes2212.frc2020.statemachines.FeederStateMachine;
+import com.spikes2212.frc2020.statemachines.IntakeFeederStateMachine;
+import com.spikes2212.frc2020.statemachines.IntakeStateMachine;
 import com.spikes2212.frc2020.subsystems.*;
 import com.spikes2212.lib.command.drivetrains.commands.DriveArcade;
 import edu.wpi.first.wpilibj.Compressor;
@@ -16,6 +20,9 @@ public class Robot extends TimedRobot {
     private Intake intake = Intake.getInstance();
     private Drivetrain drivetrain = Drivetrain.getInstance();
 
+    private IntakeStateMachine intakeStateMachine = IntakeStateMachine.getInstance();
+    private FeederStateMachine feederStateMachine = FeederStateMachine.getInstance();
+    private IntakeFeederStateMachine intakeFeederStateMachine = IntakeFeederStateMachine.getInstance();
     public static OI oi;
 
     @Override
