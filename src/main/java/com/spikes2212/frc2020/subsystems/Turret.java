@@ -3,7 +3,6 @@ package com.spikes2212.frc2020.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.spikes2212.frc2020.Robot;
 import com.spikes2212.frc2020.RobotMap;
@@ -49,19 +48,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
     private static final double DEGREES_TO_PULSES = 4096 * 28 / 8.5 / 360;
 
-    private static Turret instance;
-
-    public static Turret getInstance() {
-        if (instance == null) {
-            WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.TURRET_TALON);
-            DigitalInput endLimit = new DigitalInput(RobotMap.DIO.TURRET_END_LIMIT);
-            DigitalInput startLimit = new DigitalInput(RobotMap.DIO.TURRET_START_LIMIT);
-            motor.setNeutralMode(NeutralMode.Brake);
-            instance = new Turret(motor, endLimit, startLimit);
-        }
-        return instance;
-    }
-
+    private static final Turret instance = new Turret();
 
     private WPI_TalonSRX motor;
 
@@ -71,11 +58,16 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
     private boolean enabled;
 
-    private Turret(WPI_TalonSRX motor, DigitalInput endLimit, DigitalInput startLimit) {
+    public static Turret getInstance() {
+        return instance;
+    }
+
+    private Turret() {
         super(minSpeed, maxSpeed);
-        this.motor = motor;
-        this.endLimit = endLimit;
-        this.startLimit = startLimit;
+        motor = new WPI_TalonSRX(RobotMap.CAN.TURRET_TALON);
+        endLimit = new DigitalInput(RobotMap.DIO.TURRET_END_LIMIT);
+        startLimit = new DigitalInput(RobotMap.DIO.TURRET_START_LIMIT);
+        motor.setInverted(true);
         enabled = true;
     }
 
@@ -161,7 +153,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         motor.config_kD(0, kD.get(), timeout.get());
 
         double error = setpoint - motor.getSelectedSensorPosition();
-        motor.set(ControlMode.Position, setpoint, DemandType.ArbitraryFeedForward, kS.get()  * Math.signum(error));
+        motor.set(ControlMode.Position, setpoint, DemandType.ArbitraryFeedForward, kS.get() * Math.signum(error));
     }
 
     @Override

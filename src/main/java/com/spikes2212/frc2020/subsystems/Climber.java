@@ -20,18 +20,9 @@ public class Climber extends SubsystemBase {
 
     public static final PIDSettings pidSettings = new PIDSettings(kP, kI, kD);
 
-    private static Climber instance;
+    private static final Climber instance = new Climber();
 
     public static Climber getInstance() {
-        if(instance == null) {
-            WPI_TalonSRX leftMotor = new WPI_TalonSRX(RobotMap.CAN.CLIMBER_TALON_LEFT);
-            WPI_TalonSRX rightMotor = new WPI_TalonSRX(RobotMap.CAN.CLIMBER_TALON_RIGHT);
-            Encoder leftEncoder = new Encoder(RobotMap.DIO.CLIMBER_ENCODER_LEFT_POS,
-                    RobotMap.DIO.CLIMBER_ENCODER_LEFT_NEG);
-            Encoder rightEncoder = new Encoder(RobotMap.DIO.CLIMBER_ENCODER_RIGHT_POS,
-                    RobotMap.DIO.CLIMBER_ENCODER_RIGHT_NEG);
-            instance = new Climber(leftMotor, rightMotor, leftEncoder, rightEncoder);
-        }
         return instance;
     }
 
@@ -40,12 +31,13 @@ public class Climber extends SubsystemBase {
     private Encoder leftEncoder;
     private Encoder rightEncoder;
 
-    private Climber(WPI_TalonSRX leftMotor, WPI_TalonSRX rightMotor, Encoder leftEncoder,
-                    Encoder rightEncoder) {
-        this.leftMotor = leftMotor;
-        this.rightMotor = rightMotor;
-        this.leftEncoder = leftEncoder;
-        this.rightEncoder = rightEncoder;
+    private Climber() {
+        leftMotor = new WPI_TalonSRX(RobotMap.CAN.CLIMBER_TALON_LEFT);
+        rightMotor = new WPI_TalonSRX(RobotMap.CAN.CLIMBER_TALON_RIGHT);
+        leftEncoder = new Encoder(RobotMap.DIO.CLIMBER_ENCODER_LEFT_POS,
+                RobotMap.DIO.CLIMBER_ENCODER_LEFT_NEG);
+        rightEncoder = new Encoder(RobotMap.DIO.CLIMBER_ENCODER_RIGHT_POS,
+                RobotMap.DIO.CLIMBER_ENCODER_RIGHT_NEG);
     }
 
     public double getLeftDistance() {

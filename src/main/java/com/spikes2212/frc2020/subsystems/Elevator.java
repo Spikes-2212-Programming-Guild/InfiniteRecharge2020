@@ -34,18 +34,9 @@ public class Elevator extends GenericSubsystem {
     public static final Supplier<Integer> NUM_OF_MAGNETS = elevatorNamspace
             .addConstantInt("num of magnets", 0);
 
-    private static Elevator instance;
+    private static final Elevator instance = new Elevator();
 
     public static Elevator getInstance() {
-        if(instance == null) {
-            WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.ELEVATOR_TALON);
-            Encoder encoder = new Encoder(RobotMap.DIO.ELEVATOR_ENCODER_POS,
-                    RobotMap.DIO.ELEVATOR_ENCODER_NEG);
-            DigitalInput bottomHallEffect = new DigitalInput(RobotMap.DIO.ELEVATOR_BOTTOM_SWITCH);
-            DigitalInput topHallEffect = new DigitalInput(RobotMap.DIO.ELEVATOR_TOP_SWITCH);
-            instance = new Elevator(motor, encoder, bottomHallEffect, topHallEffect);
-        }
-
         return instance;
     }
 
@@ -54,12 +45,11 @@ public class Elevator extends GenericSubsystem {
     private DigitalInput bottomHallEffect;
     private HallEffectCounter hallEffectCounter;
 
-    private Elevator(WPI_TalonSRX motor, Encoder encoder, DigitalInput bottomHallEffect,
-                     DigitalInput hallEffectCounter) {
-        this.motor = motor;
-        this.encoder = encoder;
-        this.bottomHallEffect = bottomHallEffect;
-        this.hallEffectCounter = new HallEffectCounter(hallEffectCounter);
+    private Elevator() {
+        motor = new WPI_TalonSRX(RobotMap.CAN.ELEVATOR_TALON);
+        encoder = new Encoder(RobotMap.DIO.ELEVATOR_ENCODER_POS, RobotMap.DIO.ELEVATOR_ENCODER_NEG);
+        bottomHallEffect = new DigitalInput(RobotMap.DIO.ELEVATOR_BOTTOM_SWITCH);
+        hallEffectCounter = new HallEffectCounter(new DigitalInput(RobotMap.DIO.ELEVATOR_TOP_SWITCH));
     }
 
     @Override
@@ -83,8 +73,8 @@ public class Elevator extends GenericSubsystem {
                 && !(hallEffectCounter.atTop(NUM_OF_MAGNETS.get()) && speed > 0));
     }
 
-    public Supplier<Integer> getCurrentMagnet() {
-        return hallEffectCounter::getCurrentMagnet;
+    public int getCurrentMagnet() {
+        return hallEffectCounter.getCurrentMagnet();
     }
 
     @Override
