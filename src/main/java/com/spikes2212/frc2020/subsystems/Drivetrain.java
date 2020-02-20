@@ -20,7 +20,7 @@ public class Drivetrain extends OdometryDrivetrain {
     public static Supplier<Double> wheelDiameter = drivetrainNamespace
             .addConstantDouble("wheel diameter (inches)", 6);
 
-    private static Drivetrain instance = new Drivetrain();
+    private static final Drivetrain instance = new Drivetrain();
 
     public static Drivetrain getInstance() {
         return instance;
@@ -36,12 +36,12 @@ public class Drivetrain extends OdometryDrivetrain {
 
     private Drivetrain() {
         super(new WPI_TalonSRX(RobotMap.CAN.DRIVETRAIN_LEFT_TALON), new WPI_TalonSRX(RobotMap.CAN.DRIVETRAIN_RIGHT_TALON));
-        this.leftVictor = new WPI_VictorSPX(RobotMap.CAN.DRIVETRAIN_LEFT_VICTOR);
-        this.rightVictor = new WPI_VictorSPX(RobotMap.CAN.DRIVETRAIN_RIGHT_VICTOR);
-        this.leftEncoder = new Encoder(RobotMap.DIO.DRIVETRAIN_LEFT_ENCODER_POS, RobotMap.DIO.DRIVETRAIN_LEFT_ENCODER_NEG);
-        this.rightEncoder = new Encoder(RobotMap.DIO.DRIVETRAIN_RIGHT_ENCODER_POS, RobotMap.DIO.DRIVETRAIN_RIGHT_ENCODER_NEG);
-        this.imu = imu;
-        this.odometry = new OdometryHandler(leftEncoder::getDistance, rightEncoder::getDistance,
+        leftVictor = new WPI_VictorSPX(RobotMap.CAN.DRIVETRAIN_LEFT_VICTOR);
+        rightVictor = new WPI_VictorSPX(RobotMap.CAN.DRIVETRAIN_RIGHT_VICTOR);
+        leftEncoder = new Encoder(RobotMap.DIO.DRIVETRAIN_LEFT_ENCODER_POS, RobotMap.DIO.DRIVETRAIN_LEFT_ENCODER_NEG);
+        rightEncoder = new Encoder(RobotMap.DIO.DRIVETRAIN_RIGHT_ENCODER_POS, RobotMap.DIO.DRIVETRAIN_RIGHT_ENCODER_NEG);
+        imu = imu;
+        odometry = new OdometryHandler(leftEncoder::getDistance, rightEncoder::getDistance,
                 new PigeonWrapper(new WPI_TalonSRX(RobotMap.CAN.DRIVETRAIN_LEFT_TALON))::getYaw, 0, 0);
     }
 

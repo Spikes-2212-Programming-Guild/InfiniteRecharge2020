@@ -5,7 +5,6 @@ import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.dashboard.RootNamespace;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import java.util.function.Supplier;
@@ -21,7 +20,7 @@ public class Intake extends GenericSubsystem {
 
     private static Intake instance = new Intake();
 
-    public static Intake getInstance() {
+    public static final Intake getInstance() {
         return instance;
     }
 
@@ -31,7 +30,7 @@ public class Intake extends GenericSubsystem {
 
     private Intake() {
         super(minSpeed, maxSpeed);
-        this.motor = new WPI_TalonSRX(RobotMap.CAN.INTAKE_MOTOR);
+        motor = new WPI_TalonSRX(RobotMap.CAN.INTAKE_MOTOR);
         enabled = true;
     }
 
@@ -69,11 +68,11 @@ public class Intake extends GenericSubsystem {
         this.enabled = enabled;
     }
 
-    public double getSuppliedCurrent(){
+    public double getSuppliedCurrent() {
         return motor.getSupplyCurrent();
     }
 
-    public double getStatorCurrent(){
+    public double getStatorCurrent() {
         return motor.getStatorCurrent();
     }
 }

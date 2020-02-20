@@ -36,7 +36,7 @@ public class Elevator extends GenericSubsystem {
 
     private static Elevator instance = new Elevator();
 
-    public static Elevator getInstance() {
+    public static final Elevator getInstance() {
         return instance;
     }
 
@@ -46,10 +46,10 @@ public class Elevator extends GenericSubsystem {
     private HallEffectCounter hallEffectCounter;
 
     private Elevator() {
-        this.motor = new WPI_TalonSRX(RobotMap.CAN.ELEVATOR_TALON);
-        this.encoder = new Encoder(RobotMap.DIO.ELEVATOR_ENCODER_POS, RobotMap.DIO.ELEVATOR_ENCODER_NEG);
-        this.bottomHallEffect = new DigitalInput(RobotMap.DIO.ELEVATOR_BOTTOM_SWITCH);
-        this.hallEffectCounter = new HallEffectCounter(new DigitalInput(RobotMap.DIO.ELEVATOR_TOP_SWITCH));
+        motor = new WPI_TalonSRX(RobotMap.CAN.ELEVATOR_TALON);
+        encoder = new Encoder(RobotMap.DIO.ELEVATOR_ENCODER_POS, RobotMap.DIO.ELEVATOR_ENCODER_NEG);
+        bottomHallEffect = new DigitalInput(RobotMap.DIO.ELEVATOR_BOTTOM_SWITCH);
+        hallEffectCounter = new HallEffectCounter(new DigitalInput(RobotMap.DIO.ELEVATOR_TOP_SWITCH));
     }
 
     @Override

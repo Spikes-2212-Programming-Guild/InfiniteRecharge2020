@@ -21,7 +21,7 @@ public class Feeder extends GenericSubsystem {
 
     private static Feeder instance = new Feeder();
 
-    public static Feeder getInstance() {
+    public static final Feeder getInstance() {
         return instance;
     }
 
@@ -32,8 +32,8 @@ public class Feeder extends GenericSubsystem {
 
     public Feeder() {
         super(minSpeed, maxSpeed);
-        this.motor = new WPI_VictorSPX(RobotMap.CAN.FEEDER_VICTOR);
-        this.solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.FEEDER_FORWARD,
+        motor = new WPI_VictorSPX(RobotMap.CAN.FEEDER_VICTOR);
+        solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.FEEDER_FORWARD,
                 RobotMap.PCM.FEEDER_BACKWARD);
         enabled = true;
     }

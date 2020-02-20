@@ -20,7 +20,7 @@ public class Climber extends SubsystemBase {
 
     public static final PIDSettings pidSettings = new PIDSettings(kP, kI, kD);
 
-    private static Climber instance = new Climber();
+    private static final Climber instance = new Climber();
 
     public static Climber getInstance() {
         return instance;
@@ -32,11 +32,11 @@ public class Climber extends SubsystemBase {
     private Encoder rightEncoder;
 
     private Climber() {
-        this.leftMotor = new WPI_TalonSRX(RobotMap.CAN.CLIMBER_TALON_LEFT);
-        this.rightMotor = new WPI_TalonSRX(RobotMap.CAN.CLIMBER_TALON_RIGHT);
-        this.leftEncoder = new Encoder(RobotMap.DIO.CLIMBER_ENCODER_LEFT_POS,
+        leftMotor = new WPI_TalonSRX(RobotMap.CAN.CLIMBER_TALON_LEFT);
+        rightMotor = new WPI_TalonSRX(RobotMap.CAN.CLIMBER_TALON_RIGHT);
+        leftEncoder = new Encoder(RobotMap.DIO.CLIMBER_ENCODER_LEFT_POS,
                 RobotMap.DIO.CLIMBER_ENCODER_LEFT_NEG);
-        this.rightEncoder = new Encoder(RobotMap.DIO.CLIMBER_ENCODER_RIGHT_POS,
+        rightEncoder = new Encoder(RobotMap.DIO.CLIMBER_ENCODER_RIGHT_POS,
                 RobotMap.DIO.CLIMBER_ENCODER_RIGHT_NEG);
     }
 

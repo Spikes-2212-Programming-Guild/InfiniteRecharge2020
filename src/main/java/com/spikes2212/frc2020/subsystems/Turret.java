@@ -48,7 +48,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
     private static final double DEGREES_TO_PULSES = 4096 * 28 / 8.5 / 360;
 
-    private static Turret instance = new Turret();
+    private static final Turret instance = new Turret();
 
     private WPI_TalonSRX motor;
 

@@ -28,7 +28,7 @@ public class Shooter extends GenericSubsystem {
     private static Supplier<Double> maxSpeed = shooterNamespace.addConstantDouble("Max Speed", 0.6);
     private static Supplier<Double> minSpeed = shooterNamespace.addConstantDouble("Min Speed", 0);
     private static Supplier<Double> shootSpeed =
-      shooterNamespace.addConstantDouble("Shooting Speed", 0.6);
+            shooterNamespace.addConstantDouble("Shooting Speed", 0.6);
 
     private static Supplier<Double> kP = PID.addConstantDouble("kP", 0);
     private static Supplier<Double> kI = PID.addConstantDouble("kI", 0);
@@ -43,7 +43,7 @@ public class Shooter extends GenericSubsystem {
     private static PIDSettings velocityPIDSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
     private static FeedForwardSettings velocityFFSettings = new FeedForwardSettings(kS, kF, () -> 0.0);
 
-    private static Shooter instance = new Shooter();
+    private static final Shooter instance = new Shooter();
 
     public static Shooter getInstance() {
         return instance;
@@ -62,16 +62,16 @@ public class Shooter extends GenericSubsystem {
     private Shooter() {
         super(minSpeed, maxSpeed);
         master = new WPI_TalonSRX(RobotMap.CAN.SHOOTER_MASTER);
-        this.slave = new WPI_VictorSPX(RobotMap.CAN.SHOOTER_SLAVE);
-        this.solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.SHOOTER_FORWARD,
+        slave = new WPI_VictorSPX(RobotMap.CAN.SHOOTER_SLAVE);
+        solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.SHOOTER_FORWARD,
                 RobotMap.PCM.SHOOTER_BACKWARD);
-        this.noiseReducer = new NoiseReducer(() -> master.getSelectedSensorVelocity() * distancePerPulse,
+        noiseReducer = new NoiseReducer(() -> master.getSelectedSensorVelocity() * distancePerPulse,
                 new ExponentialFilter(0.1));
         master.setNeutralMode(NeutralMode.Brake);
-        slave.setNeutralMode(NeutralMode.Brake);
         master.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-        slave.follow(master);
         master.setInverted(true);
+        slave.setNeutralMode(NeutralMode.Brake);
+        slave.follow(master);
         enabled = true;
     }
 
