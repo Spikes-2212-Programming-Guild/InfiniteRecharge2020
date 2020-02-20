@@ -19,16 +19,9 @@ public class Feeder extends GenericSubsystem {
     public static final Supplier<Double> speed = feederNamespace.addConstantDouble("speed", 0.7);
     public static final Supplier<Double> feedTimeLimit = feederNamespace.addConstantDouble("feeding time", 2);
 
-    private static Feeder instance;
+    private static final Feeder instance = new Feeder();
 
     public static Feeder getInstance() {
-        if(instance == null) {
-            WPI_VictorSPX motor = new WPI_VictorSPX(RobotMap.CAN.FEEDER_VICTOR);
-            DoubleSolenoid solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.FEEDER_FORWARD,
-                    RobotMap.PCM.FEEDER_BACKWARD);
-            instance = new Feeder(motor, solenoid);
-        }
-
         return instance;
     }
 
@@ -37,10 +30,11 @@ public class Feeder extends GenericSubsystem {
 
     private boolean enabled;
 
-    public Feeder(WPI_VictorSPX motor, DoubleSolenoid solenoid) {
+    public Feeder() {
         super(minSpeed, maxSpeed);
-        this.motor = motor;
-        this.solenoid = solenoid;
+        motor = new WPI_VictorSPX(RobotMap.CAN.FEEDER_VICTOR);
+        solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.FEEDER_FORWARD,
+                RobotMap.PCM.FEEDER_BACKWARD);
         enabled = true;
     }
 

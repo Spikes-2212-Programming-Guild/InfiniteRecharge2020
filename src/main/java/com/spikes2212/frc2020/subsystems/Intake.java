@@ -6,7 +6,6 @@ import com.spikes2212.frc2020.commands.IntakePowerCell;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.dashboard.RootNamespace;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import java.util.function.Supplier;
@@ -20,28 +19,20 @@ public class Intake extends GenericSubsystem {
     public static Supplier<Double> intakeVoltage = intakeNamespace.addConstantDouble("grip speed", 0.5);
     public static Supplier<Double> intakeCurrentLimit = intakeNamespace.addConstantDouble("intake current limit", 17);
 
-    private static Intake instance;
+    private static final Intake instance = new Intake();
 
     public static Intake getInstance() {
-        if (instance == null) {
-            DigitalInput limit = new DigitalInput(RobotMap.DIO.INTAKE_LIMIT);
-            WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.INTAKE_MOTOR);
-            instance = new Intake(motor, limit);
-        }
-
         return instance;
     }
 
     private WPI_TalonSRX motor;
-    private DigitalInput lightSensor;
 
     private boolean enabled;
 
-    private Intake(WPI_TalonSRX motor, DigitalInput lightSensor) {
+    private Intake() {
         super(minSpeed, maxSpeed);
-        this.motor = motor;
-        this.lightSensor = lightSensor;
-        enabled=false;
+        motor = new WPI_TalonSRX(RobotMap.CAN.INTAKE_MOTOR);
+        enabled = true;
     }
 
     @Override
@@ -78,15 +69,11 @@ public class Intake extends GenericSubsystem {
         this.enabled = enabled;
     }
 
-    public boolean limitPressed() {
-        return lightSensor.get();
-    }
-
-    public double getSuppliedCurrent(){
+    public double getSuppliedCurrent() {
         return motor.getSupplyCurrent();
     }
 
-    public double getStatorCurrent(){
+    public double getStatorCurrent() {
         return motor.getStatorCurrent();
     }
 }

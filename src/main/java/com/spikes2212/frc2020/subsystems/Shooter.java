@@ -44,23 +44,9 @@ public class Shooter extends GenericSubsystem {
     private static PIDSettings velocityPIDSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
     private static FeedForwardSettings velocityFFSettings = new FeedForwardSettings(kS, kF, () -> 0.0);
 
-    private static Shooter instance;
+    private static final Shooter instance = new Shooter();
 
     public static Shooter getInstance() {
-        if(instance == null) {
-            WPI_TalonSRX master = new WPI_TalonSRX(RobotMap.CAN.SHOOTER_MASTER);
-            WPI_VictorSPX slave = new WPI_VictorSPX(RobotMap.CAN.SHOOTER_SLAVE);
-            master.setNeutralMode(NeutralMode.Brake);
-            slave.setNeutralMode(NeutralMode.Brake);
-            slave.follow(master);
-            master.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-            master.setSelectedSensorPosition(0);
-            master.setInverted(true);
-            DoubleSolenoid solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.SHOOTER_FORWARD,
-                    RobotMap.PCM.SHOOTER_BACKWARD);
-            instance = new Shooter(master, slave, solenoid);
-        }
-
         return instance;
     }
 
@@ -73,15 +59,20 @@ public class Shooter extends GenericSubsystem {
     private NoiseReducer noiseReducer;
 
     private boolean enabled;
-    private double last = 0;
-    private Shooter(WPI_TalonSRX master, WPI_VictorSPX slave, DoubleSolenoid solenoid) {
-        super(minSpeed, maxSpeed);
-        this.master = master;
-        this.slave = slave;
-        this.solenoid = solenoid;
 
-        this.noiseReducer = new NoiseReducer(() -> master.getSelectedSensorVelocity() * distancePerPulse
-        , new ExponentialFilter(0.1));
+    private Shooter() {
+        super(minSpeed, maxSpeed);
+        master = new WPI_TalonSRX(RobotMap.CAN.SHOOTER_MASTER);
+        slave = new WPI_VictorSPX(RobotMap.CAN.SHOOTER_SLAVE);
+        solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.SHOOTER_FORWARD,
+                RobotMap.PCM.SHOOTER_BACKWARD);
+        master.setNeutralMode(NeutralMode.Brake);
+        master.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+        master.setInverted(true);
+        slave.setNeutralMode(NeutralMode.Brake);
+        slave.follow(master);
+        noiseReducer = new NoiseReducer(() -> master.getSelectedSensorVelocity() * distancePerPulse,
+                new ExponentialFilter(0.1));
         enabled = true;
     }
 
