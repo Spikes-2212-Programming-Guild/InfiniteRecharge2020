@@ -20,26 +20,7 @@ public class Drivetrain extends OdometryDrivetrain {
     public static Supplier<Double> wheelDiameter = drivetrainNamespace
             .addConstantDouble("wheel diameter (inches)", 6);
 
-    private static Drivetrain instance;
-
-    public static Drivetrain getInstance() {
-        if(instance == null) {
-            WPI_TalonSRX leftTalon = new WPI_TalonSRX(RobotMap.CAN.DRIVETRAIN_LEFT_TALON);
-            WPI_TalonSRX rightTalon = new WPI_TalonSRX(RobotMap.CAN.DRIVETRAIN_RIGHT_TALON);
-            WPI_VictorSPX leftVictor = new WPI_VictorSPX(RobotMap.CAN.DRIVETRAIN_LEFT_VICTOR);
-            WPI_VictorSPX rightVictor = new WPI_VictorSPX(RobotMap.CAN.DRIVETRAIN_RIGHT_VICTOR);
-            leftVictor.follow(leftTalon);
-            rightVictor.follow(rightTalon);
-            Encoder leftEncoder = new Encoder(RobotMap.DIO.DRIVETRAIN_LEFT_ENCODER_POS, RobotMap.DIO.DRIVETRAIN_LEFT_ENCODER_NEG);
-            Encoder rightEncoder = new Encoder(RobotMap.DIO.DRIVETRAIN_RIGHT_ENCODER_POS, RobotMap.DIO.DRIVETRAIN_RIGHT_ENCODER_NEG);
-            leftEncoder.setDistancePerPulse(wheelDiameter.get() * 0.0254 * Math.PI / 360);
-            rightEncoder.setDistancePerPulse(wheelDiameter.get() * 0.0254 * Math.PI / 360);
-            PigeonWrapper imu = new PigeonWrapper(leftTalon);
-            imu.reset();
-            instance = new Drivetrain(leftTalon, rightTalon, leftVictor, rightVictor, leftEncoder, rightEncoder, imu);
-        }
-        return instance;
-    }
+    private static Drivetrain instance = new Drivetrain();
 
     private WPI_VictorSPX leftVictor, rightVictor;
     private Encoder leftEncoder;
@@ -49,17 +30,15 @@ public class Drivetrain extends OdometryDrivetrain {
 
     private boolean inverted;
 
-    private Drivetrain(WPI_TalonSRX leftTalon, WPI_TalonSRX rightTalon, WPI_VictorSPX leftVictor,
-                       WPI_VictorSPX rightVictor, Encoder leftEncoder, Encoder rightEncoder,
-                       PigeonWrapper imu) {
-        super(leftTalon, rightTalon);
-        this.leftVictor = leftVictor;
-        this.rightVictor = rightVictor;
-        this.leftEncoder = leftEncoder;
-        this.rightEncoder = rightEncoder;
+    private Drivetrain() {
+        super(new WPI_TalonSRX(RobotMap.CAN.DRIVETRAIN_LEFT_TALON), new WPI_TalonSRX(RobotMap.CAN.DRIVETRAIN_RIGHT_TALON));
+        this.leftVictor = new WPI_VictorSPX(RobotMap.CAN.DRIVETRAIN_LEFT_VICTOR);
+        this.rightVictor = new WPI_VictorSPX(RobotMap.CAN.DRIVETRAIN_RIGHT_VICTOR);
+        this.leftEncoder = new Encoder(RobotMap.DIO.DRIVETRAIN_LEFT_ENCODER_POS, RobotMap.DIO.DRIVETRAIN_LEFT_ENCODER_NEG);
+        this.rightEncoder = new Encoder(RobotMap.DIO.DRIVETRAIN_RIGHT_ENCODER_POS, RobotMap.DIO.DRIVETRAIN_RIGHT_ENCODER_NEG);
         this.imu = imu;
         this.odometry = new OdometryHandler(leftEncoder::getDistance, rightEncoder::getDistance,
-                imu::getYaw, 0, 0);
+                new PigeonWrapper(new WPI_TalonSRX(RobotMap.CAN.DRIVETRAIN_LEFT_TALON))::getYaw, 0, 0);
     }
 
     @Override
@@ -73,7 +52,7 @@ public class Drivetrain extends OdometryDrivetrain {
         return odometry;
     }
 
-    public double getYaw(){
+    public double getYaw() {
         return odometry.getYaw();
     }
 
@@ -107,8 +86,8 @@ public class Drivetrain extends OdometryDrivetrain {
         rightVictor.setInverted(!inverted);
     }
 
-    public void configureDashboard(){
+    public void configureDashboard() {
 
-        drivetrainNamespace.putNumber("imu yaw",imu::getYaw);
+        drivetrainNamespace.putNumber("imu yaw", imu::getYaw);
     }
 }
