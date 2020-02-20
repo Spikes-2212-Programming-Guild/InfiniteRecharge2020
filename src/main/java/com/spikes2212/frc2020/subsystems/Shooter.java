@@ -43,22 +43,9 @@ public class Shooter extends GenericSubsystem {
     private static PIDSettings velocityPIDSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
     private static FeedForwardSettings velocityFFSettings = new FeedForwardSettings(kS, kF, () -> 0.0);
 
-    private static Shooter instance;
+    private static Shooter instance = new Shooter();
 
     public static Shooter getInstance() {
-        if(instance == null) {
-            WPI_TalonSRX master = new WPI_TalonSRX(RobotMap.CAN.SHOOTER_MASTER);
-            WPI_VictorSPX slave = new WPI_VictorSPX(RobotMap.CAN.SHOOTER_SLAVE);
-            master.setNeutralMode(NeutralMode.Brake);
-            slave.setNeutralMode(NeutralMode.Brake);
-            slave.follow(master);
-            master.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-            master.setInverted(true);
-            DoubleSolenoid solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.SHOOTER_FORWARD,
-                    RobotMap.PCM.SHOOTER_BACKWARD);
-            instance = new Shooter(master, slave, solenoid);
-        }
-
         return instance;
     }
 
@@ -72,13 +59,19 @@ public class Shooter extends GenericSubsystem {
 
     private boolean enabled;
 
-    private Shooter(WPI_TalonSRX master, WPI_VictorSPX slave, DoubleSolenoid solenoid) {
+    private Shooter() {
         super(minSpeed, maxSpeed);
-        this.master = master;
-        this.slave = slave;
-        this.solenoid = solenoid;
+        master = new WPI_TalonSRX(RobotMap.CAN.SHOOTER_MASTER);
+        this.slave = new WPI_VictorSPX(RobotMap.CAN.SHOOTER_SLAVE);
+        this.solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.SHOOTER_FORWARD,
+                RobotMap.PCM.SHOOTER_BACKWARD);
         this.noiseReducer = new NoiseReducer(() -> master.getSelectedSensorVelocity() * distancePerPulse,
                 new ExponentialFilter(0.1));
+        master.setNeutralMode(NeutralMode.Brake);
+        slave.setNeutralMode(NeutralMode.Brake);
+        master.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+        slave.follow(master);
+        master.setInverted(true);
         enabled = true;
     }
 
