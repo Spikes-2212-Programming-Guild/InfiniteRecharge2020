@@ -20,7 +20,7 @@ public class Climber extends SubsystemBase {
 
     public static final PIDSettings pidSettings = new PIDSettings(kP, kI, kD);
 
-    private static final Climber instance = new Climber();
+    private static Climber instance /*= new Climber()*/;
 
     public static Climber getInstance() {
         return instance;
