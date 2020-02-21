@@ -1,14 +1,21 @@
 package com.spikes2212.frc2020;
 
 import com.spikes2212.frc2020.commands.IntakePowerCell;
+import com.spikes2212.frc2020.commands.OrientToPowerCell;
 import com.spikes2212.frc2020.services.VisionService;
+import com.spikes2212.frc2020.subsystems.Drivetrain;
 import com.spikes2212.frc2020.subsystems.Intake;
 import com.spikes2212.frc2020.subsystems.Shooter;
 import com.spikes2212.frc2020.subsystems.Turret;
+import com.spikes2212.frc2020.utils.RepeatCommand;
+import com.spikes2212.lib.command.drivetrains.commands.DriveArcade;
+import com.spikes2212.lib.command.drivetrains.commands.DriveArcadeWithPID;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
 import com.spikes2212.lib.util.XboXUID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -22,11 +29,15 @@ public class OI /* GEVALD */ {
     private Turret turret = Turret.getInstance();
 
     private VisionService vision = VisionService.getInstance();
+    private Drivetrain drivetrain = Drivetrain.getInstance();
 
     public OI() {
-        JoystickButton intake = new JoystickButton(left, 1);
+        JoystickButton intake = new JoystickButton(right, 1);
         intake.whileHeld(
-                new IntakePowerCell()
+                new ParallelCommandGroup(
+                        new OrientToPowerCell(this::getRightY),
+                        new RepeatCommand(new IntakePowerCell())
+                )
         );
     }
 
