@@ -6,7 +6,6 @@ import com.spikes2212.frc2020.commands.IntakePowerCell;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.dashboard.RootNamespace;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import java.util.function.Supplier;
 
@@ -14,10 +13,10 @@ public class Intake extends GenericSubsystem {
 
     public static final RootNamespace intakeNamespace = new RootNamespace("intake");
 
-    private static Supplier<Double> minSpeed = intakeNamespace.addConstantDouble("min speed", -1);
-    private static Supplier<Double> maxSpeed = intakeNamespace.addConstantDouble("max speed", 1);
-    public static Supplier<Double> intakeVoltage = intakeNamespace.addConstantDouble("intake voltage", 6);
-    public static Supplier<Double> intakeCurrentLimit = intakeNamespace.addConstantDouble("intake current limit", 17);
+    public static final Supplier<Double> minSpeed = intakeNamespace.addConstantDouble("min speed", -1);
+    public static final Supplier<Double> maxSpeed = intakeNamespace.addConstantDouble("max speed", 1);
+    public final Supplier<Double> intakeVoltage = intakeNamespace.addConstantDouble("intake voltage", 6);
+    public final Supplier<Double> intakeCurrentLimit = intakeNamespace.addConstantDouble("intake current limit", 17);
 
     private static final Intake instance = new Intake();
 
