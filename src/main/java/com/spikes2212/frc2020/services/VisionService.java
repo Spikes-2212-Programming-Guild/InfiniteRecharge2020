@@ -16,30 +16,33 @@ public class VisionService {
     private Supplier<Double> retroReflectiveHeight = visionNamespace.addConstantDouble("retro reflective height", 249 - turretHeight.get());
     private Supplier<String> cameraName = visionNamespace.addConstantString("camera name", "turret");
 
+    public static final VisionService instance = new VisionService();
+
     public static VisionService getInstance() {
-        if (visionService == null)
-            visionService = new VisionService();
-        return visionService;
+        return instance;
     }
-
     private NetworkTable turretCam;
+    private NetworkTable intakeCam;
 
-    private NetworkTableEntry yaw;
+    private NetworkTableEntry retroreflectiveYaw;
+    private NetworkTableEntry intakeYaw;
     private NetworkTableEntry pitch;
     private NetworkTableEntry area;
 
-    public static VisionService visionService;
 
     public VisionService() {
-        turretCam = NetworkTableInstance.getDefault().getTable("chameleon-vision").getSubTable(cameraName.get());
-        yaw = turretCam.getEntry("yaw");
+        turretCam = NetworkTableInstance.getDefault().getTable("chameleon-vision").getSubTable("turret");
+        intakeCam = NetworkTableInstance.getDefault().getTable("chameleon-vision").getSubTable("intake-cam");
+        retroreflectiveYaw = turretCam.getEntry("yaw");
+        intakeYaw = intakeCam.getEntry("yaw");
         pitch = turretCam.getEntry("pitch");
         area = turretCam.getEntry("area");
     }
 
-    public double getYaw() {
-        return yaw.getDouble(0);
+    public double getRetrorelfectiveYaw() {
+        return retroreflectiveYaw.getDouble(0);
     }
+    public double getIntakeYaw() { return intakeYaw.getDouble(0); }
 
     public double getPitch() {
         return pitch.getDouble(0);
