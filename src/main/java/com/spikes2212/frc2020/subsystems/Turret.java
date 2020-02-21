@@ -1,8 +1,6 @@
 package com.spikes2212.frc2020.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.spikes2212.frc2020.Robot;
 import com.spikes2212.frc2020.RobotMap;
@@ -22,32 +20,27 @@ import java.util.function.Supplier;
 
 public class Turret extends GenericSubsystem implements TalonSubsystem {
 
-    private static final RootNamespace turretNamespace = new RootNamespace("turret");
+    public static final RootNamespace turretNamespace = new RootNamespace("turret");
+    public final Namespace PID = turretNamespace.addChild("PID");
 
-    private static final Namespace PID = turretNamespace.addChild("PID");
+    public static final Supplier<Double> maxSpeed = turretNamespace.addConstantDouble("Max Speed", 0.6);
+    public static final Supplier<Double> minSpeed = turretNamespace.addConstantDouble("Min Speed", -0.6);
+    public final Supplier<Double> turnSpeed = turretNamespace.addConstantDouble("turn speed", 0.3);
+    public final Supplier<Integer> minAngle = turretNamespace.addConstantInt("Min Angle", 30);
+    public final Supplier<Integer> maxAngle = turretNamespace.addConstantInt("Max Angle", 330);
 
-    private static final Supplier<Double> maxSpeed = turretNamespace.addConstantDouble("Max Speed", 0.6);
+    public final Supplier<Double> kP = PID.addConstantDouble("kP", 0);
+    public final Supplier<Double> kI = PID.addConstantDouble("kI", 0);
+    public final Supplier<Double> kD = PID.addConstantDouble("kD", 0);
+    public final Supplier<Double> kS = PID.addConstantDouble("kS", 0);
+    public final Supplier<Double> tolerance = PID.addConstantDouble("Tolerance", 0);
+    public final Supplier<Double> waitTime = PID.addConstantDouble("Wait Time", 0);
+    public final Supplier<Double> setpoint = PID.addConstantDouble("setpoint", 90);
+    public final Supplier<Integer> timeout = PID.addConstantInt("timeout", 30);
 
-    private static final Supplier<Double> turnSpeed = turretNamespace.addConstantDouble("turn speed", 0.3);
+    public final PIDSettings pidSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
 
-    private static final Supplier<Double> minSpeed = turretNamespace.addConstantDouble("Min Speed", -0.6);
-    private static final Supplier<Integer> minAngle = turretNamespace.addConstantInt("Min Angle", 30);
-    private static final Supplier<Integer> maxAngle = turretNamespace.addConstantInt("Max Angle", 330);
-
-    private static final Supplier<Double> kP = PID.addConstantDouble("kP", 0);
-    private static final Supplier<Double> kI = PID.addConstantDouble("kI", 0);
-    private static final Supplier<Double> kD = PID.addConstantDouble("kD", 0);
-
-    private static final Supplier<Double> kS = PID.addConstantDouble("kS", 0);
-
-    private static final Supplier<Double> tolerance = PID.addConstantDouble("Tolerance", 0);
-    private static final Supplier<Double> waitTime = PID.addConstantDouble("Wait Time", 0);
-    private static final Supplier<Double> setpoint = PID.addConstantDouble("setpoint", 90);
-    private static final Supplier<Integer> timeout = PID.addConstantInt("timeout", 30);
-
-    private static final PIDSettings pidSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
-
-    private static final double DEGREES_TO_PULSES = 4096 * 28 / 8.5 / 360;
+    public final double DEGREES_TO_PULSES = 4096 * 28 / 8.5 / 360;
 
     private static final Turret instance = new Turret();
 
@@ -177,10 +170,10 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
         setpoint *= DEGREES_TO_PULSES;
 
-        double tolerance = Turret.tolerance.get() * DEGREES_TO_PULSES;
+        double tolerancePulses = tolerance.get() * DEGREES_TO_PULSES;
         int position = motor.getSelectedSensorPosition();
 
-        return Math.abs(setpoint - position) <= tolerance;
+        return Math.abs(setpoint - position) <= tolerancePulses;
     }
 
     public boolean isEnabled() {
