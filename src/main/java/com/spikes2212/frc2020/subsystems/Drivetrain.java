@@ -1,13 +1,10 @@
 package com.spikes2212.frc2020.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.*;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.frc2020.commands.OrientToPowerCell;
 import com.spikes2212.frc2020.services.VisionService;
 import com.spikes2212.lib.command.drivetrains.OdometryDrivetrain;
-import com.spikes2212.lib.command.drivetrains.commands.DriveArcadeWithPID;
 import com.spikes2212.lib.control.FeedForwardSettings;
 import com.spikes2212.lib.control.PIDSettings;
 import com.spikes2212.lib.dashboard.Namespace;
@@ -15,37 +12,35 @@ import com.spikes2212.lib.dashboard.RootNamespace;
 import com.spikes2212.lib.path.OdometryHandler;
 import com.spikes2212.lib.util.PigeonWrapper;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 import java.util.function.Supplier;
 
 public class Drivetrain extends OdometryDrivetrain {
 
-    public static RootNamespace drivetrainNamespace = new RootNamespace("drivetrain");
+    public final RootNamespace drivetrainNamespace = new RootNamespace("drivetrain");
 
-    public static Namespace orientationNamespace = drivetrainNamespace.addChild("orientation");
+    public final Namespace orientationNamespace = drivetrainNamespace.addChild("orientation");
 
-    public static Supplier<Double> width = drivetrainNamespace
+    public final Supplier<Double> width = drivetrainNamespace
             .addConstantDouble("width", 0.7);
-    public static Supplier<Double> wheelDiameter = drivetrainNamespace
+    public final Supplier<Double> wheelDiameter = drivetrainNamespace
             .addConstantDouble("wheel diameter (inches)", 6);
 
-    public static Supplier<Double> orientationKP = orientationNamespace.addConstantDouble("kP", 0);
-    public static Supplier<Double> orientationKI = orientationNamespace.addConstantDouble("kI", 0);
-    public static Supplier<Double> orientationKD = orientationNamespace.addConstantDouble("kD", 0);
+    public final Supplier<Double> orientationKP = orientationNamespace.addConstantDouble("kP", 0);
+    public final Supplier<Double> orientationKI = orientationNamespace.addConstantDouble("kI", 0);
+    public final Supplier<Double> orientationKD = orientationNamespace.addConstantDouble("kD", 0);
 
-    public static Supplier<Double> orientationKS = orientationNamespace.addConstantDouble("kS", 0);
+    public final Supplier<Double> orientationKS = orientationNamespace.addConstantDouble("kS", 0);
 
-    public static Supplier<Double> orientationTolerance = orientationNamespace
+    public final Supplier<Double> orientationTolerance = orientationNamespace
             .addConstantDouble("tolerance", 0);
-    public static Supplier<Double> orientationWaitTime = orientationNamespace
+    public final Supplier<Double> orientationWaitTime = orientationNamespace
             .addConstantDouble("wait time", 0);
 
-    public static PIDSettings orientationPIDSettings = new PIDSettings(orientationKP, orientationKI, orientationKD,
+    public final PIDSettings orientationPIDSettings = new PIDSettings(orientationKP, orientationKI, orientationKD,
             orientationTolerance, orientationWaitTime);
 
-    public static FeedForwardSettings orientationFFSettings = new FeedForwardSettings(orientationKS, () -> 0.0, () -> 0.0);
+    public final FeedForwardSettings orientationFFSettings = new FeedForwardSettings(orientationKS, () -> 0.0, () -> 0.0);
 
     private static final Drivetrain instance = new Drivetrain();
 
