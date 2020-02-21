@@ -15,23 +15,23 @@ import java.util.function.Supplier;
 
 public class Elevator extends GenericSubsystem {
 
-    private static final RootNamespace elevatorNamspace = new RootNamespace("elevator");
-    private static final Namespace pidNamespace = elevatorNamspace.addChild("PID");
-    private static final Supplier<Double> kP = pidNamespace.addConstantDouble("kP", 0);
-    private static final Supplier<Double> kI = pidNamespace.addConstantDouble("kI", 0);
-    private static final Supplier<Double> kD = pidNamespace.addConstantDouble("kD", 0);
-    private static final Supplier<Double> kS = pidNamespace.addConstantDouble("kS", 0);
-    private static final Supplier<Double> kG = pidNamespace.addConstantDouble("kG", 0);
+    public final RootNamespace elevatorNamspace = new RootNamespace("elevator");
+    public final Namespace pidNamespace = elevatorNamspace.addChild("PID");
+    public final Supplier<Double> kP = pidNamespace.addConstantDouble("kP", 0);
+    public final Supplier<Double> kI = pidNamespace.addConstantDouble("kI", 0);
+    public final Supplier<Double> kD = pidNamespace.addConstantDouble("kD", 0);
+    public final Supplier<Double> kS = pidNamespace.addConstantDouble("kS", 0);
+    public final Supplier<Double> kG = pidNamespace.addConstantDouble("kG", 0);
 
-    public static final PIDSettings PID_SETTINGS = new PIDSettings(kP, kI, kD);
+    public final PIDSettings PID_SETTINGS = new PIDSettings(kP, kI, kD);
 
-    public static final FeedForwardSettings FEED_FORWARD_SETTINGS =
+    public final FeedForwardSettings FEED_FORWARD_SETTINGS =
             new FeedForwardSettings(kS, () -> 0.0, () -> 0.0, kG);
 
-    public static final Supplier<Double> distancePerPulse = elevatorNamspace
+    public final Supplier<Double> distancePerPulse = elevatorNamspace
             .addConstantDouble("distance per pulse", 0);
 
-    public static final Supplier<Integer> NUM_OF_MAGNETS = elevatorNamspace
+    public final Supplier<Integer> NUM_OF_MAGNETS = elevatorNamspace
             .addConstantInt("num of magnets", 0);
 
     private static Elevator instance /*= new Elevator()*/;
