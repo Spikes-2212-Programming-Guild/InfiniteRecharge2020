@@ -11,7 +11,6 @@ import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystemWithPID;
 import com.spikes2212.lib.control.FeedForwardSettings;
 import com.spikes2212.lib.control.PIDSettings;
-import com.spikes2212.lib.control.noise.ExponentialFilter;
 import com.spikes2212.lib.control.noise.NoiseReducer;
 import com.spikes2212.lib.control.noise.RunningAverageFilter;
 import com.spikes2212.lib.dashboard.Namespace;
@@ -23,27 +22,27 @@ import java.util.function.Supplier;
 
 public class Shooter extends GenericSubsystem {
 
-    public static final double distancePerPulse = 60 / 4096.0;
+    public final double distancePerPulse = 60 / 4096.0;
 
-    private static RootNamespace shooterNamespace = new RootNamespace("shooter");
-    private static Namespace PID = shooterNamespace.addChild("PID");
-    private static Supplier<Double> maxSpeed = shooterNamespace.addConstantDouble("Max Speed", 0.6);
-    private static Supplier<Double> minSpeed = shooterNamespace.addConstantDouble("Min Speed", 0);
-    public static Supplier<Double> shootSpeed =
+    public static final RootNamespace shooterNamespace = new RootNamespace("shooter");
+    public final Namespace PID = shooterNamespace.addChild("PID");
+    public static final Supplier<Double> maxSpeed = shooterNamespace.addConstantDouble("Max Speed", 0.6);
+    public static final Supplier<Double> minSpeed = shooterNamespace.addConstantDouble("Min Speed", 0);
+    public final Supplier<Double> shootSpeed =
       shooterNamespace.addConstantDouble("Shooting Speed", 0.6);
 
-    private static Supplier<Double> kP = PID.addConstantDouble("kP", 0);
-    private static Supplier<Double> kI = PID.addConstantDouble("kI", 0);
-    private static Supplier<Double> kD = PID.addConstantDouble("kD", 0);
-    private static Supplier<Double> kS = PID.addConstantDouble("kS", 0);
-    private static Supplier<Double> kF = PID.addConstantDouble("kF", 0);
-    private static Supplier<Double> tolerance = PID.addConstantDouble("Tolerance", 0);
-    public static Supplier<Double> waitTime = PID.addConstantDouble("Wait Time", 0);
+    public final Supplier<Double> kP = PID.addConstantDouble("kP", 0);
+    public final Supplier<Double> kI = PID.addConstantDouble("kI", 0);
+    public final Supplier<Double> kD = PID.addConstantDouble("kD", 0);
+    public final Supplier<Double> kS = PID.addConstantDouble("kS", 0);
+    public final Supplier<Double> kF = PID.addConstantDouble("kF", 0);
+    public final Supplier<Double> tolerance = PID.addConstantDouble("Tolerance", 0);
+    public final Supplier<Double> waitTime = PID.addConstantDouble("Wait Time", 0);
 
-    private static Supplier<Double> targetSpeed = PID.addConstantDouble("target speed", 0);
+    public final Supplier<Double> targetSpeed = PID.addConstantDouble("target speed", 0);
 
-    private static PIDSettings velocityPIDSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
-    private static FeedForwardSettings velocityFFSettings = new FeedForwardSettings(kS, kF, () -> 0.0);
+    public final PIDSettings velocityPIDSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
+    public final FeedForwardSettings velocityFFSettings = new FeedForwardSettings(kS, kF, () -> 0.0);
 
     private static final Shooter instance = new Shooter();
 
