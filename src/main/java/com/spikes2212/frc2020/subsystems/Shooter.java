@@ -13,6 +13,7 @@ import com.spikes2212.lib.control.FeedForwardSettings;
 import com.spikes2212.lib.control.PIDSettings;
 import com.spikes2212.lib.control.noise.ExponentialFilter;
 import com.spikes2212.lib.control.noise.NoiseReducer;
+import com.spikes2212.lib.control.noise.RunningAverageFilter;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -22,7 +23,7 @@ import java.util.function.Supplier;
 
 public class Shooter extends GenericSubsystem {
 
-    public static final double distancePerPulse = 2 * Math.PI / 4096.0;
+    public static final double distancePerPulse = 60 / 4096.0;
 
     private static RootNamespace shooterNamespace = new RootNamespace("shooter");
     private static Namespace PID = shooterNamespace.addChild("PID");
@@ -72,7 +73,7 @@ public class Shooter extends GenericSubsystem {
         slave.setNeutralMode(NeutralMode.Brake);
         slave.follow(master);
         noiseReducer = new NoiseReducer(() -> master.getSelectedSensorVelocity() * distancePerPulse,
-                new ExponentialFilter(0.1));
+                new RunningAverageFilter());
         enabled = true;
     }
 
@@ -116,7 +117,11 @@ public class Shooter extends GenericSubsystem {
     @Override
     public void configureDashboard() {
         VisionService vision = VisionService.getInstance();
-        shooterNamespace.putNumber("shooter velocity - filtered", noiseReducer);
+        shooterNamespace.putNumber("shooter velocity - filtered", () -> {
+            double value = noiseReducer.get();
+            if (value > Math.pow(10, -4)) return value;
+            return 0;
+        });
         shooterNamespace.putNumber("shooter velocity", () -> (double) master.getSelectedSensorVelocity() * distancePerPulse);
         shooterNamespace.putNumber("shooter position", master::getSelectedSensorPosition);
         shooterNamespace.putNumber("distance to target", vision::getDistanceFromTarget);
