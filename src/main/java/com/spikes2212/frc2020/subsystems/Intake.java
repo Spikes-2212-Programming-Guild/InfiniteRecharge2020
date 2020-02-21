@@ -16,7 +16,7 @@ public class Intake extends GenericSubsystem {
 
     private static Supplier<Double> minSpeed = intakeNamespace.addConstantDouble("min speed", -1);
     private static Supplier<Double> maxSpeed = intakeNamespace.addConstantDouble("max speed", 1);
-    public static Supplier<Double> intakeVoltage = intakeNamespace.addConstantDouble("grip speed", 0.5);
+    public static Supplier<Double> intakeVoltage = intakeNamespace.addConstantDouble("intake voltage", 6);
     public static Supplier<Double> intakeCurrentLimit = intakeNamespace.addConstantDouble("intake current limit", 17);
 
     private static final Intake instance = new Intake();
@@ -57,6 +57,7 @@ public class Intake extends GenericSubsystem {
 
     @Override
     public void configureDashboard() {
+        intakeNamespace.putNumber("intake supplied current", this::getSuppliedCurrent);
         intakeNamespace.putData("intake", new MoveGenericSubsystem(this, intakeVoltage));
         intakeNamespace.putData("intake power cell", new IntakePowerCell());
     }
