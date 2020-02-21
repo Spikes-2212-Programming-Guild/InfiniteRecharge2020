@@ -4,6 +4,7 @@ import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.control.*;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import java.util.function.Supplier;
@@ -65,7 +66,8 @@ public class MoveGenericSubsystemWithPID extends CommandBase {
         this.feedForwardSettings = feedForwardSettings;
         this.setpoint = setpoint;
         this.source = source;
-        this.feedForwardController = new FeedForwardController(feedForwardSettings.getkS(), feedForwardSettings.getkV(), feedForwardSettings.getkA(), feedForwardSettings.getkG(), 0.02);
+        this.feedForwardController = new FeedForwardController(feedForwardSettings.getkS(), feedForwardSettings.getkV(),
+                feedForwardSettings.getkA(), feedForwardSettings.getkG(), 0.02);
         this.pidController = new PIDController(pidSettings.getkP(), pidSettings.getkI(), pidSettings.getkD());
     }
 
@@ -91,10 +93,10 @@ public class MoveGenericSubsystemWithPID extends CommandBase {
         pidController.setPID(pidSettings.getkP(), pidSettings.getkI(), pidSettings.getkD());
         feedForwardController.setGains(feedForwardSettings.getkS(), feedForwardController.getkV(),
                 feedForwardController.getkA(), feedForwardController.getkG());
-
+        SmartDashboard.putNumber("shooter setpoint", setpoint.get());
         double pidValue = pidController.calculate(source.get(), setpoint.get());
         double svagValue = feedForwardController.calculate(setpoint.get());
-        subsystem.move((pidValue + svagValue) / 2);
+        subsystem.move(pidValue + svagValue);
     }
 
     @Override

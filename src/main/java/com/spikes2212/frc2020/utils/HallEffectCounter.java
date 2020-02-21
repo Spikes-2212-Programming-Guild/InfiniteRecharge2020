@@ -12,7 +12,7 @@ public class HallEffectCounter {
     }
 
     public void update(double speed) {
-        boolean isOn = hallEffect.get();
+        boolean isOn = !hallEffect.get();
         if(isOn && !lastOn) {
             if(speed > 0)
                 counter++;

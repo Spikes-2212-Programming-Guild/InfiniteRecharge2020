@@ -68,7 +68,6 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         motor = new WPI_TalonSRX(RobotMap.CAN.TURRET_TALON);
         endLimit = new DigitalInput(RobotMap.DIO.TURRET_END_LIMIT);
         startLimit = new DigitalInput(RobotMap.DIO.TURRET_START_LIMIT);
-        motor.setInverted(true);
         enabled = true;
     }
 
@@ -85,7 +84,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     }
 
     public void setManualDefaultCommand() {
-        setDefaultCommand(new MoveTalonSubsystem(this, Robot.oi::getControllerRightAngle, () -> 0.0).perpetually());
+        setDefaultCommand(new MoveTalonSubsystem(this, Robot.oi::getControllerRightAngle, () -> 100.0).perpetually());
     }
 
     public double getYaw() {
@@ -118,6 +117,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public void configureDashboard() {
+//        setManualDefaultCommand();
         VisionService vision = VisionService.getInstance();
         turretNamespace.putBoolean("turret limit", startLimit::get);
         turretNamespace.putNumber("turret angle", this::getYaw);

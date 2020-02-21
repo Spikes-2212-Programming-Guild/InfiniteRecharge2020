@@ -1,8 +1,10 @@
 package com.spikes2212.frc2020.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.spikes2212.frc2020.Robot;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.frc2020.commands.IntakePowerCell;
+import com.spikes2212.frc2020.commands.OrientToPowerCell;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.dashboard.RootNamespace;
@@ -60,6 +62,7 @@ public class Intake extends GenericSubsystem {
         intakeNamespace.putNumber("intake supplied current", this::getSuppliedCurrent);
         intakeNamespace.putData("intake", new MoveGenericSubsystem(this, intakeVoltage));
         intakeNamespace.putData("intake power cell", new IntakePowerCell());
+        intakeNamespace.putData("orient to ball", new OrientToPowerCell(Robot.oi::getRightY));
     }
 
     public boolean isEnabled() {

@@ -102,6 +102,11 @@ public class Drivetrain extends OdometryDrivetrain {
         imu.reset();
     }
 
+//    @Override
+//    public void arcadeDrive(double moveValue, double rotateValue) {
+//        super.curvatureDrive(moveValue, rotateValue);
+//    }
+
     @Override
     public double getLeftRate() {
         return leftEncoder.getRate();
