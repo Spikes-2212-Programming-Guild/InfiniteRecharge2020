@@ -14,9 +14,9 @@ public class Climber extends GenericSubsystem {
     public static RootNamespace climberNamespace = new RootNamespace("climber");
 
     private Supplier<Double> minSpeed = climberNamespace.addConstantDouble("min speed", 0);
-    private Supplier<Double> maxSpeed = climberNamespace.addConstantDouble("max speed", 0);
+    private Supplier<Double> maxSpeed = climberNamespace.addConstantDouble("max speed", 1);
 
-    private Supplier<Double> climbSpeed = climberNamespace.addConstantDouble("climb speed", 0);
+    private Supplier<Double> climbSpeed = climberNamespace.addConstantDouble("climb speed", 1);
 
     private static Climber instance;
 
@@ -30,7 +30,7 @@ public class Climber extends GenericSubsystem {
 
     private WPI_TalonSRX motor;
 
-    private boolean enabled;
+    private boolean enabled = true;
 
     public Climber(WPI_TalonSRX motor) {
         this.motor = motor;
@@ -43,7 +43,7 @@ public class Climber extends GenericSubsystem {
 
     @Override
     public boolean canMove(double speed) {
-        return enabled;
+        return true;
     }
 
     @Override

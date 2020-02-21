@@ -88,7 +88,7 @@ public class Elevator extends GenericSubsystem {
     public void configureDashboard() {
         elevatorNamspace.putNumber("encoder", encoder::get);
         elevatorNamspace.putBoolean("bottom limit switch", bottomHallEffect::get);
-        elevatorNamspace.putNumber("top limit switch", hallEffectCounter::getCurrentMagnet);
+        elevatorNamspace.putNumber("current limit", hallEffectCounter::getCurrentMagnet);
         elevatorNamspace.putData("test concept", new MoveGenericSubsystem(this, testSpeed));
     }
 }

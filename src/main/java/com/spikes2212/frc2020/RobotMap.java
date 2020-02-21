@@ -35,8 +35,8 @@ public class RobotMap {
 
         int ELEVATOR_ENCODER_POS = 24;
         int ELEVATOR_ENCODER_NEG = 25;
-        int ELEVATOR_BOTTOM_SWITCH = 10;
-        int ELEVATOR_TOP_SWITCH = 11;
+        int ELEVATOR_BOTTOM_SWITCH = 9;
+        int ELEVATOR_TOP_SWITCH = 8;
     }
 
     public interface PCM {
