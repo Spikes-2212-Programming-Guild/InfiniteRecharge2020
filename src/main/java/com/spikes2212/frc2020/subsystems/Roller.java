@@ -106,14 +106,6 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
     public void configureDashboard() {
         rollerNamespace.putData("roll with FMS",
                 new MoveTalonSubsystem(this, getSetpoint(getColorFromFMS()), () -> 0.0));
-        rollerNamespace.putData("roll to yellow",
-                new MoveTalonSubsystem(this, getSetpoint(ColorDetector.yellowTarget), () -> 0.0));
-        rollerNamespace.putData("roll to red",
-                new MoveTalonSubsystem(this, getSetpoint(ColorDetector.redTarget), () -> 0.0));
-        rollerNamespace.putData("roll to blue",
-                new MoveTalonSubsystem(this, getSetpoint(ColorDetector.blueTarget), () -> 0.0));
-        rollerNamespace.putData("roll to green",
-                new MoveTalonSubsystem(this, getSetpoint(ColorDetector.greenTarget), () -> 0.0));
     }
 
     private double getSetpoint(Color color) {
