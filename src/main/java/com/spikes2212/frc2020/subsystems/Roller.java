@@ -10,6 +10,7 @@ import com.spikes2212.lib.command.genericsubsystem.TalonSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 
@@ -31,7 +32,7 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
     private static final double EIGHTHS_TO_PULSES = 45 * 4096 * 0.0;
     private static final Color[] COLOR_ORDER = {ColorDetector.redTarget, ColorDetector.blueTarget, ColorDetector.yellowTarget,
             ColorDetector.greenTarget};
-
+    private DriverStation gameData = DriverStation.getInstance();
     private WPI_TalonSRX motor;
     private ColorDetector detector;
 
@@ -74,6 +75,7 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public void configureDashboard() {
+        rollerNamespace.putString("the destination", this::getDes);
         rollerNamespace.putData("roll to yellow",
                 new MoveTalonSubsystem(this, getSetpoint(ColorDetector.yellowTarget), () -> 0.0));
         rollerNamespace.putData("roll to red",
@@ -91,12 +93,55 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
         return -1;
     }
 
+    private String getDes() {
+        if (gameData.getGameSpecificMessage().length() > 0) {
+            switch (gameData.getGameSpecificMessage().charAt(0)) {
+                case 'B':
+                    return "Blue";
+                case 'G':
+                    return "Green";
+                case 'R':
+                    return "Red";
+                case 'Y':
+                    return "Yellow";
+                default:
+                    return "not a color";
+            }
+        } else {
+            return "didn't get any color";
+        }
+    }
+
+    public void ToColor() {
+        if (gameData.getGameSpecificMessage().length() > 0) {
+            switch (gameData.getGameSpecificMessage().charAt(0)) {
+                case 'B':
+                    new MoveTalonSubsystem(this, getSetpoint(ColorDetector.blueTarget), () -> 0.0);
+                    break;
+                case 'G':
+                    new MoveTalonSubsystem(this, getSetpoint(ColorDetector.greenTarget), () -> 0.0);
+                    break;
+                case 'R':
+                    new MoveTalonSubsystem(this, getSetpoint(ColorDetector.redTarget), () -> 0.0);
+                    break;
+                case 'Y':
+                    new MoveTalonSubsystem(this, getSetpoint(ColorDetector.yellowTarget), () -> 0.0);
+                    break;
+                default:
+                    //This is corrupt data
+                    break;
+            }
+        } else {
+            //Code for no data received yet
+        }
+    }
+
     private Supplier<Double> getSetpoint(Color color) {
         int destIndex = indexOf(COLOR_ORDER, color);
         int currIndex = indexOf(COLOR_ORDER, detector.getDetectedColor());
-        if(destIndex == -1 || currIndex == -1) return null;
+        if (destIndex == -1 || currIndex == -1) return null;
         double offset = destIndex - currIndex;
-        if (Math.abs(offset) == 3) offset *= -(1/3.0);
+        if (Math.abs(offset) == 3) offset *= -(1 / 3.0);
         double effectivelyFinalOffset = offset;
         return () -> effectivelyFinalOffset;
     }
