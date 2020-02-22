@@ -11,9 +11,12 @@ public class IntakeStateMachine extends StateMachine<IntakeStateMachine.IntakeSt
     }
 
     private static IntakeStateMachine instance;
+
     public static IntakeStateMachine getInstance() {
-        if (instance == null)
+        if(instance == null) {
             instance = new IntakeStateMachine();
+        }
+
         return instance;
     }
 
@@ -25,8 +28,7 @@ public class IntakeStateMachine extends StateMachine<IntakeStateMachine.IntakeSt
 
     @Override
     protected void generateTransformations() {
-        addTransformation(IntakeState.CLOSE, new InstantCommand(intake :: close, intake));
-        addTransformation(IntakeState.OPEN, new InstantCommand(intake :: open, intake));
+        addTransformation(IntakeState.CLOSE, new InstantCommand(intake::close, intake));
+        addTransformation(IntakeState.OPEN, new InstantCommand(intake::open, intake));
     }
-
 }

@@ -10,17 +10,18 @@ import com.spikes2212.lib.command.genericsubsystem.TalonSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
-import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class Roller extends GenericSubsystem implements TalonSubsystem {
 
     public static RootNamespace rollerNamespace = new RootNamespace("roller");
     public static Namespace PID = rollerNamespace.addChild("PID");
-
     public static Supplier<Double> MIN_SPEED = rollerNamespace.addConstantDouble("min speed", -1);
     public static Supplier<Double> MAX_SPEED = rollerNamespace.addConstantDouble("max speed", 1);
     public static Supplier<Double> kP = PID.addConstantDouble("kP", 0.5);
@@ -30,11 +31,16 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
     public static Supplier<Integer> timeout = PID.addConstantInt("timeout", 30);
 
     private static final double EIGHTHS_TO_PULSES = 45 * 4096 * 0.0;
-    private static final Color[] COLOR_ORDER = {ColorDetector.redTarget, ColorDetector.blueTarget, ColorDetector.yellowTarget,
-            ColorDetector.greenTarget};
-    private DriverStation gameData = DriverStation.getInstance();
-    private WPI_TalonSRX motor;
-    private ColorDetector detector;
+
+    private static final List<Color> COLOR_ORDER = new ArrayList<>();
+
+    private static Color inFrontOf(Color color) {
+        return COLOR_ORDER.get((COLOR_ORDER.indexOf(color) + 2) % 4);
+    }
+
+    public static Color getColorFromFMS() {
+        return null;
+    }
 
     private static Roller instance;
 
@@ -42,15 +48,27 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
         if (instance == null) {
             WPI_TalonSRX motor = new WPI_TalonSRX(RobotMap.CAN.ROLLER_MOTOR);
             ColorDetector colorDetector = new ColorDetector(I2C.Port.kOnboard);
-            instance = new Roller(MIN_SPEED, MAX_SPEED, motor, colorDetector);
+            DigitalInput limit = new DigitalInput(RobotMap.DIO.ROLLER_LIMIT);
+            instance = new Roller(MIN_SPEED, MAX_SPEED, motor, colorDetector, limit);
         }
+
         return instance;
     }
 
-    private Roller(Supplier<Double> minSpeed, Supplier<Double> maxSpeed, WPI_TalonSRX motor, ColorDetector detector) {
+    private WPI_TalonSRX motor;
+    private ColorDetector detector;
+    private DigitalInput limit;
+
+    private Roller(Supplier<Double> minSpeed, Supplier<Double> maxSpeed, WPI_TalonSRX motor, ColorDetector detector,
+                   DigitalInput limit) {
         super(minSpeed, maxSpeed);
         this.motor = motor;
         this.detector = detector;
+        this.limit = limit;
+        COLOR_ORDER.add(ColorDetector.blueTarget);
+        COLOR_ORDER.add(ColorDetector.redTarget);
+        COLOR_ORDER.add(ColorDetector.greenTarget);
+        COLOR_ORDER.add(ColorDetector.yellowTarget);
     }
 
     @Override
@@ -60,7 +78,7 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public boolean canMove(double speed) {
-        return true;
+        return limit.get() || speed == 0;
     }
 
     @Override
@@ -75,7 +93,6 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
 
     @Override
     public void configureDashboard() {
-        rollerNamespace.putString("the destination", this::getDes);
         rollerNamespace.putData("roll to yellow",
                 new MoveTalonSubsystem(this, getSetpoint(ColorDetector.yellowTarget), () -> 0.0));
         rollerNamespace.putData("roll to red",
@@ -86,64 +103,17 @@ public class Roller extends GenericSubsystem implements TalonSubsystem {
                 new MoveTalonSubsystem(this, getSetpoint(ColorDetector.greenTarget), () -> 0.0));
     }
 
-    private int indexOf(Color[] array, Color value) {
-        for (int i = 0; i < array.length; i++)
-            if (array[i].equals(value))
-                return i;
-        return -1;
+    private double getSetpoint(Color color) {
+        int targetIndex = COLOR_ORDER.indexOf(inFrontOf(color));
+        int currentIndex = COLOR_ORDER.indexOf(detector.getDetectedColor());
+        if(targetIndex == -1 || currentIndex == -1) return 0;
+        double offset = targetIndex - currentIndex;
+        if (Math.abs(offset) == 3) offset *= -(1/3.0);
+        return offset;
     }
 
-    private String getDes() {
-        if (gameData.getGameSpecificMessage().length() > 0) {
-            switch (gameData.getGameSpecificMessage().charAt(0)) {
-                case 'B':
-                    return "Blue";
-                case 'G':
-                    return "Green";
-                case 'R':
-                    return "Red";
-                case 'Y':
-                    return "Yellow";
-                default:
-                    return "not a color";
-            }
-        } else {
-            return "didn't get any color";
-        }
-    }
-
-    public void ToColor() {
-        if (gameData.getGameSpecificMessage().length() > 0) {
-            switch (gameData.getGameSpecificMessage().charAt(0)) {
-                case 'B':
-                    new MoveTalonSubsystem(this, getSetpoint(ColorDetector.blueTarget), () -> 0.0);
-                    break;
-                case 'G':
-                    new MoveTalonSubsystem(this, getSetpoint(ColorDetector.greenTarget), () -> 0.0);
-                    break;
-                case 'R':
-                    new MoveTalonSubsystem(this, getSetpoint(ColorDetector.redTarget), () -> 0.0);
-                    break;
-                case 'Y':
-                    new MoveTalonSubsystem(this, getSetpoint(ColorDetector.yellowTarget), () -> 0.0);
-                    break;
-                default:
-                    //This is corrupt data
-                    break;
-            }
-        } else {
-            //Code for no data received yet
-        }
-    }
-
-    private Supplier<Double> getSetpoint(Color color) {
-        int destIndex = indexOf(COLOR_ORDER, color);
-        int currIndex = indexOf(COLOR_ORDER, detector.getDetectedColor());
-        if (destIndex == -1 || currIndex == -1) return null;
-        double offset = destIndex - currIndex;
-        if (Math.abs(offset) == 3) offset *= -(1 / 3.0);
-        double effectivelyFinalOffset = offset;
-        return () -> effectivelyFinalOffset;
+    public boolean isPressed() {
+        return limit.get();
     }
 
     @Override
