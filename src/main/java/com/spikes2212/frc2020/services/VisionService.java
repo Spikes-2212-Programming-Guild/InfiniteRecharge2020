@@ -33,7 +33,6 @@ public class VisionService {
         visionNamespace.update();
     }
 
-
     public VisionService() {
         turretCam = NetworkTableInstance.getDefault().getTable("chameleon-vision").getSubTable("turret");
         intakeCam = NetworkTableInstance.getDefault().getTable("chameleon-vision").getSubTable("intake");

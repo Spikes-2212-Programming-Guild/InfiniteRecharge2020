@@ -45,12 +45,12 @@ public class Shooter extends GenericSubsystem {
     private static Supplier<Double> kS = PID.addConstantDouble("kS", 0);
     private static Supplier<Double> kV = PID.addConstantDouble("kV", 0);
     private static Supplier<Double> tolerance = PID.addConstantDouble("Tolerance", 0);
-    public static Supplier<Double> waitTime = PID.addConstantDouble("Wait Time", 0);
+    private static Supplier<Double> waitTime = PID.addConstantDouble("Wait Time", 0);
 
     private static Supplier<Double> targetSpeed = PID.addConstantDouble("target speed", 0);
 
-    private static PIDSettings velocityPIDSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
-    private static FeedForwardSettings velocityFFSettings = new FeedForwardSettings(kS, kV, () -> 0.0);
+    public static PIDSettings velocityPIDSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
+    public static FeedForwardSettings velocityFFSettings = new FeedForwardSettings(kS, kV, () -> 0.0);
 
     private static final Shooter instance = new Shooter();
 
@@ -114,13 +114,16 @@ public class Shooter extends GenericSubsystem {
         solenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
-
     public boolean isEnabled() {
         return enabled;
     }
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public double getMotorSpeed() {
+        return master.getSelectedSensorVelocity();
     }
 
     @Override
