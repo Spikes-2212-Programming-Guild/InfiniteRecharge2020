@@ -20,8 +20,9 @@ public class OrientTurretToPowerPort extends SequentialCommandGroup {
                 new MoveTalonSubsystem(turret, () -> setpoint, () -> 0.0).perpetually()
                         .alongWith(
                                 new RepeatCommand(
-                                        new InstantCommand(this::updateSetpoint)),
-                                new WaitCommand(0.1)
+                                        new InstantCommand(this::updateSetpoint),
+                                        new WaitCommand(0.1)
+                                )
                         )
         );
     }
