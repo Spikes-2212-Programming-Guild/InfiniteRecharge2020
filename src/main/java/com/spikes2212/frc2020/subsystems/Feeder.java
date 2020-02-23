@@ -32,7 +32,7 @@ public class Feeder extends GenericSubsystem {
 
     private boolean isOpen = true;
 
-    public Feeder() {
+    private Feeder() {
         super(minSpeed, maxSpeed);
         motor = new WPI_VictorSPX(RobotMap.CAN.FEEDER_VICTOR);
         solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.FEEDER_FORWARD,

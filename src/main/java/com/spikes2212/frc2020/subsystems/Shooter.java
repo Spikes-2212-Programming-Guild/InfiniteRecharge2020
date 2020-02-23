@@ -27,11 +27,11 @@ public class Shooter extends GenericSubsystem {
 
     public static final double distancePerPulse = 1 / 4096.0;
 
+
     private static RootNamespace shooterNamespace = new RootNamespace("shooter");
     private static Namespace PID = shooterNamespace.addChild("PID");
     private static Supplier<Double> maxSpeed = shooterNamespace.addConstantDouble("Max Speed", 0.6);
     private static Supplier<Double> minSpeed = shooterNamespace.addConstantDouble("Min Speed", 0);
-    private static Supplier<Double> accelerationTime = shooterNamespace.addConstantDouble("acceleration time", 1);
     public static Supplier<Double> shootSpeed =
             shooterNamespace.addConstantDouble("Shooting Speed Voltage", 3.25);
     public static Supplier<Double> farShootingSpeed = shooterNamespace.addConstantDouble("far shooting voltage",
@@ -155,5 +155,9 @@ public class Shooter extends GenericSubsystem {
                         velocityFFSettings));
         shooterNamespace.putData("shoot from wheel", new MoveGenericSubsystem(this,
                 () -> wheelShootingSpeed.get() / RobotController.getBatteryVoltage()));
+    }
+
+    public void setAccelerated(boolean isAccelerated) {
+        shooterNamespace.putBoolean("is accelerated", isAccelerated);
     }
 }

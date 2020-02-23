@@ -15,7 +15,7 @@ public class VisionService {
     private Supplier<Double> retroReflectiveHeight = visionNamespace.addConstantDouble("retro reflective height", 249 - turretHeight.get());
     private Supplier<String> cameraName = visionNamespace.addConstantString("camera name", "turret");
 
-    public static final VisionService instance = new VisionService();
+    private static final VisionService instance = new VisionService();
 
     public static VisionService getInstance() {
         return instance;
@@ -33,7 +33,7 @@ public class VisionService {
         visionNamespace.update();
     }
 
-    public VisionService() {
+    private VisionService() {
         turretCam = NetworkTableInstance.getDefault().getTable("chameleon-vision").getSubTable("turret");
         intakeCam = NetworkTableInstance.getDefault().getTable("chameleon-vision").getSubTable("intake");
         retroreflectiveYaw = turretCam.getEntry("targetYaw");
