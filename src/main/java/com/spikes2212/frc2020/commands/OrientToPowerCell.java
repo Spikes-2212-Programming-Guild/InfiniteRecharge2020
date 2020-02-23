@@ -3,7 +3,6 @@ package com.spikes2212.frc2020.commands;
 import com.spikes2212.frc2020.services.VisionService;
 import com.spikes2212.frc2020.subsystems.Drivetrain;
 import com.spikes2212.frc2020.utils.RepeatCommand;
-import com.spikes2212.lib.command.drivetrains.commands.DriveArcade;
 import com.spikes2212.lib.command.drivetrains.commands.DriveArcadeWithPID;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -19,6 +18,7 @@ public class OrientToPowerCell extends SequentialCommandGroup {
 
 
     private double setpoint = 0;
+
     public OrientToPowerCell(Supplier<Double> moveValue) {
         addCommands(
                 new InstantCommand(this::updateSetpoint),
@@ -28,8 +28,8 @@ public class OrientToPowerCell extends SequentialCommandGroup {
                         drivetrain::getYaw,
                         () -> setpoint,
                         moveValue).alongWith(new RepeatCommand(
-                                new InstantCommand(this::updateSetpoint),
-                                new WaitCommand(0.1)
+                        new InstantCommand(this::updateSetpoint),
+                        new WaitCommand(0.1)
                 ))
         );
     }

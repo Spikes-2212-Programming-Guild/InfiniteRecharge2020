@@ -2,10 +2,8 @@ package com.spikes2212.frc2020.commands;
 
 import com.spikes2212.frc2020.subsystems.Climber;
 import com.spikes2212.frc2020.subsystems.Turret;
-import com.spikes2212.frc2020.utils.RepeatCommand;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class Climb extends SequentialCommandGroup {

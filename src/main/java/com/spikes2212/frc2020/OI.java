@@ -1,7 +1,6 @@
 package com.spikes2212.frc2020;
 
 import com.spikes2212.frc2020.commands.IntakePowerCell;
-import com.spikes2212.frc2020.commands.OrientToPowerCell;
 import com.spikes2212.frc2020.services.VisionService;
 import com.spikes2212.frc2020.subsystems.*;
 import com.spikes2212.frc2020.utils.RepeatCommand;
@@ -9,15 +8,11 @@ import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem
 import com.spikes2212.lib.util.XboXUID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
-import java.util.EventListener;
 
 public class OI /* GEVALD */ {
 
@@ -52,9 +47,9 @@ public class OI /* GEVALD */ {
                         new RepeatCommand(new IntakePowerCell())
                 )
         );
-        shootFromAfar.toggleWhenActive(new SequentialCommandGroup(new InstantCommand(() ->shooter.open()),new MoveGenericSubsystem(shooter,
+        shootFromAfar.toggleWhenActive(new SequentialCommandGroup(new InstantCommand(() -> shooter.open()), new MoveGenericSubsystem(shooter,
                 () -> Shooter.farShootingSpeed.get() / RobotController.getBatteryVoltage())));
-        closeShoot.whileActiveOnce(new SequentialCommandGroup(new InstantCommand(() ->shooter.close()),new MoveGenericSubsystem(shooter,
+        closeShoot.whileActiveOnce(new SequentialCommandGroup(new InstantCommand(() -> shooter.close()), new MoveGenericSubsystem(shooter,
                 () -> Shooter.shootSpeed.get() / RobotController.getBatteryVoltage())));
         feed.whileActiveOnce(new MoveGenericSubsystem(Feeder.getInstance(), Feeder.speed));
         openFeedToLevel1.whenPressed(new InstantCommand(Feeder.getInstance()::close));

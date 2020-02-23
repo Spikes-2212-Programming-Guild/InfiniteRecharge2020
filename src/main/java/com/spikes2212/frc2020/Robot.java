@@ -8,7 +8,6 @@ import com.spikes2212.frc2020.statemachines.IntakeStateMachine;
 import com.spikes2212.frc2020.subsystems.*;
 import com.spikes2212.frc2020.utils.RepeatCommand;
 import com.spikes2212.lib.command.drivetrains.commands.DriveArcade;
-import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,7 +25,7 @@ public class Robot extends TimedRobot {
     private Drivetrain drivetrain = Drivetrain.getInstance();
     private VisionService visionService = VisionService.getInstance();
 
-  //  private UsbCamera turretCam = new UsbCamera(1);
+    //  private UsbCamera turretCam = new UsbCamera(1);
     private IntakeStateMachine intakeStateMachine = IntakeStateMachine.getInstance();
     private FeederStateMachine feederStateMachine = FeederStateMachine.getInstance();
     private IntakeFeederStateMachine intakeFeederStateMachine = IntakeFeederStateMachine.getInstance();

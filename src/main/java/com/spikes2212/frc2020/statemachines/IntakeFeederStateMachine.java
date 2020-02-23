@@ -13,6 +13,7 @@ public class IntakeFeederStateMachine extends StateMachine<IntakeFeederStateMach
     }
 
     private static IntakeFeederStateMachine instance;
+
     public static IntakeFeederStateMachine getInstance() {
         if (instance == null) instance = new IntakeFeederStateMachine();
         return instance;

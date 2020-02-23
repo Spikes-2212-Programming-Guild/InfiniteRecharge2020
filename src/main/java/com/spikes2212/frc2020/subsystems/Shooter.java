@@ -8,14 +8,12 @@ import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.frc2020.services.PhysicsService;
 import com.spikes2212.frc2020.services.VisionService;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
-import com.spikes2212.lib.command.genericsubsystem.commands.AccelerateGenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystemWithPID;
 import com.spikes2212.lib.control.FeedForwardSettings;
 import com.spikes2212.lib.control.PIDSettings;
 import com.spikes2212.lib.control.noise.ExponentialFilter;
 import com.spikes2212.lib.control.noise.NoiseReducer;
-import com.spikes2212.lib.control.noise.RunningAverageFilter;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -35,7 +33,7 @@ public class Shooter extends GenericSubsystem {
     private static Supplier<Double> minSpeed = shooterNamespace.addConstantDouble("Min Speed", 0);
     private static Supplier<Double> accelerationTime = shooterNamespace.addConstantDouble("acceleration time", 1);
     public static Supplier<Double> shootSpeed =
-      shooterNamespace.addConstantDouble("Shooting Speed Voltage", 3.25);
+            shooterNamespace.addConstantDouble("Shooting Speed Voltage", 3.25);
     public static Supplier<Double> farShootingSpeed = shooterNamespace.addConstantDouble("far shooting voltage",
             6);
     public static Supplier<Double> wheelShootingSpeed = shooterNamespace.addConstantDouble("wheel shooting voltage", 8);

@@ -1,6 +1,5 @@
 package com.spikes2212.frc2020.services;
 
-import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -21,6 +20,7 @@ public class VisionService {
     public static VisionService getInstance() {
         return instance;
     }
+
     private NetworkTable turretCam;
     private NetworkTable intakeCam;
 
@@ -29,7 +29,7 @@ public class VisionService {
     private NetworkTableEntry pitch;
     private NetworkTableEntry area;
 
-    public void periodic(){
+    public void periodic() {
         visionNamespace.update();
     }
 
@@ -47,17 +47,21 @@ public class VisionService {
         return retroreflectiveYaw.getDouble(0);
     }
 
-    public double getIntakeYaw() { return intakeYaw.getDouble(10); }
+    public double getIntakeYaw() {
+        return intakeYaw.getDouble(10);
+    }
 
     public double getPitch() {
         return pitch.getDouble(0);
     }
 
-    public double getArea() { return area.getDouble(0); }
+    public double getArea() {
+        return area.getDouble(0);
+    }
 
-    public void configureDashboard(){
-    visionNamespace.putNumber("balls angle", this::getIntakeYaw);
-    visionNamespace.putNumber("retroReflective", this::getRetroReflectiveYaw);
+    public void configureDashboard() {
+        visionNamespace.putNumber("balls angle", this::getIntakeYaw);
+        visionNamespace.putNumber("retroReflective", this::getRetroReflectiveYaw);
     }
 
     public double getDistanceFromTarget() {
