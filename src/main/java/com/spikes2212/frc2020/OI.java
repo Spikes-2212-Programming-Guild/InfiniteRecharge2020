@@ -5,12 +5,11 @@ import com.spikes2212.frc2020.services.VisionService;
 import com.spikes2212.frc2020.subsystems.*;
 import com.spikes2212.frc2020.utils.RepeatCommand;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
+import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
 import com.spikes2212.lib.util.XboXUID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -61,7 +60,7 @@ public class OI /* GEVALD */ {
         unLift.whenHeld(new MoveGenericSubsystem(Elevator.getInstance(), Elevator.getInstance().untestSpeed));
         climb.whenHeld(new MoveGenericSubsystem(Climber.getInstance(), Climber.getInstance().climbSpeed));
         unClimb.whenHeld(new MoveGenericSubsystem(Climber.getInstance(), Climber.getInstance().unClimbSpeed));
-//        turretLeft.whileHeld(new)
+        turretRight.whileHeld(new MoveTalonSubsystem(Turret.getInstance(), this::getControllerRightAngle, () -> 0.0));
     }
 
     public double getLeftX() {
@@ -81,6 +80,7 @@ public class OI /* GEVALD */ {
     }
 
     public double getControllerRightAngle() {
+        if(controller.getRightY() < 0.2 && controller.getRightX() < 0.2) return Turret.getInstance().getYaw();
         return Math.atan2(controller.getRightY(), controller.getRightX());
     }
 }
