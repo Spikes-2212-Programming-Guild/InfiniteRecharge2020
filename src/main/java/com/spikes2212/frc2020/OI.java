@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
+import java.util.EventListener;
+
 public class OI /* GEVALD */ {
 
     private Joystick left = new Joystick(0);
@@ -30,31 +32,41 @@ public class OI /* GEVALD */ {
     private Drivetrain drivetrain = Drivetrain.getInstance();
 
     public OI() {
+        Button turretLeft = controller.getLeftButton();
+        Button turretRight = controller.getRightButton();
+        Button lift = controller.getButtonBack();
+        Button climb = controller.getButtonStart();
+        Button unLift = controller.getRightStickButton();
+        Button unClimb = controller.getLeftStickButton();
         Button openFeedToLevel1 = controller.getRedButton();
         Button closeFeedToLevel1 = controller.getBlueButton();
-        Button unGrip = controller.getButtonStart();
-        Button unFeed = controller.getButtonBack();
-        Trigger shootFromAfar = controller.getLTButton();
-        Button closeShoot = controller.getLBButton();
-        Button feed = controller.getGreenButton();
-        Trigger grip = controller.getRTButton();
-        JoystickButton intake = new JoystickButton(right, 1);
+        Button unGrip = controller.getUpButton();
+        Button unFeed = controller.getDownButton();
+        Button shootFromAfar = controller.getLBButton();
+        Trigger closeShoot = controller.getLTButton();
+        Trigger feed = controller.getRTButton();
+        Button intake = controller.getRBButton();
+        Button grip = controller.getYellowButton();
         intake.whileHeld(
                 new ParallelCommandGroup(
-                        new OrientToPowerCell(this::getRightY),
                         new RepeatCommand(new IntakePowerCell())
                 )
         );
         shootFromAfar.toggleWhenActive(new SequentialCommandGroup(new InstantCommand(() ->shooter.open()),new MoveGenericSubsystem(shooter,
                 () -> Shooter.farShootingSpeed.get() / RobotController.getBatteryVoltage())));
-        closeShoot.toggleWhenActive(new SequentialCommandGroup(new InstantCommand(() ->shooter.close()),new MoveGenericSubsystem(shooter,
+        closeShoot.whileActiveOnce(new SequentialCommandGroup(new InstantCommand(() ->shooter.close()),new MoveGenericSubsystem(shooter,
                 () -> Shooter.shootSpeed.get() / RobotController.getBatteryVoltage())));
-        grip.whileActiveOnce(new IntakePowerCell());
-        feed.whenHeld(new MoveGenericSubsystem(Feeder.getInstance(), Feeder.speed));
+        feed.whileActiveOnce(new MoveGenericSubsystem(Feeder.getInstance(), Feeder.speed));
         openFeedToLevel1.whenPressed(new InstantCommand(Feeder.getInstance()::close));
         closeFeedToLevel1.whenPressed(new InstantCommand(Feeder.getInstance()::open));
         unFeed.whileHeld(new MoveGenericSubsystem(Feeder.getInstance(), () -> -Feeder.speed.get()));
         unGrip.whileHeld(new MoveGenericSubsystem(Intake.getInstance(), () -> -0.5 * RobotController.getBatteryVoltage()));
+        grip.whenHeld(new MoveGenericSubsystem(Intake.getInstance(), () -> Feeder.speed.get() / RobotController.getBatteryVoltage()));
+        lift.whenHeld(new MoveGenericSubsystem(Elevator.getInstance(), Elevator.getInstance().testSpeed));
+        unLift.whenHeld(new MoveGenericSubsystem(Elevator.getInstance(), Elevator.getInstance().untestSpeed));
+        climb.whenHeld(new MoveGenericSubsystem(Climber.getInstance(), Climber.getInstance().climbSpeed));
+        unClimb.whenHeld(new MoveGenericSubsystem(Climber.getInstance(), Climber.getInstance().unClimbSpeed));
+//        turretLeft.whileHeld(new)
     }
 
     public double getLeftX() {

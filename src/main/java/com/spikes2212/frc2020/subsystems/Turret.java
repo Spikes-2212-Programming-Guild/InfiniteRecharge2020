@@ -126,7 +126,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         turretNamespace.putData("rotate with speed", new MoveGenericSubsystem(this, turnSpeed));
         turretNamespace.putData("orient with vision", new MoveTalonSubsystem(
                 this,
-                () -> getYaw() - vision.getRetrorelfectiveYaw(),
+                () -> getYaw() - vision.getRetroReflectiveYaw(),
                 waitTime)
         );
         turretNamespace.putData("field relative turret", new MoveTurretToFieldRelativeAngle());
