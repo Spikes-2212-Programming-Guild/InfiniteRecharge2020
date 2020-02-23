@@ -14,11 +14,11 @@ public class Climber extends GenericSubsystem {
 
     public static RootNamespace climberNamespace = new RootNamespace("climber");
 
-    private Supplier<Double> minSpeed = climberNamespace.addConstantDouble("min speed", -1);
-    private Supplier<Double> maxSpeed = climberNamespace.addConstantDouble("max speed", 1);
+    private static final Supplier<Double> minSpeed = climberNamespace.addConstantDouble("min speed", -1);
+    private static final Supplier<Double> maxSpeed = climberNamespace.addConstantDouble("max speed", 1);
 
-    public Supplier<Double> climbSpeed = climberNamespace.addConstantDouble("climb speed", 1);
-    public Supplier<Double> unClimbSpeed = climberNamespace.addConstantDouble("unclimb speed", -1);
+    public static final Supplier<Double> climbSpeed = climberNamespace.addConstantDouble("climb speed", 1);
+    public static final Supplier<Double> unClimbSpeed = climberNamespace.addConstantDouble("unclimb speed", -1);
 
     private static Climber instance;
 

@@ -34,6 +34,9 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     private static final Supplier<Integer> minAngle = turretNamespace.addConstantInt("Min Angle", 30);
     private static final Supplier<Integer> maxAngle = turretNamespace.addConstantInt("Max Angle", 330);
 
+    public static final Supplier<Double> lowTargetAngle = turretNamespace.addConstantDouble("low target angle", 140);
+    public static final Supplier<Double> climbingAngle = turretNamespace.addConstantDouble("climbing angle", 140);
+
     private static final Supplier<Double> kP = PID.addConstantDouble("kP", 0);
     private static final Supplier<Double> kI = PID.addConstantDouble("kI", 0);
     private static final Supplier<Double> kD = PID.addConstantDouble("kD", 0);
@@ -41,7 +44,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     private static final Supplier<Double> kS = PID.addConstantDouble("kS", 0);
 
     private static final Supplier<Double> tolerance = PID.addConstantDouble("Tolerance", 0);
-    private static final Supplier<Double> waitTime = PID.addConstantDouble("Wait Time", 0);
+    public static final Supplier<Double> waitTime = PID.addConstantDouble("Wait Time", 0);
     private static final Supplier<Double> setpoint = PID.addConstantDouble("setpoint", 90);
     private static final Supplier<Integer> timeout = PID.addConstantInt("timeout", 30);
 
