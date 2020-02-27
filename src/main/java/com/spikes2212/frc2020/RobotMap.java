@@ -37,21 +37,22 @@ public class RobotMap {
         int ELEVATOR_ENCODER_NEG = 25;
         int ELEVATOR_BOTTOM_SWITCH = 11;
         int ELEVATOR_TOP_SWITCH = 9;
+        int ELEVATOR_LIMIT = 12;
 
         int INTAKE_LIMIT = 4;
     }
 
     public interface PCM {
-        int FEEDER_FORWARD = 1;
-        int FEEDER_BACKWARD = 0;
+        int FEEDER_FORWARD = 0;
+        int FEEDER_BACKWARD = 1;
 
         //       int INTAKE_FORWARD = 4;
         //       int INTAKE_BACKWARD = 5;
         //       int RIGHT_INTAKE_FORWARD = 2;
         //       int RIGHT_INTAKE_BACKWARD = 3;
 
-        int SHOOTER_FORWARD = 2;
-        int SHOOTER_BACKWARD = 3;
+        int SHOOTER_FORWARD = 3;
+        int SHOOTER_BACKWARD = 2;
     }
 
     public interface PWM {
