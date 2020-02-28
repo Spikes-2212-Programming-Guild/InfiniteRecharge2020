@@ -56,7 +56,6 @@ public class RobotMap {
     }
 
     public interface PWM {
-
         int FEEDER_MOTOR = 1;
     }
 }
