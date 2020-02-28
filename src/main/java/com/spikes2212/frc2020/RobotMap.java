@@ -33,6 +33,9 @@ public class RobotMap {
         int DRIVETRAIN_RIGHT_ENCODER_POS = 2;
         int DRIVETRAIN_RIGHT_ENCODER_NEG = 3;
 
+        int FEEDER_ENCODER_POS = 6;
+        int FEEDER_ENCODER_NEG = 7;
+
         int ELEVATOR_ENCODER_POS = 24;
         int ELEVATOR_ENCODER_NEG = 25;
         int ELEVATOR_BOTTOM_SWITCH = 11;
@@ -56,6 +59,7 @@ public class RobotMap {
     }
 
     public interface PWM {
+
         int FEEDER_MOTOR = 1;
     }
 }

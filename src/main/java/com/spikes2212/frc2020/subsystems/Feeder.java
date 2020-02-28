@@ -7,6 +7,7 @@ import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import java.util.function.Supplier;
@@ -29,6 +30,8 @@ public class Feeder extends GenericSubsystem {
     private WPI_VictorSPX motor;
     private DoubleSolenoid solenoid;
 
+    private Encoder encoder;
+
     private boolean enabled;
 
     private boolean isOpen = true;
@@ -38,6 +41,7 @@ public class Feeder extends GenericSubsystem {
         motor = new WPI_VictorSPX(RobotMap.CAN.FEEDER_VICTOR);
         solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.FEEDER_FORWARD,
                 RobotMap.PCM.FEEDER_BACKWARD);
+        encoder = new Encoder(RobotMap.DIO.FEEDER_ENCODER_POS, RobotMap.DIO.FEEDER_ENCODER_NEG);
         enabled = true;
     }
 
@@ -87,10 +91,10 @@ public class Feeder extends GenericSubsystem {
 
     @Override
     public void configureDashboard() {
+        feederNamespace.putNumber("encoder values", encoder::get);
         feederNamespace.putData("feed", new MoveGenericSubsystem(this, speed));
         feederNamespace.putData("open level 1", new FeedToLowTarget());
         feederNamespace.putData("close level 1", new InstantCommand(this::close, this));
     }
-
 
 }
