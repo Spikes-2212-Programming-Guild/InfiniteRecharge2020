@@ -151,7 +151,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     }
 
     private double validateSetpoint(double setpoint) {
-        return ((setpoint + 360) + 360) % 360;
+        return ((setpoint % 360) + 360) % 360;
     }
 
     @Override
