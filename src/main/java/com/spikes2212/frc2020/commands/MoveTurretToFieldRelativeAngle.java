@@ -19,12 +19,12 @@ public class MoveTurretToFieldRelativeAngle extends SequentialCommandGroup {
                 new InstantCommand(() -> targetAngle = findTargetAngle()),
                 new MoveTalonSubsystem(turret, () -> targetAngle, () -> 0.0).perpetually()
                     .alongWith(new RepeatCommand(
-                            new InstantCommand(this::findTargetAngle)
+                            new InstantCommand(() -> targetAngle = this.findTargetAngle())
                     ))
         );
     }
 
     private double findTargetAngle() {
-        return turret.getYaw() - drivetrain.getYaw();
+        return turret.getYaw() + drivetrain.getYaw();
     }
 }

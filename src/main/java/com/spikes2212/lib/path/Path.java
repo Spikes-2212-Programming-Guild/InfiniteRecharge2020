@@ -4,9 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * This class represents a path.
@@ -116,7 +114,7 @@ public class Path {
             double y2 = points.get(i - 1).getY();
             double x3 = points.get(i + 1).getX();
             double y3 = points.get(i + 1).getY();
-            if(x1 == x2) x2 += 0.000001;
+            if(x1 == x2) x2 += 0.001;
             double k1 = 0.5 * (x1*x1 + y1*y1 - x2*x2 - y2*y2) / (x1 - x2);
             double k2 = (y1 - y2) / (x1 - x2);
             double b = 0.5 * (x2*x2 - 2*x2*k1 + y2*y2 - x3*x3 + 2*x3*k1 - y3*y3) / (x3*k2 - y3 + y2 - x2*k2);

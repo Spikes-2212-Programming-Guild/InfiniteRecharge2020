@@ -1,19 +1,21 @@
 package com.spikes2212.frc2020.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.frc2020.commands.OrientToPowerCell;
 import com.spikes2212.frc2020.services.VisionService;
 import com.spikes2212.lib.command.drivetrains.OdometryDrivetrain;
+import com.spikes2212.lib.command.drivetrains.commands.FollowPath;
 import com.spikes2212.lib.control.FeedForwardSettings;
 import com.spikes2212.lib.control.PIDSettings;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
-import com.spikes2212.lib.path.OdometryHandler;
+import com.spikes2212.lib.path.*;
 import com.spikes2212.lib.util.PigeonWrapper;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.function.Supplier;
 
@@ -68,12 +70,18 @@ public class Drivetrain extends OdometryDrivetrain {
         rightVictor = new WPI_VictorSPX(RobotMap.CAN.DRIVETRAIN_RIGHT_VICTOR);
         leftEncoder = new Encoder(RobotMap.DIO.DRIVETRAIN_LEFT_ENCODER_POS, RobotMap.DIO.DRIVETRAIN_LEFT_ENCODER_NEG);
         rightEncoder = new Encoder(RobotMap.DIO.DRIVETRAIN_RIGHT_ENCODER_POS, RobotMap.DIO.DRIVETRAIN_RIGHT_ENCODER_NEG);
-
+        leftEncoder.setDistancePerPulse(wheelDiameter.get() * 0.0254 * Math.PI / 360);
+        rightEncoder.setDistancePerPulse(wheelDiameter.get() * 0.0254 * Math.PI / 360);
         leftVictor.follow((WPI_TalonSRX) leftController);
         rightVictor.follow((WPI_TalonSRX) rightController);
-        imu = new PigeonWrapper(new TalonSRX(2));
+        ((WPI_TalonSRX) leftController).setNeutralMode(NeutralMode.Brake);
+        ((WPI_TalonSRX) rightController).setNeutralMode(NeutralMode.Brake);
+        rightVictor.setNeutralMode(NeutralMode.Brake);
+        leftVictor.setNeutralMode(NeutralMode.Brake);
+        imu = new PigeonWrapper((WPI_TalonSRX) leftController);
+        imu.reset();
         odometry = new OdometryHandler(leftEncoder::getDistance, rightEncoder::getDistance,
-                new PigeonWrapper(new WPI_TalonSRX(RobotMap.CAN.DRIVETRAIN_LEFT_TALON))::getYaw, 0, 0);
+                () -> -imu.getYaw(), 0, 0);
     }
 
     @Override
@@ -128,8 +136,16 @@ public class Drivetrain extends OdometryDrivetrain {
 
     public void configureDashboard() {
         VisionService vision = VisionService.getInstance();
+        Path path = new Path(0.075, 0.6, 0.6, 2, 0.75, 3,
+                new Waypoint(0, 0), new Waypoint(0, 1), new Waypoint(0.75, 1.5), new Waypoint(0.75, 4));
+
         drivetrainNamespace.putNumber("imu yaw", imu::getYaw);
         drivetrainNamespace.putNumber("error", () -> vision.getIntakeYaw() - imu.getYaw());
+        drivetrainNamespace.putNumber("x", this.getHandler()::getX);
+        drivetrainNamespace.putNumber("y", this.getHandler()::getY);
         drivetrainNamespace.putData("orient to powercell", new OrientToPowerCell(() -> 0.0));
+        SmartDashboard.putData("autonomous", new FollowPath(this, path, 0.4,
+                new PIDSettings(0.02, 0, 0), new FeedForwardSettings(0.2, 0), 2));
+
     }
 }
