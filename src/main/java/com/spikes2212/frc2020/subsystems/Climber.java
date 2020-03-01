@@ -1,76 +1,65 @@
 package com.spikes2212.frc2020.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.spikes2212.frc2020.RobotMap;
-import com.spikes2212.lib.control.PIDSettings;
-import com.spikes2212.lib.dashboard.Namespace;
+import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
+import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.dashboard.RootNamespace;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.function.Supplier;
 
-public class Climber extends SubsystemBase {
+public class Climber extends GenericSubsystem {
 
-    private static final Namespace climbingNamespace = new RootNamespace("climber");
-    private static final Namespace pidNamespace = climbingNamespace.addChild("PID");
-    private static final Supplier<Double> kP = pidNamespace.addConstantDouble("kP", 0);
-    private static final Supplier<Double> kI = pidNamespace.addConstantDouble("kI", 0);
-    private static final Supplier<Double> kD = pidNamespace.addConstantDouble("kD", 0);
+    public static RootNamespace climberNamespace = new RootNamespace("climber");
 
-    public static final PIDSettings pidSettings = new PIDSettings(kP, kI, kD);
+    private static final Supplier<Double> minSpeed = climberNamespace.addConstantDouble("min speed", -1);
+    private static final Supplier<Double> maxSpeed = climberNamespace.addConstantDouble("max speed", 1);
 
-    private static final Climber instance = new Climber();
+    public static final Supplier<Double> climbSpeed = climberNamespace.addConstantDouble("climb speed", 1);
+    public static final Supplier<Double> unClimbSpeed = climberNamespace.addConstantDouble("unclimb speed", -1);
+
+    private static Climber instance;
 
     public static Climber getInstance() {
+        if (instance == null) {
+            WPI_VictorSPX motor = new WPI_VictorSPX(RobotMap.CAN.CLIMBER_TALON);
+            instance = new Climber(motor);
+        }
         return instance;
     }
 
-    private WPI_TalonSRX leftMotor;
-    private WPI_TalonSRX rightMotor;
-    private Encoder leftEncoder;
-    private Encoder rightEncoder;
+    private WPI_VictorSPX motor;
 
-    private Climber() {
-        leftMotor = new WPI_TalonSRX(RobotMap.CAN.CLIMBER_TALON_LEFT);
-        rightMotor = new WPI_TalonSRX(RobotMap.CAN.CLIMBER_TALON_RIGHT);
-        leftEncoder = new Encoder(RobotMap.DIO.CLIMBER_ENCODER_LEFT_POS,
-                RobotMap.DIO.CLIMBER_ENCODER_LEFT_NEG);
-        rightEncoder = new Encoder(RobotMap.DIO.CLIMBER_ENCODER_RIGHT_POS,
-                RobotMap.DIO.CLIMBER_ENCODER_RIGHT_NEG);
+    private boolean enabled = true;
+
+    public Climber(WPI_VictorSPX motor) {
+        this.motor = motor;
     }
 
-    public double getLeftDistance() {
-        return leftEncoder.getDistance();
+    @Override
+    public void apply(double speed) {
+        motor.set(speed);
     }
 
-    public double getRightDistance() {
-        return rightEncoder.getDistance();
+    @Override
+    public boolean canMove(double speed) {
+        return true;
     }
 
-    public void setLeft(double speed) {
-        leftMotor.set(speed);
-    }
-
-    public void setRight(double speed) {
-        rightMotor.set(speed);
-    }
-
-    public void stopLeft() {
-        leftMotor.stopMotor();
-    }
-
-    public void stopRight() {
-        rightMotor.stopMotor();
-    }
-
+    @Override
     public void stop() {
-        stopLeft();
-        stopRight();
+        motor.stopMotor();
     }
 
+    @Override
+    public void periodic() {
+        climberNamespace.update();
+    }
+
+    @Override
     public void configureDashboard() {
-        climbingNamespace.putNumber("left encoder", leftEncoder::get);
-        climbingNamespace.putNumber("right encoder", rightEncoder::get);
+
+        climberNamespace.putData("move", new MoveGenericSubsystem(this, climbSpeed));
+        climberNamespace.putData("unmove", new MoveGenericSubsystem(this, unClimbSpeed.get()));
     }
 }

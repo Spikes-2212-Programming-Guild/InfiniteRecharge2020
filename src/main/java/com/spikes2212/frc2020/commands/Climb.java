@@ -1,51 +1,23 @@
 package com.spikes2212.frc2020.commands;
 
 import com.spikes2212.frc2020.subsystems.Climber;
-import com.spikes2212.lib.control.PIDSettings;
-import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import com.spikes2212.frc2020.subsystems.Turret;
+import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
+import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-import java.util.function.Supplier;
+public class Climb extends SequentialCommandGroup {
 
-public class Climb extends CommandBase {
+    private Climber climber = Climber.getInstance();
+    private Turret turret = Turret.getInstance();
+    private double setpoint = Turret.climbingAngle.get();
+    private double waitTime = Turret.waitTime.get();
+    private double climbingSpeed = Climber.climbSpeed.get();
 
-    private Climber climber = Climber.getInstance();;
-    private Supplier<Double> targetSetpoint;
-    private int numberOfSetpoints;
-    private double currentSetpoint;
-    private PIDController leftController;
-    private PIDController rightController;
-
-    public Climb(Supplier<Double> targetSetpoint, int numberOfSetpoints, PIDSettings pidSettings) {
-        addRequirements(climber);
-        this.targetSetpoint = targetSetpoint;
-        this.numberOfSetpoints = numberOfSetpoints;
-        currentSetpoint = targetSetpoint.get() / numberOfSetpoints;
-        leftController = new PIDController(pidSettings.getkP(), pidSettings.getkI(),
-                pidSettings.getkD());
-        rightController = new PIDController(pidSettings.getkP(), pidSettings.getkI(),
-                pidSettings.getkD());
+    public Climb() {
+        addCommands(
+                new MoveTalonSubsystem(turret, setpoint, () -> waitTime),
+                new MoveGenericSubsystem(climber, () -> climbingSpeed));
     }
 
-    @Override
-    public void execute() {
-        if (leftController.atSetpoint() && rightController.atSetpoint())
-            currentSetpoint += targetSetpoint.get() / numberOfSetpoints;
-        leftController.setSetpoint(currentSetpoint);
-        rightController.setSetpoint(currentSetpoint);
-        climber.setLeft(leftController.calculate(climber.getLeftDistance()));
-        climber.setRight(rightController.calculate(climber.getRightDistance()));
-    }
-
-    @Override
-    public boolean isFinished() {
-        return leftController.atSetpoint() && rightController.atSetpoint() &&
-                currentSetpoint == targetSetpoint.get();
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        climber.stopLeft();
-        climber.stopRight();
-    }
 }

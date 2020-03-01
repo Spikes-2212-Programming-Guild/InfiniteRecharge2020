@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.frc2020.utils.HallEffectCounter;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
+import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.control.FeedForwardSettings;
 import com.spikes2212.lib.control.PIDSettings;
 import com.spikes2212.lib.dashboard.Namespace;
@@ -16,6 +17,8 @@ import java.util.function.Supplier;
 public class Elevator extends GenericSubsystem {
 
     private static final RootNamespace elevatorNamspace = new RootNamespace("elevator");
+    public final Supplier<Double> testSpeed = elevatorNamspace.addConstantDouble("test speed", 0.4);
+    public final Supplier<Double> untestSpeed = elevatorNamspace.addConstantDouble("untest speed", -0.5);
     private static final Namespace pidNamespace = elevatorNamspace.addChild("PID");
     private static final Supplier<Double> kP = pidNamespace.addConstantDouble("kP", 0);
     private static final Supplier<Double> kI = pidNamespace.addConstantDouble("kI", 0);
@@ -34,7 +37,7 @@ public class Elevator extends GenericSubsystem {
     public static final Supplier<Integer> NUM_OF_MAGNETS = elevatorNamspace
             .addConstantInt("num of magnets", 0);
 
-    private static final Elevator instance = new Elevator();
+    private static Elevator instance = new Elevator();
 
     public static Elevator getInstance() {
         return instance;
@@ -69,8 +72,8 @@ public class Elevator extends GenericSubsystem {
 
     @Override
     public boolean canMove(double speed) {
-        return !((bottomHallEffect.get() && speed < 0)
-                && !(hallEffectCounter.atTop(NUM_OF_MAGNETS.get()) && speed > 0));
+        return !((!bottomHallEffect.get() && speed < 0)
+                && (!hallEffectCounter.atTop(NUM_OF_MAGNETS.get()) && speed > 0));
     }
 
     public int getCurrentMagnet() {
@@ -86,6 +89,8 @@ public class Elevator extends GenericSubsystem {
     public void configureDashboard() {
         elevatorNamspace.putNumber("encoder", encoder::get);
         elevatorNamspace.putBoolean("bottom limit switch", bottomHallEffect::get);
-        elevatorNamspace.putNumber("top limit switch", hallEffectCounter::getCurrentMagnet);
+        elevatorNamspace.putNumber("current limit", hallEffectCounter::getCurrentMagnet);
+        elevatorNamspace.putData("test concept", new MoveGenericSubsystem(this, testSpeed));
+        elevatorNamspace.putData("untest concept", new MoveGenericSubsystem(this, untestSpeed));
     }
 }

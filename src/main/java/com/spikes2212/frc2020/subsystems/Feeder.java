@@ -30,12 +30,18 @@ public class Feeder extends GenericSubsystem {
 
     private boolean enabled;
 
-    public Feeder() {
+    private boolean isOpen = true;
+
+    private Feeder() {
         super(minSpeed, maxSpeed);
         motor = new WPI_VictorSPX(RobotMap.CAN.FEEDER_VICTOR);
         solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.FEEDER_FORWARD,
                 RobotMap.PCM.FEEDER_BACKWARD);
         enabled = true;
+    }
+
+    public boolean isOpen() {
+        return isOpen;
     }
 
     @Override
@@ -61,9 +67,11 @@ public class Feeder extends GenericSubsystem {
     public void open() {
         solenoid.set(DoubleSolenoid.Value.kForward);
         setEnabled(true);
+        isOpen = true;
     }
 
     public void close() {
+        isOpen = false;
         solenoid.set(DoubleSolenoid.Value.kReverse);
         setEnabled(true);
     }

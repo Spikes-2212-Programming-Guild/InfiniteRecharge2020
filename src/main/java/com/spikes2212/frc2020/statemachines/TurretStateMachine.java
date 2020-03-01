@@ -13,6 +13,7 @@ public class TurretStateMachine extends StateMachine<TurretStateMachine.TurretSt
 
     private static TurretStateMachine instance;
     private Drivetrain drivetrain = Drivetrain.getInstance();
+
     public static TurretStateMachine getInstance() {
 
         if (instance == null)
@@ -28,7 +29,7 @@ public class TurretStateMachine extends StateMachine<TurretStateMachine.TurretSt
 
     @Override
     protected void generateTransformations() {
-        addTransformation(TurretState.OFF, new InstantCommand(()-> turret.setEnabled(false)));
+        addTransformation(TurretState.OFF, new InstantCommand(() -> turret.setEnabled(false)));
         addTransformation(TurretState.MANUAL, new InstantCommand(() -> turret.setManualDefaultCommand()));
         /* target angle for AUTOMATIC state should be the angle Vision service returns. */
 //        addTransformation(TurretState.AUTOMATIC, new MoveTalonSubsystem(turret, targetAngle, 0).perpetually();
