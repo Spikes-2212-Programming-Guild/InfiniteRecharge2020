@@ -76,9 +76,7 @@ public class Shooter extends GenericSubsystem {
                 RobotMap.PCM.SHOOTER_BACKWARD);
         master.setNeutralMode(NeutralMode.Brake);
         master.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-        master.setSensorPhase(true);
-//        master.setInverted(true);
-        slave.setInverted(true);
+        master.setInverted(true);
         slave.setNeutralMode(NeutralMode.Brake);
         slave.follow(master);
         noiseReducer = new NoiseReducer(() -> master.getSelectedSensorVelocity() * distancePerPulse,
@@ -123,7 +121,7 @@ public class Shooter extends GenericSubsystem {
     }
 
     public double getMotorSpeed() {
-        return master.getSelectedSensorVelocity();
+        return noiseReducer.get();
     }
 
     @Override
@@ -138,6 +136,7 @@ public class Shooter extends GenericSubsystem {
         shooterNamespace.putNumber("shooter velocity", () -> (double) master.getSelectedSensorVelocity() * distancePerPulse);
         shooterNamespace.putNumber("shooter position", master::getSelectedSensorPosition);
         shooterNamespace.putNumber("distance to target", vision::getDistanceFromTarget);
+        shooterNamespace.putNumber("velocity to target", () -> physics.calculateSpeedForDistance(vision.getDistanceFromTarget()));
         shooterNamespace.putData("open", new InstantCommand(this::open));
         shooterNamespace.putData("close", new InstantCommand(this::close));
         shooterNamespace.putData("shoot", new SequentialCommandGroup(new MoveGenericSubsystem(this,
@@ -155,6 +154,10 @@ public class Shooter extends GenericSubsystem {
                         velocityFFSettings));
         shooterNamespace.putData("shoot from wheel", new MoveGenericSubsystem(this,
                 () -> wheelShootingSpeed.get() / RobotController.getBatteryVoltage()));
+
+        shooterNamespace.putBoolean("can shoot far", () -> (getMotorSpeed() - physics.calculateSpeedForDistance(vision.getDistanceFromTarget())) >= 0.05);
+        shooterNamespace.putBoolean("can shoot close", () -> (
+                getMotorSpeed() - closeShootingSpeed.get()) >= 0.05);
     }
 
     public void setAccelerated(boolean isAccelerated) {

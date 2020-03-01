@@ -10,12 +10,11 @@ public class FeedToLowTarget extends SequentialCommandGroup {
 
     private Feeder feeder = Feeder.getInstance();
     private Turret turret = Turret.getInstance();
-    private double setpoint = Turret.lowTargetAngle.get();
-    private double waitTime = Turret.waitTime.get();
+    private double setpoint = Turret.frontAngle.get();
 
     public FeedToLowTarget() {
         addCommands(
-                new MoveTalonSubsystem(turret, setpoint, () -> waitTime),
+                new MoveTalonSubsystem(turret, setpoint, Turret.waitTime),
                 new InstantCommand(feeder::open)
         );
     }

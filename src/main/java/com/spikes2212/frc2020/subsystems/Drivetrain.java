@@ -44,6 +44,10 @@ public class Drivetrain extends OdometryDrivetrain {
 
     public static FeedForwardSettings orientationFFSettings = new FeedForwardSettings(orientationKS, () -> 0.0, () -> 0.0);
 
+
+    public static Supplier<Double> autoForwardSpeed = drivetrainNamespace.addConstantDouble("auto forward speed", 0.5);
+    public static Supplier<Double> autoForwardTimeout = drivetrainNamespace.addConstantDouble("auto forward timeout", 1.5);
+
     private static final Drivetrain instance = new Drivetrain();
 
     public static Drivetrain getInstance() {

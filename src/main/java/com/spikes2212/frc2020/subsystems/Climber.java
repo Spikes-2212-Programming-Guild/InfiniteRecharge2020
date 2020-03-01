@@ -1,5 +1,6 @@
 package com.spikes2212.frc2020.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
@@ -23,6 +24,7 @@ public class Climber extends GenericSubsystem {
     public static Climber getInstance() {
         if (instance == null) {
             WPI_VictorSPX motor = new WPI_VictorSPX(RobotMap.CAN.CLIMBER_TALON);
+            motor.setNeutralMode(NeutralMode.Brake);
             instance = new Climber(motor);
         }
         return instance;
@@ -60,6 +62,6 @@ public class Climber extends GenericSubsystem {
     public void configureDashboard() {
 
         climberNamespace.putData("move", new MoveGenericSubsystem(this, climbSpeed));
-        climberNamespace.putData("unmove", new MoveGenericSubsystem(this, unClimbSpeed.get()));
+        climberNamespace.putData("unmove", new MoveGenericSubsystem(this, unClimbSpeed));
     }
 }
