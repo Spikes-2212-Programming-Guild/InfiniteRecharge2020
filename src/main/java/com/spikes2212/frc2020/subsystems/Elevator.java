@@ -20,23 +20,6 @@ public class Elevator extends GenericSubsystem {
             .addConstantDouble("up speed", 0.4);
     public final Supplier<Double> downSpeed = elevatorNamspace
             .addConstantDouble("down speed", -0.5);
-    private static final Namespace pidNamespace = elevatorNamspace.addChild("PID");
-    private static final Supplier<Double> kP = pidNamespace.addConstantDouble("kP", 0);
-    private static final Supplier<Double> kI = pidNamespace.addConstantDouble("kI", 0);
-    private static final Supplier<Double> kD = pidNamespace.addConstantDouble("kD", 0);
-    private static final Supplier<Double> kS = pidNamespace.addConstantDouble("kS", 0);
-    private static final Supplier<Double> kG = pidNamespace.addConstantDouble("kG", 0);
-
-    public static final PIDSettings PID_SETTINGS = new PIDSettings(kP, kI, kD);
-
-    public static final FeedForwardSettings FEED_FORWARD_SETTINGS =
-            new FeedForwardSettings(kS, () -> 0.0, () -> 0.0, kG);
-
-    public static final Supplier<Double> distancePerPulse = elevatorNamspace
-            .addConstantDouble("distance per pulse", 0);
-
-    public static final Supplier<Integer> NUM_OF_MAGNETS = elevatorNamspace
-            .addConstantInt("num of magnets", 0);
 
     private static Elevator instance = new Elevator();
 
