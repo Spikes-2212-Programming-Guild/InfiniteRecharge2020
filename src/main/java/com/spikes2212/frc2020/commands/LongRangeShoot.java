@@ -25,8 +25,7 @@ public class LongRangeShoot extends SequentialCommandGroup {
                         shooter::getMotorSpeed,  Shooter.velocityPIDSettings, Shooter.velocityFFSettings),
                 new InstantCommand(() -> shooter.setAccelerated(true)),
                 new MoveGenericSubsystemWithPID(shooter,
-                        () -> physicsService.calculateSpeedForDistance(
-                                visionService.getDistanceFromTarget()),
+                        () -> speedSetpoint,
                         shooter::getMotorSpeed,  Shooter.velocityPIDSettings, Shooter.velocityFFSettings)
                         .perpetually().alongWith(
                 new RepeatCommand(
