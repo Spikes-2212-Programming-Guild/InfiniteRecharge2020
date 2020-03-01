@@ -1,4 +1,4 @@
-package com.spikes2212.lib.control.noise;
+package com.spikes2212.lib.lib.control.noise;
 
 import java.util.function.Supplier;
 
