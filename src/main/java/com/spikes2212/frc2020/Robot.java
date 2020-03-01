@@ -1,20 +1,14 @@
 package com.spikes2212.frc2020;
 
-import com.spikes2212.frc2020.autonomous.CrossLineBackwards;
 import com.spikes2212.frc2020.autonomous.CrossLineFromCenter;
 import com.spikes2212.frc2020.commands.IntakePowerCell;
 import com.spikes2212.frc2020.services.VisionService;
-import com.spikes2212.frc2020.statemachines.FeederStateMachine;
-import com.spikes2212.frc2020.statemachines.IntakeFeederStateMachine;
-import com.spikes2212.frc2020.statemachines.IntakeStateMachine;
 import com.spikes2212.frc2020.subsystems.*;
-import com.spikes2212.frc2020.utils.RepeatCommand;
+import com.spikes2212.lib.command.RepeatCommand;
 import com.spikes2212.lib.command.drivetrains.commands.DriveArcade;
 import edu.wpi.cscore.UsbCamera;
-import edu.wpi.cscore.VideoCamera;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -32,11 +26,7 @@ public class Robot extends TimedRobot {
     private VisionService visionService = VisionService.getInstance();
 
     //  private UsbCamera turretCam = new UsbCamera(1);
-    private IntakeStateMachine intakeStateMachine = IntakeStateMachine.getInstance();
-    private FeederStateMachine feederStateMachine = FeederStateMachine.getInstance();
-    private IntakeFeederStateMachine intakeFeederStateMachine = IntakeFeederStateMachine.getInstance();
     public static OI oi;
-
 
     private Command auto;
     @Override
@@ -69,15 +59,17 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void teleopPeriodic() {
-//        super.teleopPeriodic();
+    public void teleopInit() {
         if (auto != null) auto.cancel();
+    }
+
+    @Override
+    public void teleopPeriodic() {
         visionService.periodic();
     }
 
     @Override
     public void robotPeriodic() {
-//        new Compressor().stop();
         CommandScheduler.getInstance().run();
     }
 }

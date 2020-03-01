@@ -20,11 +20,12 @@ public class CloseRangeShoot extends SequentialCommandGroup {
 //                new OrientTurretToPowerPort(),
                 new InstantCommand(shooter::open),
                 new MoveTalonSubsystem(turret, Turret.frontAngle, Turret.waitTime),
-                new MoveGenericSubsystemWithPID(shooter, Shooter.velocityPIDSettings,
-                        Shooter.closeShootingSpeed, shooter::getMotorSpeed, Shooter.velocityFFSettings),
+                new MoveGenericSubsystemWithPID(shooter, Shooter.closeShootingSpeed,
+                        shooter::getMotorSpeed,  Shooter.velocityPIDSettings,Shooter.velocityFFSettings),
                 new InstantCommand(() -> shooter.setAccelerated(true)),
-                new MoveGenericSubsystemWithPID(shooter, Shooter.velocityPIDSettings,
-                        Shooter.closeShootingSpeed, shooter::getMotorSpeed, Shooter.velocityFFSettings).perpetually()
+                new MoveGenericSubsystemWithPID(shooter, Shooter.closeShootingSpeed,
+                        shooter::getMotorSpeed,  Shooter.velocityPIDSettings,Shooter.velocityFFSettings)
+                        .perpetually()
         );
     }
 
