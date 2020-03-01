@@ -16,7 +16,6 @@ public class OrientToPowerCell extends SequentialCommandGroup {
 
     private VisionService vision = VisionService.getInstance();
 
-
     private double setpoint = 0;
 
     public OrientToPowerCell(Supplier<Double> moveValue) {

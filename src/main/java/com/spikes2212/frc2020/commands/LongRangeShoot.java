@@ -2,7 +2,6 @@ package com.spikes2212.frc2020.commands;
 
 import com.spikes2212.frc2020.services.PhysicsService;
 import com.spikes2212.frc2020.services.VisionService;
-import com.spikes2212.frc2020.subsystems.Feeder;
 import com.spikes2212.frc2020.subsystems.Shooter;
 import com.spikes2212.lib.command.RepeatCommand;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystemWithPID;
@@ -12,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 public class LongRangeShoot extends SequentialCommandGroup {
 
     private Shooter shooter = Shooter.getInstance();
-    private Feeder feeder = Feeder.getInstance();
     private PhysicsService physicsService = PhysicsService.getInstance();
     private VisionService visionService = VisionService.getInstance();
     private double speedSetpoint = 0;

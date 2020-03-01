@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class OrientTurretToPowerPort extends SequentialCommandGroup {
 
-
     private VisionService vision = VisionService.getInstance();
     private Turret turret = Turret.getInstance();
     private double setpoint = 0;
