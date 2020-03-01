@@ -71,7 +71,9 @@ public class Elevator extends GenericSubsystem {
         elevatorNamspace.putBoolean("elevator limit", limit::get);
         elevatorNamspace.putNumber("encoder", encoder::get);
         elevatorNamspace.putBoolean("bottom limit switch", bottomHallEffect::get);
-        elevatorNamspace.putData("test concept", new MoveGenericSubsystem(this, upSpeed));
-        elevatorNamspace.putData("untest concept", new MoveGenericSubsystem(this, downSpeed));
+        elevatorNamspace.putData("test concept upwards",
+                new MoveGenericSubsystem(this, upSpeed));
+        elevatorNamspace.putData("test concept downwards",
+                new MoveGenericSubsystem(this, downSpeed));
     }
 }
