@@ -16,8 +16,10 @@ import java.util.function.Supplier;
 public class Elevator extends GenericSubsystem {
 
     private static final RootNamespace elevatorNamspace = new RootNamespace("elevator");
-    public final Supplier<Double> testSpeed = elevatorNamspace.addConstantDouble("test speed", 0.4);
-    public final Supplier<Double> untestSpeed = elevatorNamspace.addConstantDouble("untest speed", -0.5);
+    public final Supplier<Double> upSpeed = elevatorNamspace
+            .addConstantDouble("up speed", 0.4);
+    public final Supplier<Double> downSpeed = elevatorNamspace
+            .addConstantDouble("down speed", -0.5);
     private static final Namespace pidNamespace = elevatorNamspace.addChild("PID");
     private static final Supplier<Double> kP = pidNamespace.addConstantDouble("kP", 0);
     private static final Supplier<Double> kI = pidNamespace.addConstantDouble("kI", 0);
@@ -86,7 +88,7 @@ public class Elevator extends GenericSubsystem {
         elevatorNamspace.putBoolean("elevator limit", limit::get);
         elevatorNamspace.putNumber("encoder", encoder::get);
         elevatorNamspace.putBoolean("bottom limit switch", bottomHallEffect::get);
-        elevatorNamspace.putData("test concept", new MoveGenericSubsystem(this, testSpeed));
-        elevatorNamspace.putData("untest concept", new MoveGenericSubsystem(this, untestSpeed));
+        elevatorNamspace.putData("test concept", new MoveGenericSubsystem(this, upSpeed));
+        elevatorNamspace.putData("untest concept", new MoveGenericSubsystem(this, downSpeed));
     }
 }

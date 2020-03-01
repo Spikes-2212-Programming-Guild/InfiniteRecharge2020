@@ -68,8 +68,8 @@ public class OI /* GEVALD */ {
         unFeed.whileHeld(new MoveGenericSubsystem(Feeder.getInstance(), () -> -Feeder.speed.get()));
         unGrip.whileHeld(new MoveGenericSubsystem(Intake.getInstance(), () -> -0.5 * RobotController.getBatteryVoltage()));
         grip.whenHeld(new MoveGenericSubsystem(Intake.getInstance(), () -> Feeder.speed.get() / RobotController.getBatteryVoltage()));
-        lift.whenHeld(new MoveGenericSubsystem(Elevator.getInstance(), Elevator.getInstance().testSpeed));
-        unLift.whenHeld(new MoveGenericSubsystem(Elevator.getInstance(), Elevator.getInstance().untestSpeed));
+        lift.whenHeld(new MoveGenericSubsystem(Elevator.getInstance(), Elevator.getInstance().upSpeed));
+        unLift.whenHeld(new MoveGenericSubsystem(Elevator.getInstance(), Elevator.getInstance().downSpeed));
         climb.whenHeld(
                 new SequentialCommandGroup(
 //                        new MoveTalonSubsystem(this.turret, Turret.climbingAngle, () -> (double) 0.1).withTimeout(2),

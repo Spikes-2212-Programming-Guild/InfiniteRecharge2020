@@ -49,8 +49,6 @@ public class Robot extends TimedRobot {
         Turret.turretNamespace.putNumber("joystick angle for turret", oi::getControllerRightAngle);
         auto = new CrossLineFromCenter();
         new UsbCamera("driver camera", 0);
-
-
     }
 
     @Override
