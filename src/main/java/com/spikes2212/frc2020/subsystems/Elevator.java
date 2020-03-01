@@ -2,8 +2,8 @@ package com.spikes2212.frc2020.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.spikes2212.frc2020.RobotMap;
-import com.spikes2212.frc2020.utils.HallEffectCounter;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
+import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.control.FeedForwardSettings;
 import com.spikes2212.lib.control.PIDSettings;
 import com.spikes2212.lib.dashboard.Namespace;
@@ -16,6 +16,8 @@ import java.util.function.Supplier;
 public class Elevator extends GenericSubsystem {
 
     private static final RootNamespace elevatorNamspace = new RootNamespace("elevator");
+    public final Supplier<Double> testSpeed = elevatorNamspace.addConstantDouble("test speed", 0.4);
+    public final Supplier<Double> untestSpeed = elevatorNamspace.addConstantDouble("untest speed", -0.5);
     private static final Namespace pidNamespace = elevatorNamspace.addChild("PID");
     private static final Supplier<Double> kP = pidNamespace.addConstantDouble("kP", 0);
     private static final Supplier<Double> kI = pidNamespace.addConstantDouble("kI", 0);
@@ -34,7 +36,7 @@ public class Elevator extends GenericSubsystem {
     public static final Supplier<Integer> NUM_OF_MAGNETS = elevatorNamspace
             .addConstantInt("num of magnets", 0);
 
-    private static final Elevator instance = new Elevator();
+    private static Elevator instance = new Elevator();
 
     public static Elevator getInstance() {
         return instance;
@@ -43,18 +45,19 @@ public class Elevator extends GenericSubsystem {
     private WPI_TalonSRX motor;
     private Encoder encoder;
     private DigitalInput bottomHallEffect;
-    private HallEffectCounter hallEffectCounter;
+    private DigitalInput topHallEffect;
+    private DigitalInput limit;
 
     private Elevator() {
+        limit = new DigitalInput(RobotMap.DIO.ELEVATOR_LIMIT);
         motor = new WPI_TalonSRX(RobotMap.CAN.ELEVATOR_TALON);
         encoder = new Encoder(RobotMap.DIO.ELEVATOR_ENCODER_POS, RobotMap.DIO.ELEVATOR_ENCODER_NEG);
         bottomHallEffect = new DigitalInput(RobotMap.DIO.ELEVATOR_BOTTOM_SWITCH);
-        hallEffectCounter = new HallEffectCounter(new DigitalInput(RobotMap.DIO.ELEVATOR_TOP_SWITCH));
+        topHallEffect = new DigitalInput(RobotMap.DIO.ELEVATOR_TOP_SWITCH);
     }
 
     @Override
     public void periodic() {
-        hallEffectCounter.update(motor.get());
         elevatorNamspace.update();
     }
 
@@ -69,13 +72,9 @@ public class Elevator extends GenericSubsystem {
 
     @Override
     public boolean canMove(double speed) {
-        return !((bottomHallEffect.get() && speed < 0)
-                && !(hallEffectCounter.atTop(NUM_OF_MAGNETS.get()) && speed > 0));
+        return !(!topHallEffect.get() && speed > 0);
     }
 
-    public int getCurrentMagnet() {
-        return hallEffectCounter.getCurrentMagnet();
-    }
 
     @Override
     public void stop() {
@@ -84,8 +83,10 @@ public class Elevator extends GenericSubsystem {
 
     @Override
     public void configureDashboard() {
+        elevatorNamspace.putBoolean("elevator limit", limit::get);
         elevatorNamspace.putNumber("encoder", encoder::get);
         elevatorNamspace.putBoolean("bottom limit switch", bottomHallEffect::get);
-        elevatorNamspace.putNumber("top limit switch", hallEffectCounter::getCurrentMagnet);
+        elevatorNamspace.putData("test concept", new MoveGenericSubsystem(this, testSpeed));
+        elevatorNamspace.putData("untest concept", new MoveGenericSubsystem(this, untestSpeed));
     }
 }

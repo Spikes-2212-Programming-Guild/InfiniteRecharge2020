@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.spikes2212.frc2020.RobotMap;
+import com.spikes2212.frc2020.services.PhysicsService;
 import com.spikes2212.frc2020.services.VisionService;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
@@ -16,33 +17,40 @@ import com.spikes2212.lib.control.noise.NoiseReducer;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 import java.util.function.Supplier;
 
 public class Shooter extends GenericSubsystem {
 
-    public static final double distancePerPulse = 2 * Math.PI / 4096.0;
+    public static final double distancePerPulse = 1 / 4096.0;
+
 
     private static RootNamespace shooterNamespace = new RootNamespace("shooter");
     private static Namespace PID = shooterNamespace.addChild("PID");
     private static Supplier<Double> maxSpeed = shooterNamespace.addConstantDouble("Max Speed", 0.6);
     private static Supplier<Double> minSpeed = shooterNamespace.addConstantDouble("Min Speed", 0);
     public static Supplier<Double> shootSpeed =
-      shooterNamespace.addConstantDouble("Shooting Speed", 0.6);
+            shooterNamespace.addConstantDouble("Shooting Speed Voltage", 3.25);
+    public static Supplier<Double> farShootingSpeed = shooterNamespace.addConstantDouble("far shooting voltage",
+            6);
+    public static Supplier<Double> wheelShootingSpeed = shooterNamespace.addConstantDouble("wheel shooting voltage", 8);
+    public static Supplier<Double> closeShootingSpeed = shooterNamespace.addConstantDouble("close shooting speed", 3.7);
 
     private static Supplier<Double> kP = PID.addConstantDouble("kP", 0);
     private static Supplier<Double> kI = PID.addConstantDouble("kI", 0);
     private static Supplier<Double> kD = PID.addConstantDouble("kD", 0);
     private static Supplier<Double> kS = PID.addConstantDouble("kS", 0);
-    private static Supplier<Double> kF = PID.addConstantDouble("kF", 0);
+    private static Supplier<Double> kV = PID.addConstantDouble("kV", 0);
     private static Supplier<Double> tolerance = PID.addConstantDouble("Tolerance", 0);
-    public static Supplier<Double> waitTime = PID.addConstantDouble("Wait Time", 0);
+    private static Supplier<Double> waitTime = PID.addConstantDouble("Wait Time", 0);
 
     private static Supplier<Double> targetSpeed = PID.addConstantDouble("target speed", 0);
 
-    private static PIDSettings velocityPIDSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
-    private static FeedForwardSettings velocityFFSettings = new FeedForwardSettings(kS, kF, () -> 0.0);
+    public static PIDSettings velocityPIDSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
+    public static FeedForwardSettings velocityFFSettings = new FeedForwardSettings(kS, kV, () -> 0.0);
 
     private static final Shooter instance = new Shooter();
 
@@ -104,7 +112,6 @@ public class Shooter extends GenericSubsystem {
         solenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
-
     public boolean isEnabled() {
         return enabled;
     }
@@ -113,17 +120,47 @@ public class Shooter extends GenericSubsystem {
         this.enabled = enabled;
     }
 
+    public double getMotorSpeed() {
+        return noiseReducer.get();
+    }
+
     @Override
     public void configureDashboard() {
         VisionService vision = VisionService.getInstance();
-        shooterNamespace.putNumber("shooter velocity - filtered", noiseReducer);
+        PhysicsService physics = PhysicsService.getInstance();
+        shooterNamespace.putNumber("shooter velocity - filtered", () -> {
+            double value = noiseReducer.get();
+            if (value > Math.pow(10, -4)) return value;
+            return 0;
+        });
         shooterNamespace.putNumber("shooter velocity", () -> (double) master.getSelectedSensorVelocity() * distancePerPulse);
         shooterNamespace.putNumber("shooter position", master::getSelectedSensorPosition);
         shooterNamespace.putNumber("distance to target", vision::getDistanceFromTarget);
+        shooterNamespace.putNumber("velocity to target", () -> physics.calculateSpeedForDistance(vision.getDistanceFromTarget()));
         shooterNamespace.putData("open", new InstantCommand(this::open));
         shooterNamespace.putData("close", new InstantCommand(this::close));
-        shooterNamespace.putData("shoot", new MoveGenericSubsystem(this, shootSpeed));
+        shooterNamespace.putData("shoot", new SequentialCommandGroup(new MoveGenericSubsystem(this,
+                () -> shootSpeed.get() / RobotController.getBatteryVoltage())));
         shooterNamespace.putData("pid shoot",
-                new MoveGenericSubsystemWithPID(this, velocityPIDSettings, targetSpeed, noiseReducer, velocityFFSettings));
+                new MoveGenericSubsystemWithPID(this, velocityPIDSettings, targetSpeed,
+                        () -> master.getSelectedSensorVelocity() * distancePerPulse, velocityFFSettings));
+        shooterNamespace.putData("shoot from afar", new MoveGenericSubsystem(this,
+                () -> farShootingSpeed.get() / RobotController.getBatteryVoltage()));
+
+        shooterNamespace.putData("shoot for calculated distance",
+                new MoveGenericSubsystemWithPID(this, velocityPIDSettings,
+                        () -> physics.calculateSpeedForDistance(vision.getDistanceFromTarget()),
+                        () -> master.getSelectedSensorVelocity() * distancePerPulse,
+                        velocityFFSettings));
+        shooterNamespace.putData("shoot from wheel", new MoveGenericSubsystem(this,
+                () -> wheelShootingSpeed.get() / RobotController.getBatteryVoltage()));
+
+        shooterNamespace.putBoolean("can shoot far", () -> (getMotorSpeed() - physics.calculateSpeedForDistance(vision.getDistanceFromTarget())) >= 0.05);
+        shooterNamespace.putBoolean("can shoot close", () -> (
+                getMotorSpeed() - closeShootingSpeed.get()) >= 0.05);
+    }
+
+    public void setAccelerated(boolean isAccelerated) {
+        shooterNamespace.putBoolean("is accelerated", isAccelerated);
     }
 }
