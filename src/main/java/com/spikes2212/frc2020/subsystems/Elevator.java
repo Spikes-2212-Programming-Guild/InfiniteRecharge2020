@@ -28,7 +28,6 @@ public class Elevator extends GenericSubsystem {
     }
 
     private WPI_TalonSRX motor;
-    private Encoder encoder;
     private DigitalInput bottomHallEffect;
     private DigitalInput topHallEffect;
     private DigitalInput limit;
@@ -36,7 +35,6 @@ public class Elevator extends GenericSubsystem {
     private Elevator() {
         limit = new DigitalInput(RobotMap.DIO.ELEVATOR_LIMIT);
         motor = new WPI_TalonSRX(RobotMap.CAN.ELEVATOR_TALON);
-        encoder = new Encoder(RobotMap.DIO.ELEVATOR_ENCODER_POS, RobotMap.DIO.ELEVATOR_ENCODER_NEG);
         bottomHallEffect = new DigitalInput(RobotMap.DIO.ELEVATOR_BOTTOM_SWITCH);
         topHallEffect = new DigitalInput(RobotMap.DIO.ELEVATOR_TOP_SWITCH);
     }
@@ -44,10 +42,6 @@ public class Elevator extends GenericSubsystem {
     @Override
     public void periodic() {
         elevatorNamspace.update();
-    }
-
-    public double getDistance() {
-        return encoder.getDistance();
     }
 
     @Override
@@ -69,7 +63,6 @@ public class Elevator extends GenericSubsystem {
     @Override
     public void configureDashboard() {
         elevatorNamspace.putBoolean("elevator limit", limit::get);
-        elevatorNamspace.putNumber("encoder", encoder::get);
         elevatorNamspace.putBoolean("bottom limit switch", bottomHallEffect::get);
         elevatorNamspace.putData("test concept upwards",
                 new MoveGenericSubsystem(this, upSpeed));
