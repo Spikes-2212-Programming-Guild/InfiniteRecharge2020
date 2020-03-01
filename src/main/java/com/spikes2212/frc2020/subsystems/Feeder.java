@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import java.util.function.Supplier;
 
-public class  Feeder extends GenericSubsystem {
+public class Feeder extends GenericSubsystem {
 
     public static RootNamespace feederNamespace = new RootNamespace("feeder");
 
@@ -32,7 +32,7 @@ public class  Feeder extends GenericSubsystem {
 
     private boolean isOpen = true;
 
-    public Feeder() {
+    private Feeder() {
         super(minSpeed, maxSpeed);
         motor = new WPI_VictorSPX(RobotMap.CAN.FEEDER_VICTOR);
         solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.FEEDER_FORWARD,
@@ -40,7 +40,7 @@ public class  Feeder extends GenericSubsystem {
         enabled = true;
     }
 
-    public boolean isOpen(){
+    public boolean isOpen() {
         return isOpen;
     }
 

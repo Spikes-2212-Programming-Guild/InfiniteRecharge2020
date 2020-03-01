@@ -1,6 +1,7 @@
 package com.spikes2212.frc2020;
 
 import com.spikes2212.frc2020.commands.IntakePowerCell;
+import com.spikes2212.frc2020.services.VisionService;
 import com.spikes2212.frc2020.statemachines.FeederStateMachine;
 import com.spikes2212.frc2020.statemachines.IntakeFeederStateMachine;
 import com.spikes2212.frc2020.statemachines.IntakeStateMachine;
@@ -22,7 +23,9 @@ public class Robot extends TimedRobot {
     private Feeder feeder = Feeder.getInstance();
     private Intake intake = Intake.getInstance();
     private Drivetrain drivetrain = Drivetrain.getInstance();
+    private VisionService visionService = VisionService.getInstance();
 
+    //  private UsbCamera turretCam = new UsbCamera(1);
     private IntakeStateMachine intakeStateMachine = IntakeStateMachine.getInstance();
     private FeederStateMachine feederStateMachine = FeederStateMachine.getInstance();
     private IntakeFeederStateMachine intakeFeederStateMachine = IntakeFeederStateMachine.getInstance();
@@ -31,6 +34,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         oi = new OI();
+        visionService.configureDashboard();
         shooter.configureDashboard();
         turret.configureDashboard();
         feeder.configureDashboard();
@@ -44,6 +48,13 @@ public class Robot extends TimedRobot {
         SmartDashboard.putData("start compressor", new InstantCommand(new Compressor()::start));
         SmartDashboard.putData("stop compressor", new InstantCommand(new Compressor()::stop));
         SmartDashboard.putData("intake", new RepeatCommand(new IntakePowerCell()));
+    }
+
+
+    @Override
+    public void teleopPeriodic() {
+//        super.teleopPeriodic();
+        visionService.periodic();
     }
 
     @Override

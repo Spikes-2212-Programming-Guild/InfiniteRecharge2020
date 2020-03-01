@@ -21,12 +21,12 @@ public class RobotMap {
 
         int ELEVATOR_TALON = 17;
 
-        int CLIMBER_TALON = 1;
+        int CLIMBER_TALON = 3;
     }
 
     public interface DIO {
-        int TURRET_START_LIMIT = 4;
-        int TURRET_END_LIMIT = 5;
+        int TURRET_START_LIMIT = 10;
+        int TURRET_END_LIMIT = 8;
 
         int DRIVETRAIN_LEFT_ENCODER_POS = 0;
         int DRIVETRAIN_LEFT_ENCODER_NEG = 1;
@@ -35,18 +35,20 @@ public class RobotMap {
 
         int ELEVATOR_ENCODER_POS = 24;
         int ELEVATOR_ENCODER_NEG = 25;
-        int ELEVATOR_BOTTOM_SWITCH = 9;
-        int ELEVATOR_TOP_SWITCH = 8;
+        int ELEVATOR_BOTTOM_SWITCH = 11;
+        int ELEVATOR_TOP_SWITCH = 9;
+
+        int INTAKE_LIMIT = 4;
     }
 
     public interface PCM {
         int FEEDER_FORWARD = 1;
         int FEEDER_BACKWARD = 0;
 
- //       int INTAKE_FORWARD = 4;
- //       int INTAKE_BACKWARD = 5;
- //       int RIGHT_INTAKE_FORWARD = 2;
- //       int RIGHT_INTAKE_BACKWARD = 3;
+        //       int INTAKE_FORWARD = 4;
+        //       int INTAKE_BACKWARD = 5;
+        //       int RIGHT_INTAKE_FORWARD = 2;
+        //       int RIGHT_INTAKE_BACKWARD = 3;
 
         int SHOOTER_FORWARD = 2;
         int SHOOTER_BACKWARD = 3;

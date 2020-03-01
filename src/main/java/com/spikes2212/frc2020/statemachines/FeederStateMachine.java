@@ -16,7 +16,7 @@ public class FeederStateMachine extends StateMachine<FeederStateMachine.FeederSt
     public static FeederStateMachine getInstance() {
         if (instance == null) instance = new FeederStateMachine();
         return instance;
-}
+    }
 
     private static Feeder feeder = Feeder.getInstance();
 

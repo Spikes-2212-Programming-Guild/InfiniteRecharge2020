@@ -8,7 +8,7 @@ import com.spikes2212.frc2020.commands.OrientToPowerCell;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.dashboard.RootNamespace;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 import java.util.function.Supplier;
 
@@ -28,12 +28,14 @@ public class Intake extends GenericSubsystem {
     }
 
     private WPI_TalonSRX motor;
+    private DigitalInput limit;
 
     private boolean enabled;
 
     private Intake() {
         super(minSpeed, maxSpeed);
         motor = new WPI_TalonSRX(RobotMap.CAN.INTAKE_MOTOR);
+        limit = new DigitalInput(RobotMap.DIO.INTAKE_LIMIT);
         enabled = true;
     }
 
@@ -63,6 +65,11 @@ public class Intake extends GenericSubsystem {
         intakeNamespace.putData("intake", new MoveGenericSubsystem(this, intakeVoltage));
         intakeNamespace.putData("intake power cell", new IntakePowerCell());
         intakeNamespace.putData("orient to ball", new OrientToPowerCell(Robot.oi::getRightY));
+        intakeNamespace.putBoolean("limit", limit.get());
+    }
+
+    public boolean isPressed() {
+        return limit.get();
     }
 
     public boolean isEnabled() {
@@ -80,4 +87,5 @@ public class Intake extends GenericSubsystem {
     public double getStatorCurrent() {
         return motor.getStatorCurrent();
     }
+
 }
