@@ -4,12 +4,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
-import com.spikes2212.lib.control.FeedForwardSettings;
-import com.spikes2212.lib.control.PIDSettings;
-import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Encoder;
 
 import java.util.function.Supplier;
 
@@ -64,9 +60,9 @@ public class Elevator extends GenericSubsystem {
     public void configureDashboard() {
         elevatorNamspace.putBoolean("elevator limit", limit::get);
         elevatorNamspace.putBoolean("bottom limit switch", bottomHallEffect::get);
-        elevatorNamspace.putData("test concept upwards",
+        elevatorNamspace.putData("move lift upwards",
                 new MoveGenericSubsystem(this, upSpeed));
-        elevatorNamspace.putData("test concept downwards",
+        elevatorNamspace.putData("move lift downwards",
                 new MoveGenericSubsystem(this, downSpeed));
     }
 }
