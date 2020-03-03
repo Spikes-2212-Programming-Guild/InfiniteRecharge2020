@@ -2,12 +2,9 @@ package com.spikes2212.frc2020.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.spikes2212.frc2020.RobotMap;
-import com.spikes2212.frc2020.commands.FeedToLowTarget;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.dashboard.RootNamespace;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import java.util.function.Supplier;
 
@@ -27,7 +24,6 @@ public class Feeder extends GenericSubsystem {
     }
 
     private WPI_VictorSPX motor;
-    private DoubleSolenoid solenoid;
 
     private boolean enabled;
 
@@ -36,8 +32,6 @@ public class Feeder extends GenericSubsystem {
     private Feeder() {
         super(minSpeed, maxSpeed);
         motor = new WPI_VictorSPX(RobotMap.CAN.FEEDER_VICTOR);
-        solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.FEEDER_FORWARD,
-                RobotMap.PCM.FEEDER_BACKWARD);
         enabled = true;
     }
 
@@ -65,18 +59,6 @@ public class Feeder extends GenericSubsystem {
         feederNamespace.update();
     }
 
-    public void open() {
-        solenoid.set(DoubleSolenoid.Value.kForward);
-        setEnabled(true);
-        isOpen = true;
-    }
-
-    public void close() {
-        isOpen = false;
-        solenoid.set(DoubleSolenoid.Value.kReverse);
-        setEnabled(true);
-    }
-
     public boolean isEnabled() {
         return enabled;
     }
@@ -88,8 +70,6 @@ public class Feeder extends GenericSubsystem {
     @Override
     public void configureDashboard() {
         feederNamespace.putData("feed", new MoveGenericSubsystem(this, speed));
-        feederNamespace.putData("open level 1", new FeedToLowTarget());
-        feederNamespace.putData("close level 1", new InstantCommand(this::close, this));
     }
 
 }

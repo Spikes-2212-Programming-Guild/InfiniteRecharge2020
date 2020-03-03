@@ -44,10 +44,8 @@ public class RobotMap {
     }
 
     public interface PCM {
-        int FEEDER_FORWARD = 0;
-        int FEEDER_BACKWARD = 1;
 
-        int SHOOTER_FORWARD = 3;
-        int SHOOTER_BACKWARD = 2;
+        int SHOOTER_FORWARD = 0;
+        int SHOOTER_BACKWARD = 1;
     }
 }
