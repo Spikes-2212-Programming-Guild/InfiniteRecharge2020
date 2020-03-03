@@ -1,6 +1,5 @@
 package com.spikes2212.frc2020.autonomous;
 
-import com.spikes2212.frc2020.commands.LongRangeShoot;
 import com.spikes2212.frc2020.commands.ResetTurret;
 import com.spikes2212.frc2020.subsystems.Drivetrain;
 import com.spikes2212.lib.command.drivetrains.commands.DriveArcade;
@@ -13,10 +12,10 @@ public class CrossLineBackwards extends SequentialCommandGroup {
     public CrossLineBackwards() {
         addCommands(
                 new ResetTurret(),
-//                new DriveArcade(
-//                        drivetrain,
-//                        () -> -Drivetrain.autoForwardSpeed.get(),
-//                        () -> 0.0).withTimeout(Drivetrain.autoForwardTimeout.get()),
+                new DriveArcade(
+                        drivetrain,
+                        () -> -Drivetrain.autoForwardSpeed.get(),
+                        () -> 0.0).withTimeout(Drivetrain.autoForwardTimeout.get()),
                 new AutoShoot()
         );
     }

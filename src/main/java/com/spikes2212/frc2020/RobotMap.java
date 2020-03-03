@@ -47,17 +47,7 @@ public class RobotMap {
         int FEEDER_FORWARD = 0;
         int FEEDER_BACKWARD = 1;
 
-        //       int INTAKE_FORWARD = 4;
-        //       int INTAKE_BACKWARD = 5;
-        //       int RIGHT_INTAKE_FORWARD = 2;
-        //       int RIGHT_INTAKE_BACKWARD = 3;
-
         int SHOOTER_FORWARD = 3;
         int SHOOTER_BACKWARD = 2;
-    }
-
-    public interface PWM {
-
-        int FEEDER_MOTOR = 1;
     }
 }

@@ -5,7 +5,7 @@ import com.spikes2212.frc2020.services.PhysicsService;
 import com.spikes2212.frc2020.services.VisionService;
 import com.spikes2212.frc2020.subsystems.Feeder;
 import com.spikes2212.frc2020.subsystems.Shooter;
-import com.spikes2212.frc2020.utils.RepeatCommand;
+import com.spikes2212.lib.command.RepeatCommand;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystemWithPID;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -24,12 +24,14 @@ public class AutoShoot extends SequentialCommandGroup {
         addCommands(
                 new InstantCommand(shooter::close),
                 new OrientTurretToPowerPort(),
-                new MoveGenericSubsystemWithPID(shooter, Shooter.velocityPIDSettings,
+                new MoveGenericSubsystemWithPID(shooter,
                         () -> physicsService.calculateSpeedForDistance(visionService.getDistanceFromTarget()),
-                        shooter::getMotorSpeed, Shooter.velocityFFSettings),
-                new MoveGenericSubsystemWithPID(shooter, Shooter.velocityPIDSettings,
+                        shooter::getMotorSpeed,  Shooter.velocityPIDSettings,
+                        Shooter.velocityFFSettings),
+                new MoveGenericSubsystemWithPID(shooter,
                         () -> physicsService.calculateSpeedForDistance(visionService.getDistanceFromTarget()),
-                        shooter::getMotorSpeed, Shooter.velocityFFSettings).perpetually().alongWith(
+                        shooter::getMotorSpeed,  Shooter.velocityPIDSettings,
+                        Shooter.velocityFFSettings).perpetually().alongWith(
                         new RepeatCommand(
                                 new InstantCommand(this::updateSpeedSetpoint),
                                 new WaitCommand(0.1)

@@ -4,14 +4,16 @@ import com.spikes2212.frc2020.commands.*;
 import com.spikes2212.frc2020.services.PhysicsService;
 import com.spikes2212.frc2020.services.VisionService;
 import com.spikes2212.frc2020.subsystems.*;
-import com.spikes2212.frc2020.utils.RepeatCommand;
+import com.spikes2212.lib.command.RepeatCommand;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystemWithPID;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
 import com.spikes2212.lib.util.XboXUID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -56,8 +58,9 @@ public class OI /* GEVALD */ {
                 new LongRangeShoot()
         );
         closeShoot.whileActiveOnce(new CloseRangeShoot());
-        manualShoot.whenHeld(new MoveGenericSubsystemWithPID(shooter, Shooter.velocityPIDSettings,
-                () -> physics.calculateSpeedForDistance(vision.getDistanceFromTarget()), shooter::getMotorSpeed, Shooter.velocityFFSettings));
+        manualShoot.whenHeld(new MoveGenericSubsystemWithPID(shooter,
+                () -> physics.calculateSpeedForDistance(vision.getDistanceFromTarget()),
+                shooter::getMotorSpeed, Shooter.velocityPIDSettings, Shooter.velocityFFSettings));
         feed.whileActiveOnce(new MoveGenericSubsystem(Feeder.getInstance(), Feeder.speed));
         openFeedToLevel1.whenPressed(new FeedToLowTarget()
         );
@@ -65,8 +68,8 @@ public class OI /* GEVALD */ {
         unFeed.whileHeld(new MoveGenericSubsystem(Feeder.getInstance(), () -> -Feeder.speed.get()));
         unGrip.whileHeld(new MoveGenericSubsystem(Intake.getInstance(), () -> -0.5 * RobotController.getBatteryVoltage()));
         grip.whenHeld(new MoveGenericSubsystem(Intake.getInstance(), () -> Feeder.speed.get() / RobotController.getBatteryVoltage()));
-        lift.whenHeld(new MoveGenericSubsystem(Elevator.getInstance(), Elevator.getInstance().testSpeed));
-        unLift.whenHeld(new MoveGenericSubsystem(Elevator.getInstance(), Elevator.getInstance().untestSpeed));
+        lift.whenHeld(new MoveGenericSubsystem(Elevator.getInstance(), Elevator.getInstance().upSpeed));
+        unLift.whenHeld(new MoveGenericSubsystem(Elevator.getInstance(), Elevator.getInstance().downSpeed));
         climb.whenHeld(
                 new SequentialCommandGroup(
 //                        new MoveTalonSubsystem(this.turret, Turret.climbingAngle, () -> (double) 0.1).withTimeout(2),
