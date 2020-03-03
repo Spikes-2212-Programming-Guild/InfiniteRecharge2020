@@ -6,22 +6,23 @@ public class RobotMap {
 
         int PCM = 0;
 
-        int INTAKE_MOTOR = 4;
-        int FEEDER_VICTOR = 7;
+        int DRIVETRAIN_LEFT_TALON = 1;
+        int DRIVETRAIN_LEFT_VICTOR = 2;
+        int DRIVETRAIN_RIGHT_TALON = 3;
+        int DRIVETRAIN_RIGHT_VICTOR = 4;
 
-        int TURRET_TALON = 13;
+        int SHOOTER_MASTER = 5;
+        int SHOOTER_SLAVE = 6;
 
-        int SHOOTER_MASTER = 10;
-        int SHOOTER_SLAVE = 12;
+        int TURRET_TALON = 7;
 
-        int DRIVETRAIN_LEFT_TALON = 2;
-        int DRIVETRAIN_LEFT_VICTOR = 9;
-        int DRIVETRAIN_RIGHT_TALON = 8;
-        int DRIVETRAIN_RIGHT_VICTOR = 5;
+        int INTAKE_MOTOR = 9;
 
-        int ELEVATOR_TALON = 17;
+        int FEEDER_VICTOR = 10;
 
-        int CLIMBER_TALON = 3;
+        int ELEVATOR_TALON = 11;
+
+        int CLIMBER_TALON = 12;
     }
 
     public interface DIO {
