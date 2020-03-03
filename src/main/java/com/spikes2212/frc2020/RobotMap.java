@@ -26,21 +26,21 @@ public class RobotMap {
     }
 
     public interface DIO {
-        int TURRET_START_LIMIT = 10;
-        int TURRET_END_LIMIT = 8;
 
-        int DRIVETRAIN_LEFT_ENCODER_POS = 0;
-        int DRIVETRAIN_LEFT_ENCODER_NEG = 1;
-        int DRIVETRAIN_RIGHT_ENCODER_POS = 2;
+        int ELEVATOR_BOTTOM_SWITCH = 2;
+
+        int DRIVETRAIN_RIGHT_ENCODER_POS = 4;
         int DRIVETRAIN_RIGHT_ENCODER_NEG = 3;
 
-        int ELEVATOR_ENCODER_POS = 24;
-        int ELEVATOR_ENCODER_NEG = 25;
-        int ELEVATOR_BOTTOM_SWITCH = 11;
-        int ELEVATOR_TOP_SWITCH = 9;
-        int ELEVATOR_LIMIT = 12;
+        int DRIVETRAIN_LEFT_ENCODER_POS = 5;
+        int DRIVETRAIN_LEFT_ENCODER_NEG = 6;
 
-        int INTAKE_LIMIT = 4;
+        int TURRET_START_LIMIT = 8;
+        int TURRET_END_LIMIT = 9;
+
+        int ELEVATOR_TOP_SWITCH = 10;
+        int ELEVATOR_LIMIT = 11;
+
     }
 
     public interface PCM {

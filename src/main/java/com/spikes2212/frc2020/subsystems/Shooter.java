@@ -25,7 +25,7 @@ import java.util.function.Supplier;
 
 public class Shooter extends GenericSubsystem {
 
-    public static final double distancePerPulse = 1 / 4096.0;
+    public static final double distancePerPulse = 10 / 4096.0;
 
 
     private static RootNamespace shooterNamespace = new RootNamespace("shooter");
