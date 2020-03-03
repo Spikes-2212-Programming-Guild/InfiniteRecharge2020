@@ -9,22 +9,23 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class MoveTurretToFieldRelativeAngle extends SequentialCommandGroup {
 
-    private Drivetrain drivetrain = Drivetrain.getInstance();
     private Turret turret = Turret.getInstance();
+    private Drivetrain drivetrain = Drivetrain.getInstance();
 
-    private double targetAngle = 0;
+    private double targetTurretYaw = 0;
+    private double initialDrivetrainYaw = 0;
 
     public MoveTurretToFieldRelativeAngle() {
         addCommands(
-                new InstantCommand(() -> targetAngle = findTargetAngle()),
-                new MoveTalonSubsystem(turret, () -> targetAngle, () -> 0.0).perpetually()
-                    .alongWith(new RepeatCommand(
-                            new InstantCommand(this::findTargetAngle)
-                    ))
+                new InstantCommand(() -> {
+                    targetTurretYaw = turret.getYaw();
+                    initialDrivetrainYaw = drivetrain.getYaw();
+                }),
+                new MoveTalonSubsystem(turret, this::calculateSetpoint, () -> 0.0).perpetually()
         );
     }
 
-    private double findTargetAngle() {
-        return turret.getYaw() - drivetrain.getYaw();
+    private double calculateSetpoint() {
+        return targetTurretYaw - (drivetrain.getYaw() - initialDrivetrainYaw);
     }
 }
