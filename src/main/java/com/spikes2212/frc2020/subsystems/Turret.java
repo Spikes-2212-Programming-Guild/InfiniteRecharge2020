@@ -18,7 +18,6 @@ import com.spikes2212.lib.control.PIDSettings;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpiutil.math.MathUtil;
 
 import java.util.function.Supplier;
 

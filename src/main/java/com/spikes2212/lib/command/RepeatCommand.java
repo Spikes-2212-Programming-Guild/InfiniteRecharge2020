@@ -1,4 +1,4 @@
-package com.spikes2212.frc2020.utils;
+package com.spikes2212.lib.command;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;

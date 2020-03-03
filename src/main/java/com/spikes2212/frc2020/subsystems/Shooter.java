@@ -142,16 +142,17 @@ public class Shooter extends GenericSubsystem {
         shooterNamespace.putData("shoot", new SequentialCommandGroup(new MoveGenericSubsystem(this,
                 () -> shootSpeed.get() / RobotController.getBatteryVoltage())));
         shooterNamespace.putData("pid shoot",
-                new MoveGenericSubsystemWithPID(this, velocityPIDSettings, targetSpeed,
-                        () -> master.getSelectedSensorVelocity() * distancePerPulse, velocityFFSettings));
+                new MoveGenericSubsystemWithPID(this, targetSpeed,
+                        () -> master.getSelectedSensorVelocity() * distancePerPulse,
+                        velocityPIDSettings, velocityFFSettings));
         shooterNamespace.putData("shoot from afar", new MoveGenericSubsystem(this,
                 () -> farShootingSpeed.get() / RobotController.getBatteryVoltage()));
 
         shooterNamespace.putData("shoot for calculated distance",
-                new MoveGenericSubsystemWithPID(this, velocityPIDSettings,
+                new MoveGenericSubsystemWithPID(this,
                         () -> physics.calculateSpeedForDistance(vision.getDistanceFromTarget()),
                         () -> master.getSelectedSensorVelocity() * distancePerPulse,
-                        velocityFFSettings));
+                        velocityPIDSettings, velocityFFSettings));
         shooterNamespace.putData("shoot from wheel", new MoveGenericSubsystem(this,
                 () -> wheelShootingSpeed.get() / RobotController.getBatteryVoltage()));
 
