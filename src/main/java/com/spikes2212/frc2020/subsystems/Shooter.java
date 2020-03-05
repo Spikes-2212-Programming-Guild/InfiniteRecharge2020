@@ -33,7 +33,7 @@ public class Shooter extends GenericSubsystem {
     private static Supplier<Double> maxSpeed = shooterNamespace.addConstantDouble("Max Speed", 0.6);
     private static Supplier<Double> minSpeed = shooterNamespace.addConstantDouble("Min Speed", 0);
     public static Supplier<Double> shootSpeed =
-            shooterNamespace.addConstantDouble("Shooting Speed Voltage", 3.25);
+            shooterNamespace.addConstantDouble("speed", 0.4);
     public static Supplier<Double> farShootingSpeed = shooterNamespace.addConstantDouble("far shooting voltage",
             6);
     public static Supplier<Double> wheelShootingSpeed = shooterNamespace.addConstantDouble("wheel shooting voltage", 8);
@@ -140,7 +140,7 @@ public class Shooter extends GenericSubsystem {
         shooterNamespace.putData("open", new InstantCommand(this::open));
         shooterNamespace.putData("close", new InstantCommand(this::close));
         shooterNamespace.putData("shoot", new SequentialCommandGroup(new MoveGenericSubsystem(this,
-                () -> shootSpeed.get() / RobotController.getBatteryVoltage())));
+                () -> shootSpeed.get() )));
         shooterNamespace.putData("pid shoot",
                 new MoveGenericSubsystemWithPID(this, targetSpeed,
                         () -> master.getSelectedSensorVelocity() * distancePerPulse,
