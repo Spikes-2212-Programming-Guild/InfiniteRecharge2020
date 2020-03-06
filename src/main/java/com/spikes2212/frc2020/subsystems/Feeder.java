@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
+import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.Encoder;
 
@@ -17,6 +18,16 @@ public class Feeder extends GenericSubsystem {
     private static final Supplier<Double> maxSpeed = feederNamespace.addConstantDouble("max speed", 1);
     public static final Supplier<Double> speed = feederNamespace.addConstantDouble("speed", 0.7);
     public static final Supplier<Double> feedTimeLimit = feederNamespace.addConstantDouble("feeding time", 2);
+
+
+    public static final Namespace pid = feederNamespace.addChild("PID");
+
+    private static final Supplier<Double> kP = pid.addConstantDouble("kP", 0);
+    private static final Supplier<Double> kI = pid.addConstantDouble("kI", 0);
+    private static final Supplier<Double> kD = pid.addConstantDouble("kD", 0);
+
+    private static final Supplier<Double> tolerance = pid.addConstantDouble("tolerance", 0);
+    private static final Supplier<Double> waitTime = pid.addConstantDouble("wait time", 0);
 
     private static final double distancePerPulse = 1 / 1024.0;
     private static final Feeder instance = new Feeder();
@@ -75,6 +86,8 @@ public class Feeder extends GenericSubsystem {
 
     @Override
     public void configureDashboard() {
+
+        feederNamespace.putNumber("encoder pos", encoder::getDistance);
         feederNamespace.putData("feed", new MoveGenericSubsystem(this, speed));
     }
 
