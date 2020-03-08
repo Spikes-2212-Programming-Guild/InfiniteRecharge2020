@@ -3,7 +3,8 @@ package com.spikes2212.frc2020.commands;
 import com.spikes2212.frc2020.subsystems.Feeder;
 import com.spikes2212.frc2020.subsystems.Intake;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
-import edu.wpi.first.wpilibj2.command.ScheduleCommand;
+import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystemWithPID;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 import java.util.function.Supplier;
@@ -21,13 +22,13 @@ public class IntakePowerCell extends SequentialCommandGroup {
 
     public IntakePowerCell() {
         addCommands(
-                new MoveGenericSubsystem(intake, intakeVoltage).withTimeout(0.1),
                 new MoveGenericSubsystem(intake, intakeVoltage).withInterrupt
                         (() -> intake.getSuppliedCurrent() >= intakeCurrentLimit.get()),
-                new ScheduleCommand(
-                        new MoveGenericSubsystem(feeder, feederSpeed).withTimeout(feedTimeLimit.get())
-                )
-        );
+                new MoveGenericSubsystem(intake, intakeVoltage).withTimeout(0.2),
+                new InstantCommand(() -> feeder.reset()),
+                new MoveGenericSubsystemWithPID(feeder, Feeder.setpoint, feeder::getPosition, Feeder.pidSettings).withTimeout(
+                        feedTimeLimit.get())
+                );
     }
 
 }

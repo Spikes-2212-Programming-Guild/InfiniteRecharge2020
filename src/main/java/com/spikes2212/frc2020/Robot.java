@@ -10,9 +10,7 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.*;
 
 public class Robot extends TimedRobot {
 
@@ -63,11 +61,12 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        visionService.periodic();
+
     }
 
     @Override
     public void robotPeriodic() {
+        visionService.periodic();
         CommandScheduler.getInstance().run();
     }
 }

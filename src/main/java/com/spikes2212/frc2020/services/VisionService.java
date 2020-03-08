@@ -1,9 +1,7 @@
 package com.spikes2212.frc2020.services;
 
 import com.spikes2212.lib.dashboard.RootNamespace;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.*;
 
 import java.util.function.Supplier;
 
@@ -61,9 +59,10 @@ public class VisionService {
     public void configureDashboard() {
         visionNamespace.putNumber("balls angle", this::getIntakeYaw);
         visionNamespace.putNumber("retroReflective", this::getRetroReflectiveYaw);
+        visionNamespace.putNumber("distance from target", this::getDistanceFromTarget);
     }
 
     public double getDistanceFromTarget() {
-        return 245.62 * getArea() * getArea() - 64.093 * getArea() + 5.9978;
+        return 302.93 * getArea() * getArea() - 82.022 * getArea() + 6.592;
     }
 }
