@@ -21,7 +21,7 @@ public class IntakePowerCell extends SequentialCommandGroup {
 
     public IntakePowerCell() {
         addCommands(
-                new MoveGenericSubsystem(intake, intakeVoltage).withTimeout(0.1),
+                new MoveGenericSubsystem(intake, intakeVoltage).withTimeout(0.4),
                 new MoveGenericSubsystem(intake, intakeVoltage).withInterrupt
                         (() -> intake.getSuppliedCurrent() >= intakeCurrentLimit.get()),
                 new ScheduleCommand(
