@@ -25,7 +25,7 @@ import java.util.function.Supplier;
 
 public class Shooter extends GenericSubsystem {
 
-    public static final double distancePerPulse = 5 / 4096.0;
+    public static final double distancePerPulse = 10 / 4096.0;
 
 
     private static RootNamespace shooterNamespace = new RootNamespace("shooter");
@@ -80,7 +80,7 @@ public class Shooter extends GenericSubsystem {
         slave.setNeutralMode(NeutralMode.Brake);
         slave.follow(master);
         noiseReducer = new NoiseReducer(() -> master.getSelectedSensorVelocity() * distancePerPulse,
-                new ExponentialFilter(0.1));
+                new ExponentialFilter(0.05));
         enabled = true;
     }
 
@@ -143,7 +143,7 @@ public class Shooter extends GenericSubsystem {
                 () -> shootSpeed.get() )));
         shooterNamespace.putData("pid shoot",
                 new MoveGenericSubsystemWithPID(this, targetSpeed,
-                        () -> master.getSelectedSensorVelocity() * distancePerPulse,
+                        this::getMotorSpeed,
                         velocityPIDSettings, velocityFFSettings));
         shooterNamespace.putData("shoot from afar", new MoveGenericSubsystem(this,
                 () -> farShootingSpeed.get() / RobotController.getBatteryVoltage()));
