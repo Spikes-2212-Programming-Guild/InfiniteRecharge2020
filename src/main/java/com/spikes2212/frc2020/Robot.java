@@ -1,24 +1,17 @@
 package com.spikes2212.frc2020;
 
-import com.spikes2212.frc2020.autonomous.CrossLineBackwards;
 import com.spikes2212.frc2020.autonomous.CrossLineFromCenter;
 import com.spikes2212.frc2020.commands.IntakePowerCell;
 import com.spikes2212.frc2020.services.VisionService;
-import com.spikes2212.frc2020.statemachines.FeederStateMachine;
-import com.spikes2212.frc2020.statemachines.IntakeFeederStateMachine;
-import com.spikes2212.frc2020.statemachines.IntakeStateMachine;
+import com.spikes2212.frc2020.statemachines.*;
 import com.spikes2212.frc2020.subsystems.*;
 import com.spikes2212.frc2020.utils.RepeatCommand;
 import com.spikes2212.lib.command.drivetrains.commands.DriveArcade;
 import edu.wpi.cscore.UsbCamera;
-import edu.wpi.cscore.VideoCamera;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.*;
 
 public class Robot extends TimedRobot {
 
@@ -39,6 +32,7 @@ public class Robot extends TimedRobot {
 
 
     private Command auto;
+
     @Override
     public void robotInit() {
         oi = new OI();
@@ -51,16 +45,12 @@ public class Robot extends TimedRobot {
         elevator.configureDashboard();
         climber.configureDashboard();
 
-        drivetrain.setDefaultCommand(new DriveArcade(drivetrain,
-                oi::getRightY, oi::getLeftX));
         SmartDashboard.putData("start compressor", new InstantCommand(new Compressor()::start));
         SmartDashboard.putData("stop compressor", new InstantCommand(new Compressor()::stop));
         SmartDashboard.putData("intake", new RepeatCommand(new IntakePowerCell()));
         Turret.turretNamespace.putNumber("joystick angle for turret", oi::getControllerRightAngle);
         auto = new CrossLineFromCenter();
         new UsbCamera("driver camera", 0);
-
-
     }
 
     @Override
@@ -69,9 +59,15 @@ public class Robot extends TimedRobot {
     }
 
     @Override
+    public void teleopInit() {
+        drivetrain.setDefaultCommand(new DriveArcade(drivetrain,
+                oi::getRightY, oi::getLeftX));
+    }
+
+    @Override
     public void teleopPeriodic() {
 //        super.teleopPeriodic();
-        if (auto != null) auto.cancel();
+        if(auto != null) auto.cancel();
         visionService.periodic();
     }
 
