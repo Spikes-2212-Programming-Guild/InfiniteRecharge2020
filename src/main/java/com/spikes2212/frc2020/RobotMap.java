@@ -35,11 +35,15 @@ public class RobotMap {
         int DRIVETRAIN_LEFT_ENCODER_POS = 5;
         int DRIVETRAIN_LEFT_ENCODER_NEG = 6;
 
+        int FEEDER_ENCODER_POS = 7;
+
         int TURRET_START_LIMIT = 8;
         int TURRET_END_LIMIT = 9;
 
         int ELEVATOR_TOP_SWITCH = 10;
         int ELEVATOR_LIMIT = 11;
+
+        int FEEDER_ENCODER_NEG = 12;
 
     }
 
