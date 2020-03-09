@@ -25,7 +25,7 @@ import java.util.function.Supplier;
 
 public class Shooter extends GenericSubsystem {
 
-    public static final double distancePerPulse = 1 / 4096.0;
+    public static final double distancePerPulse = 10 / 4096.0;
 
 
     private static RootNamespace shooterNamespace = new RootNamespace("shooter");
@@ -33,7 +33,7 @@ public class Shooter extends GenericSubsystem {
     private static Supplier<Double> maxSpeed = shooterNamespace.addConstantDouble("Max Speed", 0.6);
     private static Supplier<Double> minSpeed = shooterNamespace.addConstantDouble("Min Speed", 0);
     public static Supplier<Double> shootSpeed =
-            shooterNamespace.addConstantDouble("Shooting Speed Voltage", 3.25);
+            shooterNamespace.addConstantDouble("speed", 0.4);
     public static Supplier<Double> farShootingSpeed = shooterNamespace.addConstantDouble("far shooting voltage",
             6);
     public static Supplier<Double> wheelShootingSpeed = shooterNamespace.addConstantDouble("wheel shooting voltage", 8);
@@ -80,7 +80,7 @@ public class Shooter extends GenericSubsystem {
         slave.setNeutralMode(NeutralMode.Brake);
         slave.follow(master);
         noiseReducer = new NoiseReducer(() -> master.getSelectedSensorVelocity() * distancePerPulse,
-                new ExponentialFilter(0.1));
+                new ExponentialFilter(0.05));
         enabled = true;
     }
 
@@ -140,10 +140,10 @@ public class Shooter extends GenericSubsystem {
         shooterNamespace.putData("open", new InstantCommand(this::open));
         shooterNamespace.putData("close", new InstantCommand(this::close));
         shooterNamespace.putData("shoot", new SequentialCommandGroup(new MoveGenericSubsystem(this,
-                () -> shootSpeed.get() / RobotController.getBatteryVoltage())));
+                () -> shootSpeed.get() )));
         shooterNamespace.putData("pid shoot",
                 new MoveGenericSubsystemWithPID(this, targetSpeed,
-                        () -> master.getSelectedSensorVelocity() * distancePerPulse,
+                        this::getMotorSpeed,
                         velocityPIDSettings, velocityFFSettings));
         shooterNamespace.putData("shoot from afar", new MoveGenericSubsystem(this,
                 () -> farShootingSpeed.get() / RobotController.getBatteryVoltage()));

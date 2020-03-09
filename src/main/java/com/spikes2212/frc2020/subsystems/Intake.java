@@ -28,14 +28,12 @@ public class Intake extends GenericSubsystem {
     }
 
     private WPI_TalonSRX motor;
-    private DigitalInput limit;
 
     private boolean enabled;
 
     private Intake() {
         super(minSpeed, maxSpeed);
         motor = new WPI_TalonSRX(RobotMap.CAN.INTAKE_MOTOR);
-        limit = new DigitalInput(RobotMap.DIO.INTAKE_LIMIT);
         enabled = true;
     }
 
@@ -65,11 +63,6 @@ public class Intake extends GenericSubsystem {
         intakeNamespace.putData("intake", new MoveGenericSubsystem(this, intakeVoltage));
         intakeNamespace.putData("intake power cell", new IntakePowerCell());
         intakeNamespace.putData("orient to ball", new OrientToPowerCell(Robot.oi::getRightY));
-        intakeNamespace.putBoolean("limit", limit.get());
-    }
-
-    public boolean isPressed() {
-        return limit.get();
     }
 
     public boolean isEnabled() {

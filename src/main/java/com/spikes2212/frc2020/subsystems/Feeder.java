@@ -2,11 +2,13 @@ package com.spikes2212.frc2020.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.spikes2212.frc2020.RobotMap;
-import com.spikes2212.frc2020.commands.FeedToLowTarget;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
+import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystemWithPID;
+import com.spikes2212.lib.control.PIDSettings;
+import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import java.util.function.Supplier;
@@ -20,6 +22,20 @@ public class Feeder extends GenericSubsystem {
     public static final Supplier<Double> speed = feederNamespace.addConstantDouble("speed", 0.7);
     public static final Supplier<Double> feedTimeLimit = feederNamespace.addConstantDouble("feeding time", 2);
 
+
+    public static final Namespace pid = feederNamespace.addChild("PID");
+
+    private static final Supplier<Double> kP = pid.addConstantDouble("kP", 0);
+    private static final Supplier<Double> kI = pid.addConstantDouble("kI", 0);
+    private static final Supplier<Double> kD = pid.addConstantDouble("kD", 0);
+
+    private static final Supplier<Double> tolerance = pid.addConstantDouble("tolerance", 0);
+    private static final Supplier<Double> waitTime = pid.addConstantDouble("wait time", 0);
+
+    public static final Supplier<Double> setpoint = pid.addConstantDouble("setpoint", 2.2);
+    public static final PIDSettings pidSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
+
+    private static final double distancePerPulse = 1 / 1024.0;
     private static final Feeder instance = new Feeder();
 
     public static Feeder getInstance() {
@@ -27,7 +43,8 @@ public class Feeder extends GenericSubsystem {
     }
 
     private WPI_VictorSPX motor;
-    private DoubleSolenoid solenoid;
+
+    private Encoder encoder;
 
     private boolean enabled;
 
@@ -36,8 +53,8 @@ public class Feeder extends GenericSubsystem {
     private Feeder() {
         super(minSpeed, maxSpeed);
         motor = new WPI_VictorSPX(RobotMap.CAN.FEEDER_VICTOR);
-        solenoid = new DoubleSolenoid(RobotMap.CAN.PCM, RobotMap.PCM.FEEDER_FORWARD,
-                RobotMap.PCM.FEEDER_BACKWARD);
+        encoder = new Encoder(RobotMap.DIO.FEEDER_ENCODER_POS, RobotMap.DIO.FEEDER_ENCODER_NEG);
+        encoder.setDistancePerPulse(distancePerPulse);
         enabled = true;
     }
 
@@ -65,18 +82,6 @@ public class Feeder extends GenericSubsystem {
         feederNamespace.update();
     }
 
-    public void open() {
-        solenoid.set(DoubleSolenoid.Value.kForward);
-        setEnabled(true);
-        isOpen = true;
-    }
-
-    public void close() {
-        isOpen = false;
-        solenoid.set(DoubleSolenoid.Value.kReverse);
-        setEnabled(true);
-    }
-
     public boolean isEnabled() {
         return enabled;
     }
@@ -85,11 +90,27 @@ public class Feeder extends GenericSubsystem {
         this.enabled = enabled;
     }
 
+    public double getPosition() {
+        return encoder.getDistance();
+    }
+
+    public void reset() {
+        encoder.reset();
+    }
+
+
     @Override
     public void configureDashboard() {
+
+        feederNamespace.putNumber("encoder pos", encoder::getDistance);
         feederNamespace.putData("feed", new MoveGenericSubsystem(this, speed));
-        feederNamespace.putData("open level 1", new FeedToLowTarget());
-        feederNamespace.putData("close level 1", new InstantCommand(this::close, this));
+        feederNamespace.putData("move with pid", new MoveGenericSubsystemWithPID(
+                this,
+                setpoint,
+                this.encoder::getDistance,
+                pidSettings
+        ));
+        feederNamespace.putData("reset encoder", new InstantCommand(this.encoder::reset));
     }
 
 }

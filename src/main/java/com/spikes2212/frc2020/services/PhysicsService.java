@@ -10,6 +10,6 @@ public class PhysicsService {
     }
 
     public double calculateSpeedForDistance(double distance) {
-        return 0.3486 * distance + 3.7003;
+        return 10 * (0.3486 * distance + 3.7003);
     }
 }

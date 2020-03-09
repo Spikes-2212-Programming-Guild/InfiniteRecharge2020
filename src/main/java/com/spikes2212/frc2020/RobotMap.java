@@ -6,47 +6,50 @@ public class RobotMap {
 
         int PCM = 0;
 
-        int INTAKE_MOTOR = 4;
-        int FEEDER_VICTOR = 7;
+        int DRIVETRAIN_LEFT_TALON = 1;
+        int DRIVETRAIN_LEFT_VICTOR = 2;
+        int DRIVETRAIN_RIGHT_TALON = 3;
+        int DRIVETRAIN_RIGHT_VICTOR = 4;
 
-        int TURRET_TALON = 13;
+        int SHOOTER_MASTER = 5;
+        int SHOOTER_SLAVE = 6;
 
-        int SHOOTER_MASTER = 10;
-        int SHOOTER_SLAVE = 12;
+        int TURRET_TALON = 7;
 
-        int DRIVETRAIN_LEFT_TALON = 2;
-        int DRIVETRAIN_LEFT_VICTOR = 9;
-        int DRIVETRAIN_RIGHT_TALON = 8;
-        int DRIVETRAIN_RIGHT_VICTOR = 5;
+        int INTAKE_MOTOR = 9;
 
-        int ELEVATOR_TALON = 17;
+        int FEEDER_VICTOR = 10;
 
-        int CLIMBER_TALON = 3;
+        int ELEVATOR_TALON = 11;
+
+        int CLIMBER_TALON = 12;
     }
 
     public interface DIO {
-        int TURRET_START_LIMIT = 10;
-        int TURRET_END_LIMIT = 8;
 
-        int DRIVETRAIN_LEFT_ENCODER_POS = 0;
-        int DRIVETRAIN_LEFT_ENCODER_NEG = 1;
-        int DRIVETRAIN_RIGHT_ENCODER_POS = 2;
+        int ELEVATOR_BOTTOM_SWITCH = 2;
+
+        int DRIVETRAIN_RIGHT_ENCODER_POS = 4;
         int DRIVETRAIN_RIGHT_ENCODER_NEG = 3;
 
-        int ELEVATOR_ENCODER_POS = 24;
-        int ELEVATOR_ENCODER_NEG = 25;
-        int ELEVATOR_BOTTOM_SWITCH = 11;
-        int ELEVATOR_TOP_SWITCH = 9;
-        int ELEVATOR_LIMIT = 12;
+        int DRIVETRAIN_LEFT_ENCODER_POS = 5;
+        int DRIVETRAIN_LEFT_ENCODER_NEG = 6;
 
-        int INTAKE_LIMIT = 4;
+        int FEEDER_ENCODER_POS = 7;
+
+        int TURRET_START_LIMIT = 8;
+        int TURRET_END_LIMIT = 9;
+
+        int ELEVATOR_TOP_SWITCH = 10;
+        int ELEVATOR_LIMIT = 11;
+
+        int FEEDER_ENCODER_NEG = 12;
+
     }
 
     public interface PCM {
-        int FEEDER_FORWARD = 0;
-        int FEEDER_BACKWARD = 1;
 
-        int SHOOTER_FORWARD = 3;
-        int SHOOTER_BACKWARD = 2;
+        int SHOOTER_FORWARD = 0;
+        int SHOOTER_BACKWARD = 1;
     }
 }

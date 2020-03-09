@@ -62,9 +62,6 @@ public class OI /* GEVALD */ {
                 () -> physics.calculateSpeedForDistance(vision.getDistanceFromTarget()),
                 shooter::getMotorSpeed, Shooter.velocityPIDSettings, Shooter.velocityFFSettings));
         feed.whileActiveOnce(new MoveGenericSubsystem(Feeder.getInstance(), Feeder.speed));
-        openFeedToLevel1.whenPressed(new FeedToLowTarget()
-        );
-        closeFeedToLevel1.whenPressed(new InstantCommand(Feeder.getInstance()::close));
         unFeed.whileHeld(new MoveGenericSubsystem(Feeder.getInstance(), () -> -Feeder.speed.get()));
         unGrip.whileHeld(new MoveGenericSubsystem(Intake.getInstance(), () -> -0.5 * RobotController.getBatteryVoltage()));
         grip.whenHeld(new MoveGenericSubsystem(Intake.getInstance(), () -> Feeder.speed.get() / RobotController.getBatteryVoltage()));
