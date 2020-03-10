@@ -7,14 +7,18 @@ import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.frc2020.commands.OrientToPowerCell;
 import com.spikes2212.frc2020.services.VisionService;
 import com.spikes2212.lib.command.drivetrains.OdometryDrivetrain;
+import com.spikes2212.lib.command.drivetrains.commands.FollowPath;
 import com.spikes2212.lib.control.FeedForwardSettings;
 import com.spikes2212.lib.control.PIDSettings;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import com.spikes2212.lib.path.OdometryHandler;
+import com.spikes2212.lib.path.Paths;
+import com.spikes2212.lib.path.Waypoint;
 import com.spikes2212.lib.util.PigeonWrapper;
 import edu.wpi.first.wpilibj.Encoder;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 public class Drivetrain extends OdometryDrivetrain {
@@ -50,6 +54,19 @@ public class Drivetrain extends OdometryDrivetrain {
 
     private static final Drivetrain instance = new Drivetrain();
 
+    private static final double DISTANCE_PER_PULSE = 0.0254 * 6 * Math.PI / 360;
+
+    private static Namespace pathFollowingNamespace = drivetrainNamespace.addChild("path pid");
+
+    private static Supplier<Double> pathKP = pathFollowingNamespace.addConstantDouble("kP", 0);
+
+    private static Supplier<Double> pathKV = pathFollowingNamespace.addConstantDouble("kV", 0);
+    private static Supplier<Double> pathKA = pathFollowingNamespace.addConstantDouble("kA", 0);
+
+    private static PIDSettings pathPIDSettings = new PIDSettings(pathKP, () -> 0.0, () -> 0.0);
+
+    private static FeedForwardSettings pathFFSettings = new FeedForwardSettings(pathKV, pathKA);
+
     public static Drivetrain getInstance() {
         return instance;
     }
@@ -68,6 +85,9 @@ public class Drivetrain extends OdometryDrivetrain {
         rightVictor = new WPI_VictorSPX(RobotMap.CAN.DRIVETRAIN_RIGHT_VICTOR);
         leftEncoder = new Encoder(RobotMap.DIO.DRIVETRAIN_LEFT_ENCODER_POS, RobotMap.DIO.DRIVETRAIN_LEFT_ENCODER_NEG);
         rightEncoder = new Encoder(RobotMap.DIO.DRIVETRAIN_RIGHT_ENCODER_POS, RobotMap.DIO.DRIVETRAIN_RIGHT_ENCODER_NEG);
+
+        leftEncoder.setDistancePerPulse(DISTANCE_PER_PULSE);
+        rightEncoder.setDistancePerPulse(DISTANCE_PER_PULSE);
 
         leftVictor.follow((WPI_TalonSRX) leftController);
         rightVictor.follow((WPI_TalonSRX) rightController);
@@ -121,9 +141,9 @@ public class Drivetrain extends OdometryDrivetrain {
     public void setInverted(boolean inverted) {
         this.inverted = inverted;
         leftController.setInverted(inverted);
-        rightController.setInverted(!inverted);
+        rightController.setInverted(inverted);
         leftVictor.setInverted(inverted);
-        rightVictor.setInverted(!inverted);
+        rightVictor.setInverted(inverted);
     }
 
     public void configureDashboard() {
@@ -131,5 +151,18 @@ public class Drivetrain extends OdometryDrivetrain {
         drivetrainNamespace.putNumber("imu yaw", imu::getYaw);
         drivetrainNamespace.putNumber("error", () -> vision.getIntakeYaw() - imu.getYaw());
         drivetrainNamespace.putData("orient to powercell", new OrientToPowerCell(() -> 0.0));
+
+        List<Waypoint> demoPath = Paths.generate(0.075, 0.8, 1, 2, 2, 4,
+                new Waypoint(0, 0), new Waypoint(0, 4));
+
+        drivetrainNamespace.putData("follow path", new FollowPath(
+                this,
+                demoPath,
+                0.3,
+                pathPIDSettings,
+                pathFFSettings,
+                4,
+                false
+        ));
     }
 }

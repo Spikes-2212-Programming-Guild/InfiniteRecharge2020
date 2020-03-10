@@ -29,11 +29,11 @@ public class RobotMap {
 
         int ELEVATOR_BOTTOM_SWITCH = 2;
 
-        int DRIVETRAIN_RIGHT_ENCODER_POS = 4;
-        int DRIVETRAIN_RIGHT_ENCODER_NEG = 3;
+        int DRIVETRAIN_RIGHT_ENCODER_POS = 3;
+        int DRIVETRAIN_RIGHT_ENCODER_NEG = 4;
 
-        int DRIVETRAIN_LEFT_ENCODER_POS = 5;
-        int DRIVETRAIN_LEFT_ENCODER_NEG = 6;
+        int DRIVETRAIN_LEFT_ENCODER_POS = 6;
+        int DRIVETRAIN_LEFT_ENCODER_NEG = 5;
 
         int FEEDER_ENCODER_POS = 7;
 
