@@ -4,12 +4,9 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.spikes2212.frc2020.Robot;
 import com.spikes2212.frc2020.RobotMap;
-import com.spikes2212.frc2020.commands.MoveTurretToFieldRelativeAngle;
 import com.spikes2212.frc2020.commands.OrientTurretToPowerPort;
 import com.spikes2212.frc2020.commands.ResetTurret;
-import com.spikes2212.frc2020.services.VisionService;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.TalonSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
@@ -83,14 +80,6 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         return endLimit.get();
     }
 
-    public void setAutomaticDefaultCommand() {
-        setDefaultCommand(new MoveTurretToFieldRelativeAngle().perpetually());
-    }
-
-    public void setManualDefaultCommand() {
-        setDefaultCommand(new MoveTalonSubsystem(this, Robot.oi::getControllerRightAngle, () -> 100.0).perpetually());
-    }
-
     public double getYaw() {
         return motor.getSelectedSensorPosition() / DEGREES_TO_PULSES;
     }
@@ -115,14 +104,12 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         turretNamespace.update();
         if (startLimit.get())
             motor.setSelectedSensorPosition((int) (minAngle.get() * DEGREES_TO_PULSES));
-//        if (endLimit.get())
-//            motor.setSelectedSensorPosition((int) (maxAngle.get() * DEGREES_TO_PULSES));
+        if (endLimit.get())
+            motor.setSelectedSensorPosition((int) (maxAngle.get() * DEGREES_TO_PULSES));
     }
 
     @Override
     public void configureDashboard() {
-//        setManualDefaultCommand();
-        VisionService vision = VisionService.getInstance();
         turretNamespace.putBoolean("turret limit", startLimit::get);
         turretNamespace.putNumber("turret angle", this::getYaw);
         turretNamespace.putNumber("speed controller values", motor::getMotorOutputPercent);
