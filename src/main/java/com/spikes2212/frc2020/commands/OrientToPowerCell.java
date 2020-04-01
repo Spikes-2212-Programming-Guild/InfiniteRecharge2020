@@ -21,15 +21,13 @@ public class OrientToPowerCell extends SequentialCommandGroup {
     public OrientToPowerCell(Supplier<Double> moveValue) {
         addCommands(
                 new InstantCommand(this::updateSetpoint),
-                new DriveArcadeWithPID(drivetrain,
-                        Drivetrain.orientationPIDSettings,
-                        Drivetrain.orientationFFSettings,
-                        drivetrain::getYaw,
-                        () -> setpoint,
-                        moveValue).alongWith(new RepeatCommand(
-                        new InstantCommand(this::updateSetpoint),
-                        new WaitCommand(0.1)
-                ))
+                new DriveArcadeWithPID(drivetrain, drivetrain::getYaw,
+                        () -> setpoint, moveValue,
+                        Drivetrain.orientationPIDSettings, Drivetrain.orientationFFSettings).alongWith(
+                                new RepeatCommand(
+                                        new InstantCommand(this::updateSetpoint),
+                                        new WaitCommand(0.1)
+                        ))
         );
     }
 

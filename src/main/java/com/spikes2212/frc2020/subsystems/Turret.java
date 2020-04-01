@@ -4,17 +4,12 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.spikes2212.frc2020.Robot;
 import com.spikes2212.frc2020.RobotMap;
-import com.spikes2212.frc2020.commands.MoveTurretToFieldRelativeAngle;
 import com.spikes2212.frc2020.commands.OrientTurretToPowerPort;
 import com.spikes2212.frc2020.commands.ResetTurret;
-import com.spikes2212.frc2020.services.VisionService;
 import com.spikes2212.lib.command.genericsubsystem.GenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.TalonSubsystem;
-import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
-import com.spikes2212.lib.control.PIDSettings;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -49,8 +44,6 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     private static final Supplier<Double> setpoint = PID.addConstantDouble("setpoint", 90);
     private static final Supplier<Integer> timeout = PID.addConstantInt("timeout", 30);
 
-    private static final PIDSettings pidSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
-
     private static final double DEGREES_TO_PULSES = 4096 * 28 / 8.5 / 360;
 
     private static final Turret instance = new Turret();
@@ -61,8 +54,6 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
     private DigitalInput startLimit;
 
-    private boolean enabled;
-
     public static Turret getInstance() {
         return instance;
     }
@@ -72,7 +63,6 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         motor = new WPI_TalonSRX(RobotMap.CAN.TURRET_TALON);
         endLimit = new DigitalInput(RobotMap.DIO.TURRET_END_LIMIT);
         startLimit = new DigitalInput(RobotMap.DIO.TURRET_START_LIMIT);
-        enabled = true;
     }
 
     public boolean atStart() {
@@ -81,14 +71,6 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
 
     public boolean atEnd() {
         return endLimit.get();
-    }
-
-    public void setAutomaticDefaultCommand() {
-        setDefaultCommand(new MoveTurretToFieldRelativeAngle().perpetually());
-    }
-
-    public void setManualDefaultCommand() {
-        setDefaultCommand(new MoveTalonSubsystem(this, Robot.oi::getControllerRightAngle, () -> 100.0).perpetually());
     }
 
     public double getYaw() {
@@ -115,22 +97,17 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         turretNamespace.update();
         if (startLimit.get())
             motor.setSelectedSensorPosition((int) (minAngle.get() * DEGREES_TO_PULSES));
-//        if (endLimit.get())
-//            motor.setSelectedSensorPosition((int) (maxAngle.get() * DEGREES_TO_PULSES));
+        if (endLimit.get())
+            motor.setSelectedSensorPosition((int) (maxAngle.get() * DEGREES_TO_PULSES));
     }
 
     @Override
     public void configureDashboard() {
-//        setManualDefaultCommand();
-        VisionService vision = VisionService.getInstance();
         turretNamespace.putBoolean("turret limit", startLimit::get);
         turretNamespace.putNumber("turret angle", this::getYaw);
-        turretNamespace.putNumber("speed controller values", motor::getMotorOutputPercent);
         turretNamespace.putData("rotate with pid", new MoveTalonSubsystem(this, setpoint, waitTime));
-        turretNamespace.putData("rotate with speed", new MoveGenericSubsystem(this, turnSpeed));
         turretNamespace.putData("orient with vision", new OrientTurretToPowerPort());
         turretNamespace.putData("reset turret", new ResetTurret());
-
     }
 
     @Override
@@ -184,14 +161,6 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
         int position = motor.getSelectedSensorPosition();
 
         return Math.abs(setpoint - position) <= tolerance;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
     }
 
 }
