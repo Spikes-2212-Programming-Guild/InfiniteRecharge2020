@@ -9,10 +9,6 @@ public class VisionService {
 
     private static final RootNamespace visionNamespace = new RootNamespace("vision");
 
-    private Supplier<Double> turretHeight = visionNamespace.addConstantDouble("turret height", 78); //recheck the turret height
-    private Supplier<Double> retroReflectiveHeight = visionNamespace.addConstantDouble("retro reflective height", 249 - turretHeight.get());
-    private Supplier<String> cameraName = visionNamespace.addConstantString("camera name", "turret");
-
     private static final VisionService instance = new VisionService();
 
     public static VisionService getInstance() {
@@ -57,8 +53,8 @@ public class VisionService {
     }
 
     public void configureDashboard() {
-        visionNamespace.putNumber("balls angle", this::getIntakeYaw);
-        visionNamespace.putNumber("retroReflective", this::getRetroReflectiveYaw);
+        visionNamespace.putNumber("angle to balls", this::getIntakeYaw);
+        visionNamespace.putNumber("angle to retroReflective", this::getRetroReflectiveYaw);
         visionNamespace.putNumber("distance from target", this::getDistanceFromTarget);
     }
 

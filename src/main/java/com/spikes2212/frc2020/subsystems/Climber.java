@@ -13,9 +13,6 @@ public class Climber extends GenericSubsystem {
 
     public static RootNamespace climberNamespace = new RootNamespace("climber");
 
-    private static final Supplier<Double> minSpeed = climberNamespace.addConstantDouble("min speed", -1);
-    private static final Supplier<Double> maxSpeed = climberNamespace.addConstantDouble("max speed", 1);
-
     public static final Supplier<Double> upSpeed = climberNamespace.addConstantDouble("climb speed", 1);
     public static final Supplier<Double> downSpeed = climberNamespace.addConstantDouble("unclimb speed", -1);
 
@@ -31,8 +28,6 @@ public class Climber extends GenericSubsystem {
     }
 
     private WPI_VictorSPX motor;
-
-    private boolean enabled = true;
 
     public Climber(WPI_VictorSPX motor) {
         this.motor = motor;

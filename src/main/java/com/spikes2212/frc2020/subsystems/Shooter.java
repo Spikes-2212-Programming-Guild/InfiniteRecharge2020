@@ -17,9 +17,7 @@ import com.spikes2212.lib.control.noise.NoiseReducer;
 import com.spikes2212.lib.dashboard.Namespace;
 import com.spikes2212.lib.dashboard.RootNamespace;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 import java.util.function.Supplier;
 
@@ -34,9 +32,7 @@ public class Shooter extends GenericSubsystem {
     private static Supplier<Double> minSpeed = shooterNamespace.addConstantDouble("Min Speed", 0);
     public static Supplier<Double> shootSpeed =
             shooterNamespace.addConstantDouble("speed", 0.4);
-    public static Supplier<Double> farShootingSpeed = shooterNamespace.addConstantDouble("far shooting voltage",
-            6);
-    public static Supplier<Double> wheelShootingSpeed = shooterNamespace.addConstantDouble("wheel shooting voltage", 8);
+
     public static Supplier<Double> closeShootingSpeed = shooterNamespace.addConstantDouble("close shooting speed", 3.7);
 
     private static Supplier<Double> kP = PID.addConstantDouble("kP", 0);
@@ -58,15 +54,11 @@ public class Shooter extends GenericSubsystem {
         return instance;
     }
 
-    private PIDSettings pidSettings = new PIDSettings(kP, kI, kD, tolerance, waitTime);
-
     private WPI_TalonSRX master;
     private WPI_VictorSPX slave;
     private DoubleSolenoid solenoid;
 
     private NoiseReducer noiseReducer;
-
-    private boolean enabled;
 
     private Shooter() {
         super(minSpeed, maxSpeed);
@@ -81,7 +73,6 @@ public class Shooter extends GenericSubsystem {
         slave.follow(master);
         noiseReducer = new NoiseReducer(() -> master.getSelectedSensorVelocity() * distancePerPulse,
                 new ExponentialFilter(0.05));
-        enabled = true;
     }
 
     @Override
@@ -110,14 +101,6 @@ public class Shooter extends GenericSubsystem {
 
     public void close() {
         solenoid.set(DoubleSolenoid.Value.kReverse);
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
     }
 
     public double getMotorSpeed() {

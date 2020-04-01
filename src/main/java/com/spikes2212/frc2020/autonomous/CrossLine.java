@@ -5,11 +5,11 @@ import com.spikes2212.frc2020.subsystems.Drivetrain;
 import com.spikes2212.lib.command.drivetrains.commands.DriveArcade;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-public class CrossLineFromCenter extends SequentialCommandGroup {
+public class CrossLine extends SequentialCommandGroup {
 
     private Drivetrain drivetrain = Drivetrain.getInstance();
 
-    public CrossLineFromCenter() {
+    public CrossLine() {
         addCommands(
                 new ResetTurret(),
                 new DriveArcade(
