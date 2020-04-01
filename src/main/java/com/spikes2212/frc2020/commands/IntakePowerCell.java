@@ -18,8 +18,6 @@ public class IntakePowerCell extends SequentialCommandGroup {
     private Supplier<Double> intakeVoltage = Intake.intakeVoltage;
     private Supplier<Double> intakeCurrentLimit = Intake.intakeCurrentLimit;
 
-    private Supplier<Double> feederSpeed = Feeder.speed;
-    private Supplier<Double> feedTimeLimit = Feeder.feedTimeLimit;
 
     public IntakePowerCell() {
         addCommands(
@@ -32,7 +30,7 @@ public class IntakePowerCell extends SequentialCommandGroup {
                                 new InstantCommand(() -> feeder.reset()),
                                 new MoveGenericSubsystemWithPID(feeder, Feeder.setpoint, feeder::getPosition, Feeder.pidSettings)
                         ))
-                );
+        );
     }
 
 }

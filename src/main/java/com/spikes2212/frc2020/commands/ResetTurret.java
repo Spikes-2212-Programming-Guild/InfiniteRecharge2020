@@ -14,5 +14,5 @@ public class ResetTurret extends SequentialCommandGroup {
                 new MoveGenericSubsystem(turret, -1),
                 new MoveTalonSubsystem(turret, Turret.frontAngle, Turret.waitTime)
         );
-    }   
+    }
 }
