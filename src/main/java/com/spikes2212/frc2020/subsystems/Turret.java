@@ -88,7 +88,7 @@ public class Turret extends GenericSubsystem implements TalonSubsystem {
     }
 
     public void setManualDefaultCommand() {
-        setDefaultCommand(new MoveTalonSubsystem(this, Robot.oi::getControllerRightAngle, () -> 100.0).perpetually());
+        setDefaultCommand(new MoveTalonSubsystem(this, Robot.oi::getTurretSetpoint, () -> 100.0).perpetually());
     }
 
     public double getYaw() {

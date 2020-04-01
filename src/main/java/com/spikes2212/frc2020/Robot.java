@@ -44,7 +44,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putData("start compressor", new InstantCommand(new Compressor()::start));
         SmartDashboard.putData("stop compressor", new InstantCommand(new Compressor()::stop));
         SmartDashboard.putData("intake", new RepeatCommand(new IntakePowerCell()));
-        Turret.turretNamespace.putNumber("joystick angle for turret", oi::getControllerRightAngle);
+        Turret.turretNamespace.putNumber("turret setpoint", oi::getTurretSetpoint);
         auto = new CrossLineFromCenter();
         new UsbCamera("driver camera", 0);
     }

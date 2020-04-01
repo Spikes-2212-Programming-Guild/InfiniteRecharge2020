@@ -12,7 +12,7 @@ public class Climb extends SequentialCommandGroup {
     private Turret turret = Turret.getInstance();
     private double setpoint = Turret.climbingAngle.get();
     private double waitTime = Turret.waitTime.get();
-    private double climbingSpeed = Climber.climbSpeed.get();
+    private double climbingSpeed = Climber.upSpeed.get();
 
     public Climb() {
         addCommands(

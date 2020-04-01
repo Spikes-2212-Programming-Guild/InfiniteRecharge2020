@@ -11,7 +11,6 @@ import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
 import com.spikes2212.lib.util.XboXUID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
@@ -25,19 +24,17 @@ public class OI /* GEVALD */ {
 
     private Shooter shooter = Shooter.getInstance();
     private Turret turret = Turret.getInstance();
+    private Climber climber = Climber.getInstance();
 
     private VisionService vision = VisionService.getInstance();
     private PhysicsService physics = PhysicsService.getInstance();
-    private Drivetrain drivetrain = Drivetrain.getInstance();
 
     public OI() {
         Button turret = controller.getRightStickButton();
         Button lift = controller.getButtonBack();
-        Button climb = controller.getButtonStart();
+        Button climbUp = controller.getButtonStart();
         Button unLift = controller.getGreenButton();
-        Button unClimb = controller.getLeftStickButton();
-        Button openFeedToLevel1 = controller.getRedButton();
-        Button closeFeedToLevel1 = controller.getBlueButton();
+        Button climbDown = controller.getLeftStickButton();
         Button unGrip = controller.getUpButton();
         Button unFeed = controller.getDownButton();
         Button shootFromAfar = controller.getLBButton();
@@ -67,15 +64,14 @@ public class OI /* GEVALD */ {
         grip.whenHeld(new MoveGenericSubsystem(Intake.getInstance(), () -> Feeder.speed.get() / RobotController.getBatteryVoltage()));
         lift.whenHeld(new MoveGenericSubsystem(Elevator.getInstance(), Elevator.getInstance().upSpeed));
         unLift.whenHeld(new MoveGenericSubsystem(Elevator.getInstance(), Elevator.getInstance().downSpeed));
-        climb.whenHeld(
+        climbUp.whenHeld(
                 new SequentialCommandGroup(
-//                        new MoveTalonSubsystem(this.turret, Turret.climbingAngle, () -> (double) 0.1).withTimeout(2),
-                        new MoveGenericSubsystem(Climber.getInstance(), Climber.getInstance().climbSpeed)
+                        new MoveTalonSubsystem(this.turret, Turret.climbingAngle, () -> 0.1).withTimeout(2),
+                        new MoveGenericSubsystem(Climber.getInstance(), Climber.upSpeed)
                 )
         );
-        unClimb.whenHeld(new MoveGenericSubsystem(Climber.getInstance(), Climber.getInstance().unClimbSpeed));
-        turret.whileHeld(new MoveTalonSubsystem(Turret.getInstance(), this::getControllerRightAngle, Turret.getInstance().waitTime));
-//        turret.whenHeld(new FeedToLowTarget());
+        climbDown.whenHeld(new MoveGenericSubsystem(Climber.getInstance(), Climber.downSpeed));
+        turret.whileHeld(new MoveTalonSubsystem(Turret.getInstance(), this::getTurretSetpoint, Turret.waitTime));
 
     }
 
@@ -95,7 +91,7 @@ public class OI /* GEVALD */ {
         return -right.getY();
     }
 
-    public double getControllerRightAngle() {
+    public double getTurretSetpoint() {
         if(Math.abs(controller.getRightY()) < 0.1 && Math.abs(controller.getRightX()) < 0.1) return Turret.getInstance().getYaw();
         double angle =  Math.toDegrees(Math.atan2(-controller.getRightY(), controller.getRightX()));
         return ((angle % 360) + 360) % 360;

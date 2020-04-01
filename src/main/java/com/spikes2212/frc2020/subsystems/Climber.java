@@ -16,8 +16,8 @@ public class Climber extends GenericSubsystem {
     private static final Supplier<Double> minSpeed = climberNamespace.addConstantDouble("min speed", -1);
     private static final Supplier<Double> maxSpeed = climberNamespace.addConstantDouble("max speed", 1);
 
-    public static final Supplier<Double> climbSpeed = climberNamespace.addConstantDouble("climb speed", 1);
-    public static final Supplier<Double> unClimbSpeed = climberNamespace.addConstantDouble("unclimb speed", -1);
+    public static final Supplier<Double> upSpeed = climberNamespace.addConstantDouble("climb speed", 1);
+    public static final Supplier<Double> downSpeed = climberNamespace.addConstantDouble("unclimb speed", -1);
 
     private static Climber instance;
 
@@ -60,7 +60,7 @@ public class Climber extends GenericSubsystem {
 
     @Override
     public void configureDashboard() {
-        climberNamespace.putData("move up", new MoveGenericSubsystem(this, climbSpeed));
-        climberNamespace.putData("move down", new MoveGenericSubsystem(this, unClimbSpeed));
+        climberNamespace.putData("move up", new MoveGenericSubsystem(this, upSpeed));
+        climberNamespace.putData("move down", new MoveGenericSubsystem(this, downSpeed));
     }
 }
