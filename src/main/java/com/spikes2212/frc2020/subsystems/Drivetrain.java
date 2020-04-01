@@ -1,11 +1,9 @@
 package com.spikes2212.frc2020.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.frc2020.commands.OrientToPowerCell;
-import com.spikes2212.frc2020.services.VisionService;
 import com.spikes2212.lib.command.drivetrains.OdometryDrivetrain;
 import com.spikes2212.lib.control.FeedForwardSettings;
 import com.spikes2212.lib.control.PIDSettings;
@@ -25,15 +23,10 @@ public class Drivetrain extends OdometryDrivetrain {
 
     public static Supplier<Double> width = drivetrainNamespace
             .addConstantDouble("width", 0.7);
-    public static Supplier<Double> wheelDiameter = drivetrainNamespace
-            .addConstantDouble("wheel diameter (inches)", 6);
 
     public static Supplier<Double> orientationKP = orientationNamespace.addConstantDouble("kP", 0);
     public static Supplier<Double> orientationKI = orientationNamespace.addConstantDouble("kI", 0);
     public static Supplier<Double> orientationKD = orientationNamespace.addConstantDouble("kD", 0);
-
-    public static Supplier<Double> orientationKS = orientationNamespace.addConstantDouble("kS", 0);
-
     public static Supplier<Double> orientationTolerance = orientationNamespace
             .addConstantDouble("tolerance", 0);
     public static Supplier<Double> orientationWaitTime = orientationNamespace
@@ -42,11 +35,15 @@ public class Drivetrain extends OdometryDrivetrain {
     public static PIDSettings orientationPIDSettings = new PIDSettings(orientationKP, orientationKI, orientationKD,
             orientationTolerance, orientationWaitTime);
 
-    public static FeedForwardSettings orientationFFSettings = new FeedForwardSettings(orientationKS, () -> 0.0, () -> 0.0);
+    public static Supplier<Double> orientationKS = orientationNamespace.addConstantDouble("kS", 0);
 
+    public static FeedForwardSettings orientationFFSettings =
+            new FeedForwardSettings(orientationKS, () -> 0.0, () -> 0.0);
 
-    public static Supplier<Double> autoForwardSpeed = drivetrainNamespace.addConstantDouble("auto forward speed", 0.5);
-    public static Supplier<Double> autoForwardTimeout = drivetrainNamespace.addConstantDouble("auto forward timeout", 1.5);
+    public static Supplier<Double> autoForwardSpeed = drivetrainNamespace
+            .addConstantDouble("auto forward speed", 0.5);
+    public static Supplier<Double> autoForwardTimeout = drivetrainNamespace
+            .addConstantDouble("auto forward timeout", 1.5);
 
     private static final Drivetrain instance = new Drivetrain();
 
@@ -54,7 +51,8 @@ public class Drivetrain extends OdometryDrivetrain {
         return instance;
     }
 
-    private WPI_VictorSPX leftVictor, rightVictor;
+    private WPI_VictorSPX leftVictor;
+    private WPI_VictorSPX rightVictor;
     private Encoder leftEncoder;
     private Encoder rightEncoder;
     private PigeonWrapper imu;
@@ -72,8 +70,8 @@ public class Drivetrain extends OdometryDrivetrain {
         leftVictor.follow((WPI_TalonSRX) leftController);
         rightVictor.follow((WPI_TalonSRX) rightController);
         imu = new PigeonWrapper((WPI_TalonSRX) leftController);
-        odometry = new OdometryHandler(leftEncoder::getDistance, rightEncoder::getDistance, () -> -imu.getYaw()
-                , 0, 0);
+        odometry = new OdometryHandler(leftEncoder::getDistance, rightEncoder::getDistance,
+                () -> -imu.getYaw(), 0, 0);
     }
 
     @Override
@@ -103,11 +101,6 @@ public class Drivetrain extends OdometryDrivetrain {
         imu.reset();
     }
 
-//    @Override
-//    public void arcadeDrive(double moveValue, double rotateValue) {
-//        super.curvatureDrive(moveValue, rotateValue);
-//    }
-
     @Override
     public double getLeftRate() {
         return leftEncoder.getRate();
@@ -127,9 +120,6 @@ public class Drivetrain extends OdometryDrivetrain {
     }
 
     public void configureDashboard() {
-        VisionService vision = VisionService.getInstance();
-        drivetrainNamespace.putNumber("imu yaw", imu::getYaw);
-        drivetrainNamespace.putNumber("error", () -> vision.getIntakeYaw() - imu.getYaw());
         drivetrainNamespace.putData("orient to powercell", new OrientToPowerCell(() -> 0.0));
     }
 }
