@@ -1,6 +1,5 @@
 package com.spikes2212.frc2020.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.spikes2212.frc2020.RobotMap;
@@ -25,15 +24,10 @@ public class Drivetrain extends OdometryDrivetrain {
 
     public static Supplier<Double> width = drivetrainNamespace
             .addConstantDouble("width", 0.7);
-    public static Supplier<Double> wheelDiameter = drivetrainNamespace
-            .addConstantDouble("wheel diameter (inches)", 6);
 
     public static Supplier<Double> orientationKP = orientationNamespace.addConstantDouble("kP", 0);
     public static Supplier<Double> orientationKI = orientationNamespace.addConstantDouble("kI", 0);
     public static Supplier<Double> orientationKD = orientationNamespace.addConstantDouble("kD", 0);
-
-    public static Supplier<Double> orientationKS = orientationNamespace.addConstantDouble("kS", 0);
-
     public static Supplier<Double> orientationTolerance = orientationNamespace
             .addConstantDouble("tolerance", 0);
     public static Supplier<Double> orientationWaitTime = orientationNamespace
@@ -42,11 +36,15 @@ public class Drivetrain extends OdometryDrivetrain {
     public static PIDSettings orientationPIDSettings = new PIDSettings(orientationKP, orientationKI, orientationKD,
             orientationTolerance, orientationWaitTime);
 
-    public static FeedForwardSettings orientationFFSettings = new FeedForwardSettings(orientationKS, () -> 0.0, () -> 0.0);
+    public static Supplier<Double> orientationKS = orientationNamespace.addConstantDouble("kS", 0);
 
+    public static FeedForwardSettings orientationFFSettings =
+            new FeedForwardSettings(orientationKS, () -> 0.0, () -> 0.0);
 
-    public static Supplier<Double> autoForwardSpeed = drivetrainNamespace.addConstantDouble("auto forward speed", 0.5);
-    public static Supplier<Double> autoForwardTimeout = drivetrainNamespace.addConstantDouble("auto forward timeout", 1.5);
+    public static Supplier<Double> autoForwardSpeed = drivetrainNamespace
+            .addConstantDouble("auto forward speed", 0.5);
+    public static Supplier<Double> autoForwardTimeout = drivetrainNamespace
+            .addConstantDouble("auto forward timeout", 1.5);
 
     private static final Drivetrain instance = new Drivetrain();
 
