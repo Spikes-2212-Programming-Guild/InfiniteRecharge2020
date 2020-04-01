@@ -1,6 +1,6 @@
 package com.spikes2212.frc2020;
 
-import com.spikes2212.frc2020.autonomous.CrossLineFromCenter;
+import com.spikes2212.frc2020.autonomous.CrossLine;
 import com.spikes2212.frc2020.commands.IntakePowerCell;
 import com.spikes2212.frc2020.services.VisionService;
 import com.spikes2212.frc2020.subsystems.*;
@@ -45,7 +45,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putData("stop compressor", new InstantCommand(new Compressor()::stop));
         SmartDashboard.putData("intake", new RepeatCommand(new IntakePowerCell()));
         Turret.turretNamespace.putNumber("turret setpoint", oi::getTurretSetpoint);
-        auto = new CrossLineFromCenter();
+        auto = new CrossLine();
         new UsbCamera("driver camera", 0);
     }
 
