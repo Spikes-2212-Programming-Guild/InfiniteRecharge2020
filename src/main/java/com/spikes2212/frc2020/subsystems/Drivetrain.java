@@ -4,7 +4,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.spikes2212.frc2020.RobotMap;
 import com.spikes2212.frc2020.commands.OrientToPowerCell;
-import com.spikes2212.frc2020.services.VisionService;
 import com.spikes2212.lib.command.drivetrains.OdometryDrivetrain;
 import com.spikes2212.lib.control.FeedForwardSettings;
 import com.spikes2212.lib.control.PIDSettings;
@@ -120,9 +119,6 @@ public class Drivetrain extends OdometryDrivetrain {
     }
 
     public void configureDashboard() {
-        VisionService vision = VisionService.getInstance();
-        drivetrainNamespace.putNumber("imu yaw", imu::getYaw);
-        drivetrainNamespace.putNumber("error", () -> vision.getIntakeYaw() - imu.getYaw());
         drivetrainNamespace.putData("orient to powercell", new OrientToPowerCell(() -> 0.0));
     }
 }
