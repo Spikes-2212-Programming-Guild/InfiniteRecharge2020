@@ -128,37 +128,22 @@ public class Shooter extends GenericSubsystem {
     public void configureDashboard() {
         VisionService vision = VisionService.getInstance();
         PhysicsService physics = PhysicsService.getInstance();
-        shooterNamespace.putNumber("shooter velocity - filtered", () -> {
-            double value = noiseReducer.get();
-            if (value > Math.pow(10, -4)) return value;
-            return 0;
-        });
+        shooterNamespace.putNumber("shooter velocity - filtered", noiseReducer);
         shooterNamespace.putNumber("shooter velocity", () -> (double) master.getSelectedSensorVelocity() * distancePerPulse);
-        shooterNamespace.putNumber("shooter position", master::getSelectedSensorPosition);
-        shooterNamespace.putNumber("distance to target", vision::getDistanceFromTarget);
-        shooterNamespace.putNumber("velocity to target", () -> physics.calculateSpeedForDistance(vision.getDistanceFromTarget()));
         shooterNamespace.putData("open", new InstantCommand(this::open));
         shooterNamespace.putData("close", new InstantCommand(this::close));
-        shooterNamespace.putData("shoot", new SequentialCommandGroup(new MoveGenericSubsystem(this,
-                () -> shootSpeed.get() )));
+        shooterNamespace.putData("shoot", new MoveGenericSubsystem(this, shootSpeed));
+
         shooterNamespace.putData("pid shoot",
                 new MoveGenericSubsystemWithPID(this, targetSpeed,
                         this::getMotorSpeed,
                         velocityPIDSettings, velocityFFSettings));
-        shooterNamespace.putData("shoot from afar", new MoveGenericSubsystem(this,
-                () -> farShootingSpeed.get() / RobotController.getBatteryVoltage()));
 
         shooterNamespace.putData("shoot for calculated distance",
                 new MoveGenericSubsystemWithPID(this,
                         () -> physics.calculateSpeedForDistance(vision.getDistanceFromTarget()),
                         () -> master.getSelectedSensorVelocity() * distancePerPulse,
                         velocityPIDSettings, velocityFFSettings));
-        shooterNamespace.putData("shoot from wheel", new MoveGenericSubsystem(this,
-                () -> wheelShootingSpeed.get() / RobotController.getBatteryVoltage()));
-
-        shooterNamespace.putBoolean("can shoot far", () -> (getMotorSpeed() - physics.calculateSpeedForDistance(vision.getDistanceFromTarget())) >= 0.05);
-        shooterNamespace.putBoolean("can shoot close", () -> (
-                getMotorSpeed() - closeShootingSpeed.get()) >= 0.05);
     }
 
     public void setAccelerated(boolean isAccelerated) {
