@@ -29,8 +29,6 @@ public class Climber extends GenericSubsystem {
 
     private WPI_VictorSPX motor;
 
-    private boolean enabled = true;
-
     public Climber(WPI_VictorSPX motor) {
         this.motor = motor;
     }
