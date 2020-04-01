@@ -51,7 +51,8 @@ public class Drivetrain extends OdometryDrivetrain {
         return instance;
     }
 
-    private WPI_VictorSPX leftVictor, rightVictor;
+    private WPI_VictorSPX leftVictor;
+    private WPI_VictorSPX rightVictor;
     private Encoder leftEncoder;
     private Encoder rightEncoder;
     private PigeonWrapper imu;
