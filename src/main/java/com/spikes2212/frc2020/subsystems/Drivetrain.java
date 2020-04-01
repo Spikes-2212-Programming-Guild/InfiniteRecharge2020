@@ -70,8 +70,8 @@ public class Drivetrain extends OdometryDrivetrain {
         leftVictor.follow((WPI_TalonSRX) leftController);
         rightVictor.follow((WPI_TalonSRX) rightController);
         imu = new PigeonWrapper((WPI_TalonSRX) leftController);
-        odometry = new OdometryHandler(leftEncoder::getDistance, rightEncoder::getDistance, () -> -imu.getYaw()
-                , 0, 0);
+        odometry = new OdometryHandler(leftEncoder::getDistance, rightEncoder::getDistance,
+                () -> -imu.getYaw(), 0, 0);
     }
 
     @Override
