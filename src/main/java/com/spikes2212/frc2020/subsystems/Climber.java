@@ -60,8 +60,7 @@ public class Climber extends GenericSubsystem {
 
     @Override
     public void configureDashboard() {
-
-        climberNamespace.putData("move", new MoveGenericSubsystem(this, climbSpeed));
-        climberNamespace.putData("unmove", new MoveGenericSubsystem(this, unClimbSpeed));
+        climberNamespace.putData("move up", new MoveGenericSubsystem(this, climbSpeed));
+        climberNamespace.putData("move down", new MoveGenericSubsystem(this, unClimbSpeed));
     }
 }
