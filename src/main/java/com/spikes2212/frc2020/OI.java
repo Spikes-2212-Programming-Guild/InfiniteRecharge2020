@@ -9,11 +9,16 @@ import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystem
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveGenericSubsystemWithPID;
 import com.spikes2212.lib.command.genericsubsystem.commands.MoveTalonSubsystem;
 import com.spikes2212.lib.util.XboXUID;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class OI /* GEVALD */ {
@@ -25,9 +30,13 @@ public class OI /* GEVALD */ {
     private Shooter shooter = Shooter.getInstance();
     private Turret turret = Turret.getInstance();
     private Climber climber = Climber.getInstance();
-
+    private Feeder feeder = Feeder.getInstance();
     private VisionService vision = VisionService.getInstance();
     private PhysicsService physics = PhysicsService.getInstance();
+    private NetworkTable feederNetworkTable = NetworkTableInstance.getDefault().getTable("feeder");
+    private NetworkTableEntry feederSpeed = feederNetworkTable.getEntry("speed");
+    private NetworkTable intakeNetworkTable = NetworkTableInstance.getDefault().getTable("intake");
+    private NetworkTableEntry intakeSpeed = intakeNetworkTable.getEntry("intake voltage");
 
     public OI() {
         Button turret = controller.getRightStickButton();
@@ -43,9 +52,15 @@ public class OI /* GEVALD */ {
         Trigger feed = controller.getRTButton();
         Button intake = controller.getRBButton();
         Button grip = controller.getYellowButton();
-
+        JoystickButton reverseFeederSpeed = new JoystickButton(left, 1);
+        JoystickButton reverseIntakeSpeed = new JoystickButton(right, 1);
+        JoystickButton stopShooter = new JoystickButton(left,0);
         Button resetTurret = controller.getRightButton();
+
         resetTurret.whenPressed(new ResetTurret());
+
+        reverseFeederSpeed.whenPressed(new InstantCommand(() -> feederSpeed.setNumber(-feederSpeed.getDouble(0))));
+        reverseIntakeSpeed.whenPressed(new InstantCommand(() -> intakeSpeed.setNumber(-intakeSpeed.getDouble(0))));
         intake.whileHeld(
                 new ParallelCommandGroup(
                         new RepeatCommand(new IntakePowerCell())

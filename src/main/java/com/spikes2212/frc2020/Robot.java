@@ -38,7 +38,6 @@ public class Robot extends TimedRobot {
         drivetrain.configureDashboard();
         elevator.configureDashboard();
         climber.configureDashboard();
-
         drivetrain.setDefaultCommand(new DriveArcade(drivetrain,
                 oi::getRightY, oi::getLeftX));
         SmartDashboard.putData("start compressor", new InstantCommand(new Compressor()::start));
