@@ -17,7 +17,7 @@ public class Robot extends TimedRobot {
     private Climber climber = Climber.getInstance();
     private Elevator elevator = Elevator.getInstance();
     private Shooter shooter = Shooter.getInstance();
-    private Turret turret = Turret.getInstance();
+//    private Turret turret = Turret.getInstance();
     private Feeder feeder = Feeder.getInstance();
     private Intake intake = Intake.getInstance();
     private Drivetrain drivetrain = Drivetrain.getInstance();
@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
         oi = new OI();
         visionService.configureDashboard();
         shooter.configureDashboard();
-        turret.configureDashboard();
+//        turret.configureDashboard();
         feeder.configureDashboard();
         intake.configureDashboard();
         drivetrain.configureDashboard();
@@ -43,7 +43,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putData("start compressor", new InstantCommand(new Compressor()::start));
         SmartDashboard.putData("stop compressor", new InstantCommand(new Compressor()::stop));
         SmartDashboard.putData("intake", new RepeatCommand(new IntakePowerCell()));
-        Turret.turretNamespace.putNumber("turret setpoint", oi::getTurretSetpoint);
+//        Turret.turretNamespace.putNumber("turret setpoint", oi::getTurretSetpoint);
         auto = new CrossLine();
         new UsbCamera("driver camera", 0);
     }

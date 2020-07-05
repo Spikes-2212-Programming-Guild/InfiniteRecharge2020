@@ -18,7 +18,7 @@ public class LongRangeShoot extends SequentialCommandGroup {
     public LongRangeShoot() {
         addCommands(
                 new InstantCommand(shooter::close),
-                new OrientTurretToPowerPort(),
+//                new OrientTurretToPowerPort(),
                 new MoveGenericSubsystemWithPID(shooter,
                         () -> physicsService.calculateSpeedForDistance(
                                 visionService.getDistanceFromTarget()),

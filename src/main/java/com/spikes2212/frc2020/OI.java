@@ -28,7 +28,7 @@ public class OI /* GEVALD */ {
     private XboXUID controller = new XboXUID(2);
 
     private Shooter shooter = Shooter.getInstance();
-    private Turret turret = Turret.getInstance();
+//    private Turret turret = Turret.getInstance();
     private Climber climber = Climber.getInstance();
     private Feeder feeder = Feeder.getInstance();
     private VisionService vision = VisionService.getInstance();
@@ -57,7 +57,7 @@ public class OI /* GEVALD */ {
         JoystickButton stopShooter = new JoystickButton(left,0);
         Button resetTurret = controller.getRightButton();
 
-        resetTurret.whenPressed(new ResetTurret());
+//        resetTurret.whenPressed(new ResetTurret());
 
         reverseFeederSpeed.whenPressed(new InstantCommand(() -> feederSpeed.setNumber(-feederSpeed.getDouble(0))));
         reverseIntakeSpeed.whenPressed(new InstantCommand(() -> intakeSpeed.setNumber(-intakeSpeed.getDouble(0))));
@@ -79,14 +79,14 @@ public class OI /* GEVALD */ {
         grip.whenHeld(new MoveGenericSubsystem(Intake.getInstance(), () -> Feeder.speed.get() / RobotController.getBatteryVoltage()));
         lift.whenHeld(new MoveGenericSubsystem(Elevator.getInstance(), Elevator.getInstance().upSpeed));
         unLift.whenHeld(new MoveGenericSubsystem(Elevator.getInstance(), Elevator.getInstance().downSpeed));
-        climbUp.whenHeld(
-                new SequentialCommandGroup(
-                        new MoveTalonSubsystem(this.turret, Turret.climbingAngle, () -> 0.1).withTimeout(2),
-                        new MoveGenericSubsystem(Climber.getInstance(), Climber.upSpeed)
-                )
-        );
+//        climbUp.whenHeld(
+//                new SequentialCommandGroup(
+//                        new MoveTalonSubsystem(this.turret, Turret.climbingAngle, () -> 0.1).withTimeout(2),
+//                        new MoveGenericSubsystem(Climber.getInstance(), Climber.upSpeed)
+//                )
+//        );
         climbDown.whenHeld(new MoveGenericSubsystem(Climber.getInstance(), Climber.downSpeed));
-        turret.whileHeld(new MoveTalonSubsystem(Turret.getInstance(), this::getTurretSetpoint, Turret.waitTime));
+//        turret.whileHeld(new MoveTalonSubsystem(Turret.getInstance(), this::getTurretSetpoint, Turret.waitTime));
 
     }
 
@@ -106,9 +106,9 @@ public class OI /* GEVALD */ {
         return -right.getY();
     }
 
-    public double getTurretSetpoint() {
+    /*public double getTurretSetpoint() {
         if(Math.abs(controller.getRightY()) < 0.1 && Math.abs(controller.getRightX()) < 0.1) return Turret.getInstance().getYaw();
         double angle =  Math.toDegrees(Math.atan2(-controller.getRightY(), controller.getRightX()));
         return ((angle % 360) + 360) % 360;
-    }
+    }*/
 }
